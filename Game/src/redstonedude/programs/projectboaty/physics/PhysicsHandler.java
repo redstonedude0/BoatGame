@@ -228,5 +228,10 @@ public class PhysicsHandler {
 
 		}
 	}
+	
+	public static void reset() {
+		c = 0;
+		raft = null;
+	}
 
 }

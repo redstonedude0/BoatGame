@@ -16,6 +16,8 @@ Alpha 0.3 (The Menu Update): [TODO]
 	Add temporary main menu and loading screens, add splash screens
 	Add escape menu to return to main menu and shutdown internal engine
 	[begin discussion about whether local play should be a thing]
+	[discuss how buttons should work]
+	[discuss how screen scalar should work]
 Alpha 0.4 (The Vector Update): [TODO]
 	Create VectorDouble and handlers to represent vectors and transformations
 	Replace the physics engine with VectorDouble objects
@@ -30,6 +32,7 @@ Alpha 0.7 (The Worlds Update): [TODO]
 		when a client connects they can request 1,2,3 as a raft and use it as normal
 	Add world saving (save raft location etc)
 	[decide how barrel spawning should work]
+	[discuss disconnection whilst in a server - 'ghost' ship raidable?]
 	Add noisemap to represent small islands and land masses
 	Display islands based on noisemap
 	Save noisemap to world when world saves
