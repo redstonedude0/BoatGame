@@ -78,9 +78,14 @@ public class GraphicsHandler {
 				// drawSlantedRect(x, y, unitx, unity);
 				// using graphics instead of colors
 				AffineTransform rotator = new AffineTransform();
-
 				rotator.translate(100 * x, 100 * y);
 				rotator.rotate(PhysicsHandler.raft.theta);
+				if (tile instanceof TileThruster) {
+
+					rotator.translate(50, -50);
+					rotator.rotate(-((TileThruster)tile).thrustAngle);
+					rotator.translate(-50, 50);
+				}
 				g2d.transform(rotator);
 				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(tile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				try {

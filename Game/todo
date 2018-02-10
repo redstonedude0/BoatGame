@@ -19,6 +19,7 @@ Alpha 0.3 (The Menu Update): [TODO]
 	[discuss how buttons should work]
 	[discuss how screen scalar should work]
 	[discuss lwjgl, discuss 2D 3D]
+	Make outboard motor graphical orientation be based on thrust angle
 Alpha 0.4 (The Vector Update): [TODO]
 	Create VectorDouble and handlers to represent vectors and transformations
 	Replace the physics engine with VectorDouble objects
