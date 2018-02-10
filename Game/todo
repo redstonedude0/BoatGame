@@ -64,7 +64,32 @@ Alpha 1.0 (Initial Gameplay): [TODO]
 	Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
 	Test the game works on other platforms (other windows, mac, etc)
 	Consider adding a launcher (detects java version, splashscreen built in, etc)
-
+Alpha 1.1 (The Floating Update): [TODO]
+	Add buoyancy mechanics, possibly consider how capsizing will work?
+	Add mechanics for a player to restart from scratch if needed
+	[discuss and implement mechanics for how more PCEs can be obtained?]
+	Implement reefs
+	Add mechanics for flooding and hull leakage, add collisions with islands and reefs
+Alpha 1.2 (The Fleet Update): [TODO]
+	Add mechanics to have multiple ships, and assigning PCEs to different boats?
+	[discuss how boat assignment will work, color coded tasks for different boats?]
+	Add boarding plank to allow PCEs to transfer between rafts
+	Add Anchor to keep rafts in place
+	[begin discusson on how different resources will be obtained]
+Alpha 1.3 (The Boat Update): [TODO]
+	Add multilevelling so boats can be created.
+	Add stairs to transfer between levels
+	Discuss how water level can be displayed, consider adding a captains controller
+		which adds GUI nautical information
+	Consider how this will impact 2.5D
+	Ensure boarding planks have the correct physics for this, consider adding a GUI element to compare vertical levels?
+	Consider stability and how that will affect capsizing
+	[discussion of pre-generated structures such a strongholds, ports, and dry docks]
+Alpha 1.4 (The Fighting Update): [TODO]
+	Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
+	
+	
+	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
 
 
