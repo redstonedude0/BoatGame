@@ -15,7 +15,7 @@ Alpha 0.2 (The Looks Update):
 Alpha 0.3 (The Menu Update): [TODO]
 	Add temporary main menu and loading screens, add splash screens
 	Add escape menu to return to main menu and shutdown internal engine
-	[begin discussion about whether local play should be a thing]
+	[begin discussion about whether local play should be a thing, discuss servers]
 	[discuss how buttons should work]
 	[discuss how screen scalar should work]
 	[discuss lwjgl, discuss 2D 3D]
