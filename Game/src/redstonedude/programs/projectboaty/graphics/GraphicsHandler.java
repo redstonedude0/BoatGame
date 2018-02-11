@@ -94,15 +94,15 @@ public class GraphicsHandler {
 					//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
 				//}
 				//draw drag vector
-				g2d.setColor(Color.RED);
-				VectorDouble displacement = tile.getPos().add(new VectorDouble(0.5, 0.5)).subtract(PhysicsHandler.raft.getCOMPos());
-				VectorDouble rotationalVelocity = new VectorDouble(displacement).rotate(-Math.PI/2).setMagnitude(PhysicsHandler.raft.dtheta * Math.sqrt(displacement.getSquaredLength()));
+				//g2d.setColor(Color.RED);
+				//VectorDouble displacement = tile.getPos().add(new VectorDouble(0.5, 0.5)).subtract(PhysicsHandler.raft.getCOMPos());
+				//VectorDouble rotationalVelocity = new VectorDouble(displacement).rotate(-Math.PI/2).setMagnitude(PhysicsHandler.raft.dtheta * Math.sqrt(displacement.getSquaredLength()));
 				
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement);
-				g2d.setColor(Color.GREEN);
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement.rotate(-Math.PI/2));
-				g2d.setColor(Color.BLUE);
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, rotationalVelocity);
+				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement);
+				//g2d.setColor(Color.GREEN);
+				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement.rotate(-Math.PI/2));
+				//g2d.setColor(Color.BLUE);
+				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, rotationalVelocity);
 				//VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
 				//drag = drag.multiply(10);
 				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
