@@ -28,6 +28,7 @@ Alpha 0.4 (The Vector Update): [TODO]
 	[needs deeper testing, consider adding static friction? Possibly add matrix objects?]
 Alpha 0.5 (The Debug Update): [TODO]
 	Add functions to allow for easy debug, add a debug menu, add debug options to show moments?
+	Do it in chat?
 Alpha 0.6 (The Control Update): [TODO]
 	Make controls be based on how they will affect motion
 		i.e. right will always make you turn right?
@@ -56,7 +57,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	Task selection is done randomly
 Alpha 0.9 (The Intelligence Update): [TODO]
 	PCEs wander around the raft when they have nothing to do
-	Add chat?
+	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]
 	Implement PCE stats system [walk speed, swim speed]
 	Add construction time (make construction a lasting task)
