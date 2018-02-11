@@ -1,32 +1,33 @@
 Key:
 [X] Done by X
 (X) assigned to be done by X
-X - Harrison
-X - Harry
+R - Harrison
+D - Harry
 	[we need to select letters for ourselves, any ideas? Perhaps R and D based on our usernames?]
 	[Note to self: look to see if fogbugz is free or if free similar program exists]
 
 What is required to be updated for each release:
 Alpha 0.1 (The Physics Update):
-	Basic physics engine sorted
+[R]	Basic physics engine sorted
 Alpha 0.2 (The Looks Update):
-	Fix physics engine so COM moves in straight line
-	Add handling for textured tiles
+[R]	Fix physics engine so COM moves in straight line
+[R]	Add handling for textured tiles
 Alpha 0.3 (The Menu Update): [TODO]
-	Add temporary main menu and loading screens, add splash screens
-	Add escape menu to return to main menu and shutdown internal engine
+[R]	Add temporary main menu and loading screens, add splash screens
+[R]	Add escape menu to return to main menu and shutdown internal engine
 	[begin discussion about whether local play should be a thing, discuss servers]
 	[discuss how buttons should work]
 	[discuss how screen scalar should work]
 	[discuss lwjgl, discuss 2D 3D]
-	Make outboard motor graphical orientation be based on thrust angle
+[R]	Make outboard motor graphical orientation be based on thrust angle
 Alpha 0.4 (The Vector Update): [TODO]
-	Create VectorDouble and handlers to represent vectors and transformations
-	Replace the physics engine with VectorDouble objects
+(R)	Create VectorDouble and handlers to represent vectors and transformations
+(R)	Replace the physics engine with VectorDouble objects
+	[discussion of legal stuff, set up company?]
 Alpha 0.5 (The Control Update): [TODO]
 	Make controls be based on how they will affect motion
 		i.e. right will always make you turn right?
-	Make camera follow boat (following COM? soft follow? bounded? sigmoid? hard?) [discussion]
+	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard?) [discussion]
 Alpha 0.6 (The Debug Update): [TODO]
 	Add functions to allow for easy debug, add a debug menu, add debug options to show moments?
 Alpha 0.7 (The Worlds Update): [TODO]
