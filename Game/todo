@@ -25,8 +25,10 @@ Alpha 0.4 (The Vector Update): [TODO]
 [R]	Replace the physics engine with VectorDouble objects
 	[discussion of legal stuff, set up company?]
 [R]	Implement friction being applied based on relative velocity
-	[needs deeper testing, consider adding static friction?]
-Alpha 0.5 (The Control Update): [TODO]
+	[needs deeper testing, consider adding static friction? Possibly add matrix objects?]
+Alpha 0.5 (The Debug Update): [TODO]
+	Add functions to allow for easy debug, add a debug menu, add debug options to show moments?
+Alpha 0.6 (The Control Update): [TODO]
 	Make controls be based on how they will affect motion
 		i.e. right will always make you turn right?
 		how to implement:
@@ -34,8 +36,6 @@ Alpha 0.5 (The Control Update): [TODO]
 			right alone will set up thrusts to obtain maximum clockwise rotation with 0 forward motion
 			forward and right will set up thrusts in some way? [discussion?]
 	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard?) [discussion]
-Alpha 0.6 (The Debug Update): [TODO]
-	Add functions to allow for easy debug, add a debug menu, add debug options to show moments?
 Alpha 0.7 (The Worlds Update): [TODO]
 	If it will be server-side, make the server
 		when a client connects they can request 1,2,3 as a raft and use it as normal
