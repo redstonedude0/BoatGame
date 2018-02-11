@@ -21,8 +21,8 @@ Alpha 0.3 (The Menu Update): [TODO]
 	[discuss lwjgl, discuss 2D 3D]
 [R]	Make outboard motor graphical orientation be based on thrust angle
 Alpha 0.4 (The Vector Update): [TODO]
-(R)	Create VectorDouble and handlers to represent vectors and transformations
-(R)	Replace the physics engine with VectorDouble objects
+[R]	Create VectorDouble and handlers to represent vectors and transformations
+[R]	Replace the physics engine with VectorDouble objects
 	[discussion of legal stuff, set up company?]
 Alpha 0.5 (The Control Update): [TODO]
 	Make controls be based on how they will affect motion
