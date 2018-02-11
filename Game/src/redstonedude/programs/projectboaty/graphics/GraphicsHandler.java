@@ -67,14 +67,6 @@ public class GraphicsHandler {
 			for (Tile tile : PhysicsHandler.raft.tiles) {
 				double x = tile.getAbsoluteX(PhysicsHandler.raft);
 				double y = tile.getAbsoluteY(PhysicsHandler.raft);
-				// g2d.setColor(Color.BLUE);
-				if (tile instanceof TileThruster) {
-					g2d.setColor(Color.GREEN);
-					// also draw thrust vector, in the direction of force
-					drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, ((TileThruster) tile).getDrawnThrustVector(PhysicsHandler.raft));
-					// g2d.setColor(Color.RED);
-				}
-				// drawSlantedRect(x, y, unitx, unity);
 				// using graphics instead of colors
 				AffineTransform rotator = new AffineTransform();
 				rotator.translate(100 * x, 100 * y);
@@ -92,6 +84,60 @@ public class GraphicsHandler {
 				} catch (NoninvertibleTransformException e) {
 					e.printStackTrace();
 				}
+				
+				if (tile instanceof TileThruster) {
+					// also draw thrust vector, in the direction of force
+					g2d.setColor(Color.GREEN);
+					VectorDouble force = ((TileThruster) tile).getAbsoluteThrustVector(PhysicsHandler.raft);
+					force.multiply(10);
+					//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
+				}
+				//draw drag vector
+				g2d.setColor(Color.RED);
+				VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
+				drag.multiply(10);
+				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
+				
+				/*g2d.setColor(Color.BLUE);
+				VectorDouble dpos = new VectorDouble(tile.getPos());
+				dpos.add(new VectorDouble(0.5, 0.5));
+				dpos.subtract(PhysicsHandler.raft.getCOMPos());
+				VectorDouble absDpos = new VectorDouble();
+				absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
+				absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
+				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, absDpos);
+				*/
+				/*g2d.setColor(Color.BLUE);
+				VectorDouble displacement = tile.getPos();
+				displacement.add(new VectorDouble(0.5, 0.5));
+				displacement.subtract(PhysicsHandler.raft.getCOMPos());
+				//need to get vector at 90 clockwise rotation to it.
+				VectorDouble rotationalVelocity = new VectorDouble(displacement);
+				rotationalVelocity.rotate(-Math.PI/2);
+				rotationalVelocity.setMagnitude(PhysicsHandler.raft.dtheta * Math.sqrt(displacement.getSquaredLength()));
+				rotationalVelocity.multiply(20); //now transform
+				VectorDouble absRot = new VectorDouble();
+				absRot.x = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().x+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().x;
+				absRot.y = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().y+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().y;
+				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, absRot);*/
+				
+				/*VectorDouble dpos = new VectorDouble(tile.getPos());
+				dpos.add(new VectorDouble(0.5, 0.5));
+				dpos.subtract(PhysicsHandler.raft.getCOMPos());//this is relative dpos, calculate absolute
+				VectorDouble absDpos = new VectorDouble();
+				absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
+				absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
+				
+				if (tile instanceof TileThruster) {
+					TileThruster thruster = (TileThruster) tile;
+					VectorDouble force = new VectorDouble(thruster.getRelativeThrustVector());
+					drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
+				}
+				//do drag also
+				VectorDouble drag2 = tile.getRelativeFrictionVector(PhysicsHandler.raft);
+				drag2.multiply(5);
+				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag2);*/
+				
 			}
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitX().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitX().y));

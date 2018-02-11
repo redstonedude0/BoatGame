@@ -48,5 +48,25 @@ public class VectorDouble {
 		return x*x + y*y;
 	}
 	
-	//public VectorDouble multiply
+	public void rotate(double theta) {
+		double cos = Math.cos(theta);
+		double sin = Math.sin(theta);
+		//[cos -sin] [yx (0) ] = [cosyx-sinyy]
+		//[sin  cos] [yy (1)]   [sinyx+cosyy]
+		double x2 = cos*x-sin*y;
+		double y2 = sin*x+cos*y;
+		x = x2;
+		y = y2;
+	}
+	
+	public void setMagnitude(double mag) {
+		double currentMag = Math.sqrt(getSquaredLength());
+		x /= currentMag;
+		y /= currentMag;
+		x *= mag;
+		y *= mag;
+	}
+	
+	
+	
 }

@@ -35,6 +35,8 @@ public class PhysicsHandler {
 				}
 				thrust.add(thruster.getAbsoluteThrustVector(raft));
 			}
+			//tiles will apply drag to the object
+			thrust.add(tile.getAbsoluteFrictionVector(raft));
 		}
 		// TODO implement a resistance to acceleration/motion
 		// F=ma, a = F/m
@@ -63,9 +65,12 @@ public class PhysicsHandler {
 		for (Tile tile : raft.tiles) {
 			VectorDouble dpos = new VectorDouble(tile.getPos());
 			dpos.add(new VectorDouble(0.5, 0.5));
-			dpos.subtract(centreOfMass);
+			dpos.subtract(centreOfMass);//this is relative dpos, calculate absolute
+			VectorDouble absDpos = new VectorDouble();
+			absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
+			absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
 			
-			double squaredistance = dpos.getSquaredLength();
+			double squaredistance = absDpos.getSquaredLength();
 			squareradiusofgyration += squaredistance;// squaredistance;
 			if (tile instanceof TileThruster) {
 				TileThruster thruster = (TileThruster) tile;
@@ -76,6 +81,11 @@ public class PhysicsHandler {
 				forcemoments += force.y*-dpos.x; //consider taking a cross product or something
 				// System.out.println("Moment added: " + (force.get(0)*-dy + force.get(1)*-dx));
 			}
+			//do drag also
+			VectorDouble drag = tile.getRelativeFrictionVector(raft);
+			drag.multiply(5);
+			forcemoments += drag.x*-dpos.y;
+			forcemoments += drag.y*-dpos.x;
 		}
 		double masssquaremoments = squareradiusofgyration * mass;
 		double atheta = forcemoments / masssquaremoments;

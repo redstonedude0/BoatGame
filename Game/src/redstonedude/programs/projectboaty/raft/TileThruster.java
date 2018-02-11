@@ -16,15 +16,10 @@ public class TileThruster extends Tile {
 	//vector pointing in direction of thrust
 	//magnitude matches strength of thrust, relative to raft
 	public VectorDouble getRelativeThrustVector() {
-		//take y unit vector and rotate it by thrustAngle
-		//[cos -sin] [yx (0) ] = [-sinyy]
-		//[sin  cos] [yy (1)]   [cosyy]
-		double cos = Math.cos(thrustAngle);
-		double sin = Math.sin(thrustAngle);
-		VectorDouble v = new VectorDouble();
-		v.x = -sin*thrustStrength;
-		v.y = cos*thrustStrength;
-		//System.out.println(v.get(0) + ":" + v.get(1));
+		//take y unit vector and rotate it by thrustAngle, then apply magnitude
+		VectorDouble v = new VectorDouble(0,1);
+		v.rotate(thrustAngle);
+		v.multiply(thrustStrength); 
 		return v;
 	}
 	
