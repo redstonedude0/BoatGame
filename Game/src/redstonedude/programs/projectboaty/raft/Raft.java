@@ -1,36 +1,58 @@
 package redstonedude.programs.projectboaty.raft;
 
 import java.util.ArrayList;
-import java.util.Vector;
+
+import redstonedude.programs.projectboaty.physics.VectorDouble;
 
 public class Raft {
 	
-	public double x = 0;
-	public double y = 0;
+	private VectorDouble pos = new VectorDouble(); //absolute
 	public double theta = 0;
-	public double dx = 0;
-	public double dy = 0;
+	private VectorDouble velocity = new VectorDouble(); //absolute
 	public double dtheta = 0;
 	
 	public double sin = 0;
 	public double cos = 1;
-	public double comx = 0;
-	public double comy = 0;
+	private VectorDouble COMPos = new VectorDouble(); //relative 
 	
 	public ArrayList<Tile> tiles = new ArrayList<Tile>();
 	
-	public Vector<Double> getUnitX() {
-		Vector<Double> v = new Vector<Double>();
-		v.add(cos);
-		v.add(sin);
+	public VectorDouble getUnitX() {
+		VectorDouble v = new VectorDouble();
+		v.x = cos;
+		v.y = sin;
 		return v;
 	}
 	
-	public Vector<Double> getUnitY() {
-		Vector<Double> v = new Vector<Double>();
-		v.add(sin);
-		v.add(-cos);
+	public VectorDouble getUnitY() {
+		VectorDouble v = new VectorDouble();
+		v.x = sin;
+		v.y = -cos;
 		return v;
+	}
+	
+	public void setPos(VectorDouble pos) {
+		this.pos = pos;
+	}
+	
+	public VectorDouble getPos() {
+		return new VectorDouble(pos);
+	}
+	
+	public void setVelocity(VectorDouble velocity) {
+		this.velocity = velocity;
+	}
+	
+	public VectorDouble getVelocity() {
+		return new VectorDouble(velocity);
+	}
+	
+	public void setCOMPos(VectorDouble COMPos) {
+		this.COMPos = COMPos;
+	}
+	
+	public VectorDouble getCOMPos() {
+		return new VectorDouble(COMPos);
 	}
 	
 }

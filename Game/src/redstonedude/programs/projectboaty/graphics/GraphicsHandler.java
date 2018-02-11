@@ -6,13 +6,12 @@ import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
-import java.util.Vector;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import redstonedude.programs.projectboaty.control.ControlHandler;
 import redstonedude.programs.projectboaty.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.physics.VectorDouble;
 import redstonedude.programs.projectboaty.raft.Tile;
 import redstonedude.programs.projectboaty.raft.TileHandler;
 import redstonedude.programs.projectboaty.raft.TileThruster;
@@ -63,8 +62,8 @@ public class GraphicsHandler {
 
 		g2d.drawString("phys tick " + PhysicsHandler.c, 50, 50);
 		if (PhysicsHandler.raft != null) {
-			Vector<Double> unitx = PhysicsHandler.raft.getUnitX();
-			Vector<Double> unity = PhysicsHandler.raft.getUnitY();
+			VectorDouble unitx = PhysicsHandler.raft.getUnitX();
+			VectorDouble unity = PhysicsHandler.raft.getUnitY();
 			for (Tile tile : PhysicsHandler.raft.tiles) {
 				double x = tile.getAbsoluteX(PhysicsHandler.raft);
 				double y = tile.getAbsoluteY(PhysicsHandler.raft);
@@ -95,10 +94,10 @@ public class GraphicsHandler {
 				}
 			}
 			g2d.setColor(Color.WHITE);
-			g2d.drawLine((int) (100 * PhysicsHandler.raft.x), (int) (100 * PhysicsHandler.raft.y), (int) (100 * PhysicsHandler.raft.x + 100 * PhysicsHandler.raft.getUnitX().get(0)), (int) (100 * PhysicsHandler.raft.y + 100 * PhysicsHandler.raft.getUnitX().get(1)));
-			g2d.drawLine((int) (100 * PhysicsHandler.raft.x), (int) (100 * PhysicsHandler.raft.y), (int) (100 * PhysicsHandler.raft.x + 100 * PhysicsHandler.raft.getUnitY().get(0)), (int) (100 * PhysicsHandler.raft.y + 100 * PhysicsHandler.raft.getUnitY().get(1)));
-			int x = (int) (100 * (PhysicsHandler.raft.x + PhysicsHandler.raft.comx * unitx.get(0) + PhysicsHandler.raft.comy * unity.get(0)));
-			int y = (int) (100 * (PhysicsHandler.raft.y + PhysicsHandler.raft.comx * unitx.get(1) + PhysicsHandler.raft.comy * unity.get(1)));
+			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitX().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitX().y));
+			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitY().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitY().y));
+			int x = (int) (100 * (PhysicsHandler.raft.getPos().x + PhysicsHandler.raft.getCOMPos().x * unitx.x + PhysicsHandler.raft.getCOMPos().y * unity.x));
+			int y = (int) (100 * (PhysicsHandler.raft.getPos().y + PhysicsHandler.raft.getCOMPos().x * unitx.y + PhysicsHandler.raft.getCOMPos().y * unity.y));
 			g2d.drawOval(x - 10, y - 10, 20, 20);
 			// g2d.drawOval(arg0, arg1, arg2, arg3)
 		}
@@ -111,17 +110,17 @@ public class GraphicsHandler {
 		}
 	}
 
-	public static void drawSlantedRect(double absx, double absy, Vector<Double> unitx, Vector<Double> unity) {
+	public static void drawSlantedRect(double absx, double absy, VectorDouble unitx, VectorDouble unity) {
 		Polygon p = new Polygon();
 		p.addPoint((int) (100 * absx), (int) (100 * absy));
-		p.addPoint((int) (100 * absx + 100 * unitx.get(0)), (int) (100 * absy + 100 * unitx.get(1)));
-		p.addPoint((int) (100 * absx + 100 * unitx.get(0) + 100 * unity.get(0)), (int) (100 * absy + 100 * unitx.get(1) + 100 * unity.get(1)));
-		p.addPoint((int) (100 * absx + 100 * unity.get(0)), (int) (100 * absy + 100 * unity.get(1)));
+		p.addPoint((int) (100 * absx + 100 * unitx.x), (int) (100 * absy + 100 * unitx.y));
+		p.addPoint((int) (100 * absx + 100 * unitx.x + 100 * unity.x), (int) (100 * absy + 100 * unitx.y + 100 * unity.y));
+		p.addPoint((int) (100 * absx + 100 * unity.x), (int) (100 * absy + 100 * unity.y));
 		g2d.fillPolygon(p);
 	}
 
-	public static void drawSlantedLineOffset(double absx, double absy, double x, double y, Vector<Double> unitx, Vector<Double> unity, Vector<Double> absoluteline) {
-		g2d.drawLine((int) (100 * (absx + x * unitx.get(0) + y * unity.get(0))), (int) (100 * (absy + x * unitx.get(1) + y * unity.get(1))), (int) (100 * (absx + x * unitx.get(0) + y * unity.get(0) + absoluteline.get(0))), (int) (100 * (absy + x * unitx.get(1) + y * unity.get(1) + absoluteline.get(1))));
+	public static void drawSlantedLineOffset(double absx, double absy, double x, double y, VectorDouble unitx, VectorDouble unity, VectorDouble absoluteline) {
+		g2d.drawLine((int) (100 * (absx + x * unitx.x + y * unity.x)), (int) (100 * (absy + x * unitx.y + y * unity.y)), (int) (100 * (absx + x * unitx.x + y * unity.x + absoluteline.x)), (int) (100 * (absy + x * unitx.y + y * unity.y + absoluteline.y)));
 	}
 
 	public static void init() {
