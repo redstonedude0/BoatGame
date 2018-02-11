@@ -38,10 +38,8 @@ public class PhysicsHandler {
 			//tiles will apply drag to the object
 			thrust = thrust.add(tile.getAbsoluteFrictionVector(raft));
 		}
-		// TODO implement a resistance to acceleration/motion
 		// F=ma, a = F/m
-		VectorDouble acceleration = thrust;
-		acceleration = acceleration.divide(mass);
+		VectorDouble acceleration = thrust.divide(mass);
 		raft.setVelocity(raft.getVelocity().add(acceleration));
 		raft.setPos(raft.getPos().add(raft.getVelocity()));
 
@@ -50,9 +48,7 @@ public class PhysicsHandler {
 		// centre of mass must first be located.
 		VectorDouble massMoments = new VectorDouble();
 		for (Tile tile : raft.tiles) {
-			VectorDouble moment = new VectorDouble(tile.getPos());
-			moment = moment.add(new VectorDouble(0.5, 0.5));
-			moment = moment.multiply(tile.mass);
+			VectorDouble moment = tile.getPos().add(new VectorDouble(0.5, 0.5)).multiply(tile.mass);
 			massMoments = massMoments.add(moment);
 		}
 		VectorDouble centreOfMass = new VectorDouble(massMoments);
@@ -63,14 +59,9 @@ public class PhysicsHandler {
 		double forcemoments = 0;
 		double squareradiusofgyration = 0;
 		for (Tile tile : raft.tiles) {
-			VectorDouble dpos = new VectorDouble(tile.getPos());
-			dpos = dpos.add(new VectorDouble(0.5, 0.5));
-			dpos = dpos.subtract(centreOfMass);//this is relative dpos, calculate absolute
-			VectorDouble absDpos = new VectorDouble();
-			absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
-			absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
+			VectorDouble dpos = tile.getPos().add(new VectorDouble(0.5, 0.5)).subtract(centreOfMass);//this is relative dpos, calculate absolute
 			
-			double squaredistance = absDpos.getSquaredLength();
+			double squaredistance = dpos.getSquaredLength();
 			squareradiusofgyration += squaredistance;// squaredistance;
 			if (tile instanceof TileThruster) {
 				TileThruster thruster = (TileThruster) tile;

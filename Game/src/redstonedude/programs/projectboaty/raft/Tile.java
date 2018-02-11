@@ -28,21 +28,17 @@ public class Tile {
 		//need to calculate velocity vector
 		VectorDouble linearVelocity = parent.getVelocity();
 		//need to calculate tangent to circular motion and it will have magnitude r*omega
-		VectorDouble displacement = getPos();
-		displacement = displacement.add(new VectorDouble(0.5, 0.5));
-		displacement = displacement.subtract(parent.getCOMPos());
+		VectorDouble displacement = getPos().add(new VectorDouble(0.5, 0.5)).subtract(parent.getCOMPos());
 		//need to get vector at 90 clockwise rotation to it.
-		VectorDouble rotationalVelocity = new VectorDouble(displacement);
-		rotationalVelocity = rotationalVelocity.rotate(-Math.PI/2); //don't ask why it's negative. It just is.
-		rotationalVelocity = rotationalVelocity.setMagnitude(parent.dtheta * Math.sqrt(displacement.getSquaredLength()));
+		//don't ask why it's negative. It just is.
+		//long story short its because the y axis on the boat is flipped or something. Not sure. It works.
+		//since the basis is flipped it will be flipped a -90 before is the same as a +90 after.
+		VectorDouble rotationalVelocity = new VectorDouble(displacement).rotate(-Math.PI/2).setMagnitude(parent.dtheta * Math.sqrt(displacement.getSquaredLength()));
 		VectorDouble absRot = new VectorDouble();
 		absRot.x = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().x+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().x;
 		absRot.y = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().y+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().y;
-		VectorDouble motion = new VectorDouble(linearVelocity);
-		motion = motion.add(absRot);
-		//motion.subtract(linearVelocity);
+		VectorDouble motion = new VectorDouble(linearVelocity).add(absRot).multiply(-0.2);
 		//this is total motion, now multiply by friction coefficients (negative since friction acts against motion)
-		motion = motion.multiply(-0.2); //now provide as force
 		return motion;
 	}
 	
@@ -56,10 +52,8 @@ public class Tile {
 		double c = PhysicsHandler.raft.getUnitX().y;
 		double d = PhysicsHandler.raft.getUnitY().y;
 		double determinant = a*d-b*c;
-		VectorDouble unitX = new VectorDouble(d, -c);
-		VectorDouble unitY = new VectorDouble(-b, a);
-		unitX = unitX.divide(determinant);
-		unitY = unitY.divide(determinant);
+		VectorDouble unitX = new VectorDouble(d, -c).divide(determinant);
+		VectorDouble unitY = new VectorDouble(-b, a).divide(determinant);
 		friction.x = absFriction.x*unitX.x+absFriction.y*unitY.x;
 		friction.y = absFriction.x*unitX.y+absFriction.y*unitY.y;
 		return friction;
