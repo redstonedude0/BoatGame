@@ -85,18 +85,19 @@ public class GraphicsHandler {
 					e.printStackTrace();
 				}
 				
-				if (tile instanceof TileThruster) {
+				//DEBUG
+				//if (tile instanceof TileThruster) {
 					// also draw thrust vector, in the direction of force
-					g2d.setColor(Color.GREEN);
-					VectorDouble force = ((TileThruster) tile).getAbsoluteThrustVector(PhysicsHandler.raft);
-					force = force.multiply(10);
+					//g2d.setColor(Color.GREEN);
+					//VectorDouble force = ((TileThruster) tile).getAbsoluteThrustVector(PhysicsHandler.raft);
+					//force = force.multiply(10);
 					//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
-				}
+				//}
 				//draw drag vector
-				g2d.setColor(Color.RED);
-				VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
-				drag = drag.multiply(10);
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
+				//g2d.setColor(Color.RED);
+				//VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
+				//drag = drag.multiply(10);
+				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
 				
 				/*g2d.setColor(Color.BLUE);
 				VectorDouble dpos = new VectorDouble(tile.getPos());
@@ -145,7 +146,6 @@ public class GraphicsHandler {
 			int x = (int) (100 * (PhysicsHandler.raft.getPos().x + PhysicsHandler.raft.getCOMPos().x * unitx.x + PhysicsHandler.raft.getCOMPos().y * unity.x));
 			int y = (int) (100 * (PhysicsHandler.raft.getPos().y + PhysicsHandler.raft.getCOMPos().x * unitx.y + PhysicsHandler.raft.getCOMPos().y * unity.y));
 			g2d.drawOval(x - 10, y - 10, 20, 20);
-			// g2d.drawOval(arg0, arg1, arg2, arg3)
 		}
 		
 		if (ControlHandler.escape_menu) {
