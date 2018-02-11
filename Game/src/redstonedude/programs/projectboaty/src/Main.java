@@ -3,7 +3,6 @@ package redstonedude.programs.projectboaty.src;
 import redstonedude.programs.projectboaty.control.ControlHandler;
 import redstonedude.programs.projectboaty.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.graphics.TextureHandler;
-import redstonedude.programs.projectboaty.physics.PendulumPhysicsHandler;
 import redstonedude.programs.projectboaty.physics.PhysicsHandler;
 import redstonedude.programs.projectboaty.raft.TileHandler;
 
@@ -27,7 +26,6 @@ public class Main implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				PendulumPhysicsHandler.physicsUpdate();
 				PhysicsHandler.physicsUpdate();
 				GraphicsHandler.graphicsUpdate();
 				Thread.sleep(20);//50fps
