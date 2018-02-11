@@ -33,15 +33,15 @@ public class PhysicsHandler {
 				if (ControlHandler.control_reverse) {
 					thruster.thrustStrength = -thruster.thrustStrength;
 				}
-				thrust.add(thruster.getAbsoluteThrustVector(raft));
+				thrust = thrust.add(thruster.getAbsoluteThrustVector(raft));
 			}
 			//tiles will apply drag to the object
-			thrust.add(tile.getAbsoluteFrictionVector(raft));
+			thrust = thrust.add(tile.getAbsoluteFrictionVector(raft));
 		}
 		// TODO implement a resistance to acceleration/motion
 		// F=ma, a = F/m
 		VectorDouble acceleration = thrust;
-		acceleration.divide(mass);
+		acceleration = acceleration.divide(mass);
 		raft.setVelocity(raft.getVelocity().add(acceleration));
 		raft.setPos(raft.getPos().add(raft.getVelocity()));
 
@@ -51,12 +51,12 @@ public class PhysicsHandler {
 		VectorDouble massMoments = new VectorDouble();
 		for (Tile tile : raft.tiles) {
 			VectorDouble moment = new VectorDouble(tile.getPos());
-			moment.add(new VectorDouble(0.5, 0.5));
-			moment.multiply(tile.mass);
-			massMoments.add(moment);
+			moment = moment.add(new VectorDouble(0.5, 0.5));
+			moment = moment.multiply(tile.mass);
+			massMoments = massMoments.add(moment);
 		}
 		VectorDouble centreOfMass = new VectorDouble(massMoments);
-		centreOfMass.divide(mass);
+		centreOfMass = centreOfMass.divide(mass);
 		raft.setCOMPos(centreOfMass);
 
 		// calculate moments of inertia about this point
@@ -64,8 +64,8 @@ public class PhysicsHandler {
 		double squareradiusofgyration = 0;
 		for (Tile tile : raft.tiles) {
 			VectorDouble dpos = new VectorDouble(tile.getPos());
-			dpos.add(new VectorDouble(0.5, 0.5));
-			dpos.subtract(centreOfMass);//this is relative dpos, calculate absolute
+			dpos = dpos.add(new VectorDouble(0.5, 0.5));
+			dpos = dpos.subtract(centreOfMass);//this is relative dpos, calculate absolute
 			VectorDouble absDpos = new VectorDouble();
 			absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
 			absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
@@ -83,7 +83,7 @@ public class PhysicsHandler {
 			}
 			//do drag also
 			VectorDouble drag = tile.getRelativeFrictionVector(raft);
-			drag.multiply(5);
+			drag = drag.multiply(5);
 			forcemoments += drag.x*-dpos.y;
 			forcemoments += drag.y*-dpos.x;
 		}

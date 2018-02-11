@@ -6,7 +6,6 @@ public class VectorDouble {
 	public double y = 0;
 	
 	public VectorDouble() {
-		
 	}
 	
 	public VectorDouble(double x1, double y1) {
@@ -17,6 +16,8 @@ public class VectorDouble {
 	public VectorDouble(VectorDouble v) {
 		this(v.x,v.y);
 	}
+	
+	
 	
 	/**
 	 * Add another vector to this vector
@@ -29,42 +30,54 @@ public class VectorDouble {
 	}
 	
 	public VectorDouble subtract(VectorDouble v) {
-		x -= v.x;
-		y -= v.y;
-		return this;
+		VectorDouble ans = new VectorDouble(this);
+		ans.x -= v.x;
+		ans.y -= v.y;
+		return ans;
 	}
 	
-	public void multiply(double d) {
-		x *= d;
-		y *= d;
+	public VectorDouble multiply(double d) {
+		VectorDouble ans = new VectorDouble(this);
+		ans.x *= d;
+		ans.y *= d;
+		return ans;
 	}
 	
-	public void divide(double d) {
-		x /= d;
-		y /= d;
+	public VectorDouble divide(double d) {
+		VectorDouble ans = new VectorDouble(this);
+		ans.x /= d;
+		ans.y /= d;
+		return ans;
 	}
 	
 	public double getSquaredLength() {
 		return x*x + y*y;
 	}
 	
-	public void rotate(double theta) {
+	public VectorDouble rotate(double theta) {
+		VectorDouble ans = new VectorDouble(this);
 		double cos = Math.cos(theta);
 		double sin = Math.sin(theta);
 		//[cos -sin] [yx (0) ] = [cosyx-sinyy]
 		//[sin  cos] [yy (1)]   [sinyx+cosyy]
-		double x2 = cos*x-sin*y;
-		double y2 = sin*x+cos*y;
-		x = x2;
-		y = y2;
+		ans.x = cos*x-sin*y;
+		ans.y = sin*x+cos*y;
+		return ans;
 	}
 	
-	public void setMagnitude(double mag) {
+	/**
+	 * DOESNT SET MAGNITUDE, MUST STILL USE EQUALS OPERATOR
+	 * @param mag
+	 * @return
+	 */
+	public VectorDouble setMagnitude(double mag) {
+		VectorDouble ans = new VectorDouble(this);
 		double currentMag = Math.sqrt(getSquaredLength());
-		x /= currentMag;
-		y /= currentMag;
-		x *= mag;
-		y *= mag;
+		ans.x /= currentMag;
+		ans.y /= currentMag;
+		ans.x *= mag;
+		ans.y *= mag;
+		return ans;
 	}
 	
 	

@@ -89,13 +89,13 @@ public class GraphicsHandler {
 					// also draw thrust vector, in the direction of force
 					g2d.setColor(Color.GREEN);
 					VectorDouble force = ((TileThruster) tile).getAbsoluteThrustVector(PhysicsHandler.raft);
-					force.multiply(10);
+					force = force.multiply(10);
 					//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
 				}
 				//draw drag vector
 				g2d.setColor(Color.RED);
 				VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
-				drag.multiply(10);
+				drag = drag.multiply(10);
 				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
 				
 				/*g2d.setColor(Color.BLUE);

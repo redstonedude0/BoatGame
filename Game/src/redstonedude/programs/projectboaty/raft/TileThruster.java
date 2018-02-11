@@ -18,8 +18,8 @@ public class TileThruster extends Tile {
 	public VectorDouble getRelativeThrustVector() {
 		//take y unit vector and rotate it by thrustAngle, then apply magnitude
 		VectorDouble v = new VectorDouble(0,1);
-		v.rotate(thrustAngle);
-		v.multiply(thrustStrength); 
+		v = v.rotate(thrustAngle);
+		v = v.multiply(thrustStrength); 
 		return v;
 	}
 	
