@@ -74,7 +74,8 @@ public class PhysicsHandler {
 			}
 			//do drag also
 			VectorDouble drag = tile.getRelativeFrictionVector(raft);
-			drag = drag.multiply(5);
+			drag = drag.multiply(5); //multiply drag by 5 so it doesn't feel like ice.
+			//arbitrary number chosen since calulating hydrodynamics is boring.
 			forcemoments += drag.x*-dpos.y;
 			forcemoments += drag.y*-dpos.x;
 		}
