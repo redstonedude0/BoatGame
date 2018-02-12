@@ -7,11 +7,14 @@ import redstonedude.programs.projectboaty.physics.PhysicsHandler;
 
 public class ControlHandler implements KeyListener {
 
-	public static boolean control_left = false;
-	public static boolean control_right = false;
-	public static boolean control_reverse = false;
+	public static boolean control_left_rotate = false;
+	public static boolean control_right_rotate = false;
+	public static boolean control_left_translate = false;
+	public static boolean control_right_translate = false;
+	public static boolean control_forward = false;
+	public static boolean control_backward = false;
 
-	public static boolean debug_lock = false;
+	public static boolean debug_menu = false;
 
 	public static enum Mode {
 		MainMenu, Playing
@@ -57,22 +60,31 @@ public class ControlHandler implements KeyListener {
 
 	public static void doPlayingKeyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_LEFT:
-			control_left = true;
+		case KeyEvent.VK_A:
+			control_left_rotate = true;
 			break;
-		case KeyEvent.VK_RIGHT:
-			control_right = true;
+		case KeyEvent.VK_D:
+			control_right_rotate = true;
 			break;
-		case KeyEvent.VK_DOWN:
-			control_reverse = true;
+		case KeyEvent.VK_S:
+			control_backward = true;
 			break;
 		case KeyEvent.VK_W:
-			// warp
-			debug_lock = true;
+			control_forward = true;
+			break;
+		case KeyEvent.VK_Q:
+			control_left_translate = true;
+			break;
+		case KeyEvent.VK_E:
+			control_right_translate = true;
+			break;
+		case KeyEvent.VK_F3:
+			debug_menu = !debug_menu;
 			break;
 		case KeyEvent.VK_1:
 		case KeyEvent.VK_2:
 		case KeyEvent.VK_3:
+		case KeyEvent.VK_4:
 			PhysicsHandler.createRaft(Integer.parseInt("" + e.getKeyChar()));
 			break;
 		case KeyEvent.VK_ESCAPE:
@@ -89,18 +101,23 @@ public class ControlHandler implements KeyListener {
 
 	public static void doPlayingKeyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_LEFT:
-			control_left = false;
+		case KeyEvent.VK_A:
+			control_left_rotate = false;
 			break;
-		case KeyEvent.VK_RIGHT:
-			control_right = false;
+		case KeyEvent.VK_D:
+			control_right_rotate = false;
 			break;
-		case KeyEvent.VK_DOWN:
-			control_reverse = false;
+		case KeyEvent.VK_S:
+			control_backward = false;
 			break;
 		case KeyEvent.VK_W:
-			// warp
-			debug_lock = false;
+			control_forward = false;
+			break;
+		case KeyEvent.VK_Q:
+			control_left_translate = false;
+			break;
+		case KeyEvent.VK_E:
+			control_right_translate = false;
 			break;
 		}
 	}
@@ -112,10 +129,13 @@ public class ControlHandler implements KeyListener {
 	}
 	
 	public static void reset() {
-		control_left = false;
-		control_right = false;
-		control_reverse = false;
-		debug_lock = false;
+		control_left_rotate = false;
+		control_right_rotate = false;
+		control_left_translate = false;
+		control_right_translate = false;
+		control_forward = false;
+		control_backward = false;
+		debug_menu = false;
 		escape_menu = false;
 	}
 

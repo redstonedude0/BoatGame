@@ -30,12 +30,13 @@ Alpha 0.5 (The Debug Update): [TODO]
 [R]	Add functions to allow for easy debug, add a debug menu, add debug options to show moments? (added vector display)
 [R] Add more vecor helper functions
 Alpha 0.6 (The Control Update): [TODO]
-	Make controls be based on how they will affect motion
+[R]	Make controls be based on how they will affect motion
 		i.e. right will always make you turn right?
 		how to implement:
-			forward alone will set up thrusts to obtain maximum foward motion with 0 rotational motion
-			right alone will set up thrusts to obtain maximum clockwise rotation with 0 forward motion
-			forward and right will set up thrusts in some way? [discussion?]
+			w alone will set up thrusts to thrust forward
+			d alone will set up thrusts to clockwise rotation
+			w and d will set up thrusts to forward and clockwise
+			e alone will set up thrusts for rightward translation
 	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
 Alpha 0.7 (The Worlds Update): [TODO]
 	If it will be server-side, make the server

@@ -1,14 +1,10 @@
 package redstonedude.programs.projectboaty.physics;
 
-import java.awt.Color;
-
 import redstonedude.programs.projectboaty.control.ControlHandler;
 import redstonedude.programs.projectboaty.graphics.DebugHandler;
-import redstonedude.programs.projectboaty.graphics.DebugVector;
 import redstonedude.programs.projectboaty.raft.Raft;
 import redstonedude.programs.projectboaty.raft.Tile;
 import redstonedude.programs.projectboaty.raft.TileThruster;
-import redstonedude.programs.projectboaty.raft.TileThruster.ControlType;
 
 public class PhysicsHandler {
 
@@ -31,14 +27,7 @@ public class PhysicsHandler {
 			mass += tile.mass;
 			if (tile instanceof TileThruster) {
 				TileThruster thruster = (TileThruster) tile;
-				if (thruster.controlType == ControlType.Left) {
-					thruster.thrustStrength = ControlHandler.control_left ? thruster.maxThrustStrength : 0;
-				} else if (thruster.controlType == ControlType.Right) {
-					thruster.thrustStrength = ControlHandler.control_right ? thruster.maxThrustStrength : 0;
-				}
-				if (ControlHandler.control_reverse) {
-					thruster.thrustStrength = -thruster.thrustStrength;
-				}
+				thruster.setThrustStrength(raft);
 				thrust = thrust.add(thruster.getAbsoluteThrustVector(raft));
 			}
 			//tiles will apply drag to the object
@@ -118,7 +107,7 @@ public class PhysicsHandler {
 		double dcomx = comx_after - comx_initial;
 		double dcomy = comy_after - comy_initial;
 		//System.out.println(comx_after + ":" + comx_initial);
-		if (ControlHandler.debug_lock) {
+		if (ControlHandler.debug_menu) {
 			raft.setPos(new VectorDouble(5,5));
 		}
 		// System.out.println(dcomx + ":" + dcomy);
@@ -149,11 +138,9 @@ public class PhysicsHandler {
 			raft.tiles.add(tile);
 			TileThruster thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
-			thruster.controlType = ControlType.Left;
 			raft.tiles.add(thruster);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(2, 0));
-			thruster.controlType = ControlType.Right;
 			raft.tiles.add(thruster);
 			break;
 		case 2:
@@ -171,11 +158,9 @@ public class PhysicsHandler {
 			raft.tiles.add(tile);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
-			thruster.controlType = ControlType.Left;
 			raft.tiles.add(thruster);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(2, 1));
-			thruster.controlType = ControlType.Right;
 			thruster.thrustAngle = Math.PI;
 			raft.tiles.add(thruster);
 			break;
@@ -200,18 +185,36 @@ public class PhysicsHandler {
 			raft.tiles.add(tile);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
-			thruster.controlType = ControlType.Left;
 			raft.tiles.add(thruster);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(4, 0));
-			thruster.controlType = ControlType.Right;
 			raft.tiles.add(thruster);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(5, 0));
-			thruster.controlType = ControlType.Right;
 			raft.tiles.add(thruster);
 			break;
-
+		case 4:
+			tile = new Tile();
+			tile.setPos(new VectorDouble(1, 0));
+			raft.tiles.add(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(1, 1));
+			raft.tiles.add(tile);
+			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(0, 0));
+			raft.tiles.add(thruster);
+			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(0, 1));
+			thruster.thrustAngle = -Math.PI/2;
+			raft.tiles.add(thruster);
+			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(2, 0));
+			raft.tiles.add(thruster);
+			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(2, 1));
+			thruster.thrustAngle = Math.PI/2;
+			raft.tiles.add(thruster);
+			break;
 		}
 	}
 	

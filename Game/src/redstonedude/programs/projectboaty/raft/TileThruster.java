@@ -1,15 +1,12 @@
 package redstonedude.programs.projectboaty.raft;
 
+import redstonedude.programs.projectboaty.control.ControlHandler;
 import redstonedude.programs.projectboaty.physics.VectorDouble;
 
 public class TileThruster extends Tile {
 
 	public double thrustAngle = 0;
 	public double thrustStrength = 0;
-	public static enum ControlType {//
-		Right, Left, Uncontrolled
-	}
-	public ControlType controlType = ControlType.Uncontrolled;
 	public double maxThrustStrength = 0.1;
 	public double mass = 50;
 	
@@ -46,4 +43,68 @@ public class TileThruster extends Tile {
 		v.y = (-sin*unity.x-cos*unity.y)*thrustStrength*10;
 		return v;
 	}
+	
+	/**
+	 * set thrust strength based on control
+	 * @param parent
+	 */
+	public void setThrustStrength(Raft parent) {
+		//w alone will set up thrusts to thrust forward
+		//d alone will set up thrusts to clockwise rotation
+		//w and d will set up thrusts to forward and clockwise
+		//e alone will set up thrusts for rightward translation
+		double requiredForwardTranslation = 0;//0 unrequired, 1 forward, -1 backward
+		double requiredClockwiseRotation = 0;
+		double requiredRightwardTranslation = 0;
+		
+		if (ControlHandler.control_forward) {
+			requiredForwardTranslation++;
+		}
+		if (ControlHandler.control_backward) {
+			requiredForwardTranslation--;
+		}
+		if (ControlHandler.control_right_rotate) {
+			requiredClockwiseRotation++;
+		}
+		if (ControlHandler.control_left_rotate) {
+			requiredClockwiseRotation--;
+		}
+		if (ControlHandler.control_right_translate) {
+			requiredRightwardTranslation++;
+		}
+		if (ControlHandler.control_left_translate) {
+			requiredRightwardTranslation--;
+		}
+		
+		//get vectors for this thruster if it were at max
+		thrustStrength = maxThrustStrength;
+		VectorDouble thrust = getRelativeThrustVector();
+		double forwardTranslation = thrust.y;
+		double rightwardTranslation = thrust.x;
+		//multiply to see if it is useful in that direction
+		forwardTranslation *= requiredForwardTranslation;//0 if not caring, positive if helpful
+		rightwardTranslation *= requiredRightwardTranslation;//0 if not caring, positive if helpful
+		VectorDouble dpos = getPos().add(new VectorDouble(0.5, 0.5)).subtract(parent.getCOMPos());//this is relative dpos, calculate absolute
+		double clockwiseMoments = 0;
+		clockwiseMoments += thrust.x*-dpos.y;
+		clockwiseMoments += thrust.y*-dpos.x;
+		clockwiseMoments *= requiredClockwiseRotation;//0 if not caring, positive if helpful
+		
+		if (forwardTranslation == 0 && rightwardTranslation == 0 && clockwiseMoments == 0) {
+			thrustStrength = 0;
+			return; //no control input
+		}
+		if (forwardTranslation >= 0 && rightwardTranslation >= 0 && clockwiseMoments >= 0) {
+			thrustStrength = maxThrustStrength;
+			return;
+		}
+		if (forwardTranslation <= 0 && rightwardTranslation <= 0 && clockwiseMoments <= 0) {
+			thrustStrength = -maxThrustStrength;
+			return;
+		}
+		thrustStrength = 0;
+		
+		
+	}
+	
 }

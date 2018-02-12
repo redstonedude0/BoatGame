@@ -1,9 +1,7 @@
 package redstonedude.programs.projectboaty.raft;
 
-import redstonedude.programs.projectboaty.control.ControlHandler;
 import redstonedude.programs.projectboaty.graphics.TextureHandler;
 import redstonedude.programs.projectboaty.physics.PhysicsHandler;
-import redstonedude.programs.projectboaty.raft.TileThruster.ControlType;
 
 public class TileHandler {
 	
@@ -21,7 +19,7 @@ public class TileHandler {
 	public static String getTextureName(Tile t) {
 		if (t instanceof TileThruster) {
 			TileThruster thruster = (TileThruster) t;
-			if (thruster.controlType == ControlType.Left && ControlHandler.control_left ||  thruster.controlType == ControlType.Right && ControlHandler.control_right) {
+			if (thruster.thrustStrength != 0) {
 				int index = PhysicsHandler.c%3;
 				return "TileThruster_" + index;
 			}
