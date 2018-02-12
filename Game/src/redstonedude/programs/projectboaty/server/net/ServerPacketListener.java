@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 
 public class ServerPacketListener implements Runnable {
@@ -19,18 +20,15 @@ public class ServerPacketListener implements Runnable {
 			ServerPacketHandler.startNewListener();
 			oos = out2;
 			Object inputObject;
-			Logger.log("data start");
 			while ((inputObject = in.readObject()) != null) {
-				Logger.log("data in");
-				ServerPacketHandler.handlePacket(this, inputObject);
+				ServerPacketHandler.handlePacket(this, (Packet) inputObject);
 			}
-			Logger.log("data ended");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public synchronized void send(Object data) {
+	public synchronized void send(Packet data) {
 		if (oos != null) {
 			try {
 				oos.writeObject(data);

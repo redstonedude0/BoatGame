@@ -3,43 +3,16 @@ package redstonedude.programs.projectboaty.client.net;
 import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
 public class ClientPacketHandler {
 	
 	public static int portNumber = 49555;
 	public static String hostName = "";
-
-	private static synchronized void handlePacketUnpacked(ClientPacketListener connection, ArrayList<String> data) {
-		if (data.size() > 0) {
-			/*if (data.get(0).equals("ADDPLAYER")) {
-				if (data.size() == 5) {
-					// Add the player with the data received
-					// PlayerHandler.addPlayer(data.get(1), data.get(2), "",
-					// Integer.parseInt(data.get(3)), true, "", Boolean.valueOf(data.get(4)));
-				} else {
-					// There is insufficient data - the packet is malformed.
-					// Logger.log("Malformed join packet");
-				}
-			}*/
-		}
-
-	}
 	
-	public static synchronized void handlePacket(ClientPacketListener connection, String data) {
-		// deserialize the data into a list of parsed data
-		int index;
-		ArrayList<String> parsedData = new ArrayList<String>();
-		while ((index = data.indexOf(";")) != -1) {
-			String numString = data.substring(0, index);
-			Integer len = Integer.parseInt(numString);
-			data = data.substring(index + 1);
-			String extract = data.substring(0, len);
-			parsedData.add(extract);
-			data = data.substring(len);
-		}
-		// Handle the unpacked packet
-		handlePacketUnpacked(connection, parsedData);
+	public static synchronized void handlePacket(ClientPacketListener connection, Packet packet) {
+		
 	}
 
 	
@@ -60,20 +33,8 @@ public class ClientPacketHandler {
 		t.setPos(new VectorDouble(3, 4));
 		t.mass = 70;
 		tiles.add(t);
-		ClientPacketListener.send(tiles);
-	}
-
-	
-	public static void sendPacket(String data) {
-		ClientPacketListener.send(data.length() + ";" + data);
-	}
-
-	public static void sendPacket(String... data) {
-		String toSend = "";
-		for (String s : data) {
-			toSend += s.length() + ";" + s;
-		}
-		ClientPacketListener.send(toSend);
+		
+		ClientPacketListener.send(new Packet("TEST",tiles));
 	}
 
 }
