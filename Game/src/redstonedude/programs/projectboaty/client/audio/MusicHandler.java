@@ -10,6 +10,7 @@ public class MusicHandler {
 
 	static MediaPlayer mediaPlayer;
 	
+	@SuppressWarnings("unused")
 	public static void musicTester() {
 		final JFXPanel fxp = new JFXPanel();
 		String bip = System.getProperty("user.dir") + "/resources/audio/music/bip.mp3";
