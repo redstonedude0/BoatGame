@@ -10,7 +10,9 @@ USERDATA	Username (String)
 REQUESTMOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
 	Fired when the raft is moved to X,Y with angle Rot, and other variables as shown
 REQUESTRAFT	Id (Int)
-	Request a new raft with raft id Id.	
+	Request a new raft with raft id Id.
+REQUESTSETCONTROL Forward (Int), Rightward (Int), Clockwise (Int)
+	Set the 3 control integers
 
 Client bound packets:
 
@@ -24,5 +26,8 @@ NEWRAFT		uuid (String), [X,Y,TildID,{DATA}]
 	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
 MOVERAFT	uuid, X, Y, Rot, dX, dY , dRot, COMX, COMY
 	Fired when a server physics update is complete
-
+DELUSER		uuid (String)
+	For when a user disconnects or drops out
+SETCONTROL uuid, Forward (Int), Rightward (Int), Clockwise (Int)
+	Set the 3 control integers
 

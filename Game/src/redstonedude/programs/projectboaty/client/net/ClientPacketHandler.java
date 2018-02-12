@@ -7,10 +7,12 @@ import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
+import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.src.Logger;
@@ -41,7 +43,7 @@ public class ClientPacketHandler {
 	}
 	
 	public static synchronized void handlePacket(ClientPacketListener connection, Packet packet) {
-		Logger.log(" packet received: " + packet.packetID);
+		//Logger.log(" packet received: " + packet.packetID);
 		switch (packet.packetID) {
 		case "PacketConnect":
 			//connected, send user data and set graphics variables, also store our UUID
@@ -78,6 +80,17 @@ public class ClientPacketHandler {
 				ud.raft.setCOMPos(pmr.COMPos);
 			}
 			break;
+		case "PacketSetControl":
+			PacketSetControl psc = (PacketSetControl) packet;
+			ud = getUserData(psc.uuid);
+			ud.requiredClockwiseRotation = psc.requiredClockwiseRotation;
+			ud.requiredForwardTranslation = psc.requiredForwardTranslation;
+			ud.requiredRightwardTranslation = psc.requiredRightwardTranslation;
+			break;
+		case "PacketDelUser":
+			PacketDelUser pdu = (PacketDelUser) packet;
+			ud = getUserData(pdu.uuid);
+			userData.remove(ud);
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 

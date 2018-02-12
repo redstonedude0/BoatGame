@@ -25,7 +25,9 @@ public class ServerPacketListener implements Runnable {
 				ServerPacketHandler.handlePacket(this, (Packet) inputObject);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//error occured, disconnect the user
+			ServerPacketHandler.playerDisconnect(this);
+			Logger.log("Disconnection: " + e.getMessage());
 		}
 	}
 

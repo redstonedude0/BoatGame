@@ -9,12 +9,14 @@ import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
-import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
+import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 
 public class ServerPacketHandler {
@@ -102,6 +104,19 @@ public class ServerPacketHandler {
 			pmr.COMPos = prmr.COMPos;
 			broadcastPacketExcept(connection, pmr);
 			break;
+		case "PacketRequestSetControl":
+			PacketRequestSetControl prsc = (PacketRequestSetControl) packet;
+			sud = getUserData(connection.listener_uuid);
+			sud.requiredClockwiseRotation = prsc.requiredClockwiseRotation;
+			sud.requiredForwardTranslation = prsc.requiredForwardTranslation;
+			sud.requiredRightwardTranslation = prsc.requiredRightwardTranslation;
+			PacketSetControl psc = new PacketSetControl();
+			psc.requiredClockwiseRotation = prsc.requiredClockwiseRotation;
+			psc.requiredForwardTranslation = prsc.requiredForwardTranslation;
+			psc.requiredRightwardTranslation = prsc.requiredRightwardTranslation;
+			psc.uuid = connection.listener_uuid;
+			broadcastPacketExcept(connection, psc);
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -140,6 +155,13 @@ public class ServerPacketHandler {
 				spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 			}
 		}
+	}
+	
+	public static synchronized void playerDisconnect(ServerPacketListener spl) {
+		ServerUserData sud = getUserData(spl.listener_uuid);
+		userData.remove(sud);
+		listeners.remove(spl);
+		broadcastPacket(new PacketDelUser(spl.listener_uuid));
 	}
 
 }

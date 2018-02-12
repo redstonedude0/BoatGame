@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
+import redstonedude.programs.projectboaty.shared.net.UserData;
 
 public class ControlHandler implements KeyListener {
 
@@ -147,6 +149,50 @@ public class ControlHandler implements KeyListener {
 		control_backward = false;
 		debug_menu = false;
 		escape_menu = false;
+	}
+	
+	public static double requiredForwardTranslation = 0;
+	public static double requiredClockwiseRotation = 0;
+	public static double requiredRightwardTranslation = 0;
+	
+	public static void setControlDoubles() {
+		//w alone will set up thrusts to thrust forward
+		//d alone will set up thrusts to clockwise rotation
+		//w and d will set up thrusts to forward and clockwise
+		//e alone will set up thrusts for rightward translation
+		requiredForwardTranslation = 0;//0 unrequired, 1 forward, -1 backward
+		requiredClockwiseRotation = 0;
+		requiredRightwardTranslation = 0;
+		
+		if (control_forward) {
+			requiredForwardTranslation++;
+		}
+		if (control_backward) {
+			requiredForwardTranslation--;
+		}
+		if (control_right_rotate) {
+			requiredClockwiseRotation++;
+		}
+		if (control_left_rotate) {
+			requiredClockwiseRotation--;
+		}
+		if (control_right_translate) {
+			requiredRightwardTranslation++;
+		}
+		if (control_left_translate) {
+			requiredRightwardTranslation--;
+		}
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		if (ud != null) {
+			ud.requiredClockwiseRotation = requiredClockwiseRotation;
+			ud.requiredForwardTranslation = requiredForwardTranslation;
+			ud.requiredRightwardTranslation = requiredRightwardTranslation;
+		}
+		PacketRequestSetControl prsc = new PacketRequestSetControl();
+		prsc.requiredClockwiseRotation = requiredClockwiseRotation;
+		prsc.requiredForwardTranslation = requiredForwardTranslation;
+		prsc.requiredRightwardTranslation = requiredRightwardTranslation;
+		ClientPacketHandler.sendPacket(prsc);
 	}
 
 }

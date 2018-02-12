@@ -5,7 +5,6 @@ import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
-import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
@@ -40,6 +39,12 @@ public class ClientPhysicsHandler {
 	public static void approxPhysicsUpdate(UserData sud) {
 		Raft raft = sud.raft;
 		if (raft != null) {
+			for (Tile tile : raft.tiles) {
+				if (tile instanceof TileThruster) {
+					TileThruster thruster = (TileThruster) tile;
+					thruster.setThrustStrength(raft, sud.requiredClockwiseRotation, sud.requiredForwardTranslation, sud.requiredRightwardTranslation);
+				}
+			}
 			raft.setPos(raft.getPos().add(raft.getVelocity()));
 			raft.theta += raft.dtheta;
 			raft.sin = Math.sin(raft.theta);
@@ -53,7 +58,9 @@ public class ClientPhysicsHandler {
 			//allow it, it'll be created shortly
 			return;
 		}
-
+		
+		ControlHandler.setControlDoubles();
+		
 		// calculate non-rotational physics, as well as updating thruster control values
 		VectorDouble thrust = new VectorDouble();
 		double mass = 0;
@@ -61,7 +68,7 @@ public class ClientPhysicsHandler {
 			mass += tile.mass;
 			if (tile instanceof TileThruster) {
 				TileThruster thruster = (TileThruster) tile;
-				thruster.setThrustStrength(raft);
+				thruster.setThrustStrength(raft, ControlHandler.requiredClockwiseRotation, ControlHandler.requiredForwardTranslation, ControlHandler.requiredRightwardTranslation);
 				thrust = thrust.add(thruster.getAbsoluteThrustVector(raft));
 			}
 			//tiles will apply drag to the object
