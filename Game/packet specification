@@ -7,7 +7,7 @@ PacketName	Data
 USERDATA	Username (String)
 	Fired when a player connects to a server, shortly after the connection is established. Currently sends "" until steam is implemented
 	The userdata should be set up when this is received
-MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
+REQUESTMOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
 	Fired when the raft is moved to X,Y with angle Rot, and other variables as shown
 REQUESTRAFT	Id (Int)
 	Request a new raft with raft id Id.	
@@ -22,7 +22,7 @@ NEWUSER		uuid (String)
 	Sent to all players to represent the new player in their list of players
 NEWRAFT		uuid (String), [X,Y,TildID,{DATA}]
 	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
-MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
+MOVERAFT	uuid, X, Y, Rot, dX, dY , dRot, COMX, COMY
 	Fired when a server physics update is complete
 
 

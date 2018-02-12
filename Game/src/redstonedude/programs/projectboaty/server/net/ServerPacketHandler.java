@@ -9,8 +9,10 @@ import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.src.Logger;
@@ -78,6 +80,27 @@ public class ServerPacketHandler {
 			PacketNewRaft pnr = new PacketNewRaft(connection.listener_uuid, sud.raft);
 			broadcastPacket(pnr);
 			
+			break;
+		case "PacketRequestMoveRaft":
+			PacketRequestMoveRaft prmr = (PacketRequestMoveRaft) packet;
+			sud = getUserData(connection.listener_uuid);
+			sud.raft.setPos(prmr.pos);
+			sud.raft.theta = prmr.theta;
+			sud.raft.setVelocity(prmr.velocity);
+			sud.raft.dtheta = prmr.dtheta;
+			sud.raft.sin = prmr.sin;
+			sud.raft.cos = prmr.cos;
+			sud.raft.setCOMPos(prmr.COMPos);
+			PacketMoveRaft pmr = new PacketMoveRaft();
+			pmr.uuid = connection.listener_uuid;
+			pmr.pos = prmr.pos;
+			pmr.theta = prmr.theta;
+			pmr.velocity = prmr.velocity;
+			pmr.dtheta = prmr.dtheta;
+			pmr.sin = prmr.sin;
+			pmr.cos = prmr.cos;
+			pmr.COMPos = prmr.COMPos;
+			broadcastPacketExcept(connection, pmr);
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

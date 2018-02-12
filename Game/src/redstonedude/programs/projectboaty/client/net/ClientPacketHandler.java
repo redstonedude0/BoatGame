@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.net.Packet;
-import redstonedude.programs.projectboaty.shared.net.PacketDebug;
+import redstonedude.programs.projectboaty.shared.net.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
-import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 
 public class ClientPacketHandler {
@@ -46,10 +45,11 @@ public class ClientPacketHandler {
 		switch (packet.packetID) {
 		case "PacketConnect":
 			//connected, send user data and set graphics variables, also store our UUID
+			PacketConnect pc = (PacketConnect) packet;
 			sendPacket(new PacketUserData());
 			ControlHandler.mode = Mode.Playing;
 			sendPacket(new PacketRequestRaft(1));
-			ControlHandler.mode = Mode.Playing;
+			currentUserUUID = pc.uuid;
 			break;
 		case "PacketNewRaft":
 			PacketNewRaft pnr = (PacketNewRaft) packet;
@@ -65,6 +65,17 @@ public class ClientPacketHandler {
 			ud.uuid = pnu.uuid;
 			userData.add(ud);
 			break;
+		case "PacketMoveRaft":
+			PacketMoveRaft pmr = (PacketMoveRaft) packet;
+			ud = getUserData(pmr.uuid);
+			ud.raft.setPos(pmr.pos);
+			ud.raft.theta = pmr.theta;
+			ud.raft.setVelocity(pmr.velocity);
+			ud.raft.dtheta = pmr.dtheta;
+			ud.raft.sin = pmr.sin;
+			ud.raft.cos = pmr.cos;
+			ud.raft.setCOMPos(pmr.COMPos);
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -78,22 +89,6 @@ public class ClientPacketHandler {
 	public static synchronized void startListener() {
 		Thread newListenerThread = new Thread(new ClientPacketListener(), "NetListenerThread");
 		newListenerThread.start();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		Tile t = new Tile();
-		t.setPos(new VectorDouble(1, 2));
-		t.mass = 60;
-		ArrayList<Tile> tiles = new ArrayList<Tile>();
-		tiles.add(t);
-		t = new Tile();
-		t.setPos(new VectorDouble(3, 4));
-		t.mass = 70;
-		tiles.add(t);
-		
-		ClientPacketListener.send(new PacketDebug(tiles));
 	}
 
 }
