@@ -68,13 +68,15 @@ public class ClientPacketHandler {
 		case "PacketMoveRaft":
 			PacketMoveRaft pmr = (PacketMoveRaft) packet;
 			ud = getUserData(pmr.uuid);
-			ud.raft.setPos(pmr.pos);
-			ud.raft.theta = pmr.theta;
-			ud.raft.setVelocity(pmr.velocity);
-			ud.raft.dtheta = pmr.dtheta;
-			ud.raft.sin = pmr.sin;
-			ud.raft.cos = pmr.cos;
-			ud.raft.setCOMPos(pmr.COMPos);
+			if (ud != null) {
+				ud.raft.setPos(pmr.pos);
+				ud.raft.theta = pmr.theta;
+				ud.raft.setVelocity(pmr.velocity);
+				ud.raft.dtheta = pmr.dtheta;
+				ud.raft.sin = pmr.sin;
+				ud.raft.cos = pmr.cos;
+				ud.raft.setCOMPos(pmr.COMPos);
+			}
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

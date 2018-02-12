@@ -134,6 +134,12 @@ public class ServerPacketHandler {
 		userData.add(ud);
 		broadcastPacket(new PacketNewUser(spl.listener_uuid));
 		spl.send(new PacketConnect(ud.uuid));
+		for (ServerUserData sud: userData) {
+			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
+				spl.send(new PacketNewUser(sud.uuid));
+				spl.send(new PacketNewRaft(sud.uuid, sud.raft));
+			}
+		}
 	}
 
 }
