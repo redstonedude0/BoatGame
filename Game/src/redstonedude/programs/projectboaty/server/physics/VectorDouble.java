@@ -1,6 +1,10 @@
 package redstonedude.programs.projectboaty.server.physics;
 
-public class VectorDouble {
+import java.io.Serializable;
+
+public class VectorDouble implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	public double x = 0;
 	public double y = 0;

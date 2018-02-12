@@ -1,9 +1,13 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
+import java.io.Serializable;
+
 import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
-public class Tile {
+public class Tile implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private VectorDouble pos = new VectorDouble();
 	public double mass = 10;
