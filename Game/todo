@@ -42,9 +42,11 @@ Alpha 0.6 (The Control Update): [TODO]
 Alpha 0.7 (The Worlds Update): [TODO]
 	If it will be server-side, make the server [test server connection with other game + discuss hacking prevention]
 		when a client connects they can request 1,2,3,4 as a raft and use it as normal
+		central server? client-run servers? local play?
 	Add world saving (save raft location etc)
 	[decide how barrel spawning should work]
 	[discuss disconnection whilst in a server - 'ghost' ship raidable?]
+	[discuss ship destruction, abandonment, and hacking reporting systems?]
 	Add noisemap to represent small islands and land masses
 	Display islands based on noisemap
 	Save noisemap to world when world saves
