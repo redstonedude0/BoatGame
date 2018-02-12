@@ -1,0 +1,24 @@
+Packets are in the format
+PACKETNAME;DATA1;DATA2;DATA3
+
+Server bound packets:
+
+PacketName	Data
+CONNECT		Username (String)
+	Fired when a player connects to a server, shortly after the connection is established. Currently sends "" until steam is implemented
+	The userdata should be set up when this is received
+MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
+	Fired when the raft is moved to X,Y with angle Rot, and other variables as shown
+REQUESTRAFT	Id (Int)
+	Request a new raft with raft id Id.	
+
+Server bound packets:
+
+PacketName	Data
+NEWUSER		Username (String)
+	Fired when a player joins, contains string representation of their ip for now
+NEWRAFT		Username (String), [X,Y,TildID,{DATA}]
+	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
+	
+
+

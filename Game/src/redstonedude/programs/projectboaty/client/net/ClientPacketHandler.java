@@ -1,33 +1,12 @@
-//This class is in the directory redstonedude/programs/wager/client/net inside the JAR file
 package redstonedude.programs.projectboaty.client.net;
 
-//Import ArrayList to allow lists of objects to be stored
 import java.util.ArrayList;
 
-/**
- * Handler to handle all packets received by the client.
- */
 public class ClientPacketHandler {
 
-	/**
-	 * Synchronized class (so that it can be called from multiple threads without
-	 * collisions occurring).
-	 * 
-	 * Handle an unpacked packet (called by handlePacke once the data has been
-	 * unpacked)
-	 * 
-	 * @param connection
-	 *            The instance of ClientPacketListener associated with the client.
-	 * @param data
-	 *            The data received in the packet, in unpacked format (where each
-	 *            entry in the array is 1 line of received data)
-	 */
 	private static synchronized void handlePacketUnpacked(ClientPacketListener connection, ArrayList<String> data) {
-		// If there is data associated with this packet
 		if (data.size() > 0) {
-			// If the 1st piece of data, the packet type, is "ADDPLAYER"
-			if (data.get(0).equals("ADDPLAYER")) {
-				// If there is sufficient data to add another player to the game
+			/*if (data.get(0).equals("ADDPLAYER")) {
 				if (data.size() == 5) {
 					// Add the player with the data received
 					// PlayerHandler.addPlayer(data.get(1), data.get(2), "",
@@ -36,7 +15,7 @@ public class ClientPacketHandler {
 					// There is insufficient data - the packet is malformed.
 					// Logger.log("Malformed join packet");
 				}
-			}
+			}*/
 		}
 
 	}
