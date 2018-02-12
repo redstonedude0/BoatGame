@@ -81,9 +81,9 @@ public class ServerPacketHandler {
 			data = data.substring(len);
 		}
 		handlePacketUnpacked(connection, parsedData);*/
-		if (data instanceof Tile) {
-			Tile t = (Tile) data;
-			Logger.log(t.mass + ":");
+		if (data instanceof ArrayList<?>) {
+			ArrayList<Tile> t = (ArrayList<Tile>) data;
+			Logger.log(t.get(1).mass + ":");
 		} else {
 			Logger.log("cunt");
 		}
@@ -99,9 +99,10 @@ public class ServerPacketHandler {
 	
 	public static ServerSocket serverSocket;
 	
-	public static void init(int portNumber) {
+	public static void init() {
 		try {
 			serverSocket = new ServerSocket(portNumber);
+			startNewListener();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
-import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 
 public class ClientPacketListener implements Runnable {
@@ -29,8 +27,8 @@ public class ClientPacketListener implements Runnable {
 		try {
 			oos.writeObject(data);
 			oos.flush();
+			Logger.log("data flushed");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -38,11 +36,7 @@ public class ClientPacketListener implements Runnable {
 	@Override
 	public void run() {
 		Logger.log("Starting client packet listener");
-		start(ClientPacketHandler.portNumber,ClientPacketHandler.hostName);
-		Tile t = new Tile();
-		t.setPos(new VectorDouble(1, 2));
-		t.mass = 60;
-		send(t);
+		start(ClientPacketHandler.portNumber,ClientPacketHandler.hostName);	
 	}
 
 }

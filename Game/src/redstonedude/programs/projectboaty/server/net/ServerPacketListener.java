@@ -19,9 +19,12 @@ public class ServerPacketListener implements Runnable {
 			ServerPacketHandler.startNewListener();
 			oos = out2;
 			Object inputObject;
+			Logger.log("data start");
 			while ((inputObject = in.readObject()) != null) {
+				Logger.log("data in");
 				ServerPacketHandler.handlePacket(this, inputObject);
 			}
+			Logger.log("data ended");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
