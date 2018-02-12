@@ -14,6 +14,10 @@ public class TileHandler {
 		TextureHandler.loadTexture("Water_1", 32, 32, 32, 32);
 		TextureHandler.loadTexture("Water_2", 64, 32, 32, 32);
 		TextureHandler.loadTexture("Water_3", 96, 32, 32, 32);
+		TextureHandler.loadTexture("Water_4", 128, 32, 32, 32);
+		TextureHandler.loadTexture("Water_5", 160, 32, 32, 32);
+		TextureHandler.loadTexture("Water_6", 192, 32, 32, 32);
+		TextureHandler.loadTexture("Water_7", 224, 32, 32, 32);
 	}
 	
 	public static String getTextureName(Tile t) {

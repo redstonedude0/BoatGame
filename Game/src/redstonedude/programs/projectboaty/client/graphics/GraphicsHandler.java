@@ -61,7 +61,7 @@ public class GraphicsHandler {
 	public static void graphicsUpdatePlaying() {
 		// tesselate with water
 		g2d.setColor(Color.BLUE);
-		int index = PhysicsHandler.c % 4;
+		int index = PhysicsHandler.c % 8;
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 10; j++) {
 				int x = 100 * i;

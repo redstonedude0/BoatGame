@@ -1,5 +1,6 @@
 package redstonedude.programs.projectboaty.shared.src;
 
+import redstonedude.programs.projectboaty.client.audio.MusicHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
@@ -23,6 +24,7 @@ public class Client implements Runnable {
 		TileHandler.init();
 		GraphicsHandler.init();
 		GraphicsHandler.frame.addKeyListener(new ControlHandler());
+		MusicHandler.musicTester();
 		start();
 	}
 
