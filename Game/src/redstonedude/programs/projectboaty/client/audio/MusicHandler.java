@@ -10,11 +10,13 @@ public class MusicHandler {
 
 	static MediaPlayer mediaPlayer;
 	
+	@SuppressWarnings("unused")
 	public static void musicTester() {
 		final JFXPanel fxp = new JFXPanel();
 		String bip = System.getProperty("user.dir") + "/resources/audio/music/bip.mp3";
 		Media hit = new Media(new File(bip).toURI().toString());
 		mediaPlayer = new MediaPlayer(hit);
+		mediaPlayer.volumeProperty().setValue(0.2);
 		mediaPlayer.play();
 	}
 }

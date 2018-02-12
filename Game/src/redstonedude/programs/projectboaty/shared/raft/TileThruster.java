@@ -5,6 +5,7 @@ import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
 public class TileThruster extends Tile {
 
+	private static final long serialVersionUID = 1L;
 	public double thrustAngle = 0;
 	public double thrustStrength = 0;
 	public double maxThrustStrength = 0.1;
