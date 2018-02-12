@@ -1,9 +1,9 @@
-package redstonedude.programs.projectboaty.control;
+package redstonedude.programs.projectboaty.client.control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import redstonedude.programs.projectboaty.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
 
 public class ControlHandler implements KeyListener {
 

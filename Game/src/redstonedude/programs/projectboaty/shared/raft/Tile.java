@@ -1,7 +1,7 @@
-package redstonedude.programs.projectboaty.raft;
+package redstonedude.programs.projectboaty.shared.raft;
 
-import redstonedude.programs.projectboaty.physics.PhysicsHandler;
-import redstonedude.programs.projectboaty.physics.VectorDouble;
+import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
 public class Tile {
 	

@@ -1,4 +1,4 @@
-package redstonedude.programs.projectboaty.graphics;
+package redstonedude.programs.projectboaty.client.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,12 +9,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import redstonedude.programs.projectboaty.control.ControlHandler;
-import redstonedude.programs.projectboaty.physics.PhysicsHandler;
-import redstonedude.programs.projectboaty.physics.VectorDouble;
-import redstonedude.programs.projectboaty.raft.Tile;
-import redstonedude.programs.projectboaty.raft.TileHandler;
-import redstonedude.programs.projectboaty.raft.TileThruster;
+import redstonedude.programs.projectboaty.client.control.ControlHandler;
+import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.TileHandler;
+import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 
 public class GraphicsHandler {
 

@@ -1,10 +1,10 @@
-package redstonedude.programs.projectboaty.src;
+package redstonedude.programs.projectboaty.shared.src;
 
-import redstonedude.programs.projectboaty.control.ControlHandler;
-import redstonedude.programs.projectboaty.graphics.GraphicsHandler;
-import redstonedude.programs.projectboaty.graphics.TextureHandler;
-import redstonedude.programs.projectboaty.physics.PhysicsHandler;
-import redstonedude.programs.projectboaty.raft.TileHandler;
+import redstonedude.programs.projectboaty.client.control.ControlHandler;
+import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
+import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
+import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 
 public class Main implements Runnable {
 	

@@ -1,7 +1,7 @@
-package redstonedude.programs.projectboaty.raft;
+package redstonedude.programs.projectboaty.shared.raft;
 
-import redstonedude.programs.projectboaty.graphics.TextureHandler;
-import redstonedude.programs.projectboaty.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
+import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
 
 public class TileHandler {
 	

@@ -1,4 +1,4 @@
-package redstonedude.programs.projectboaty.graphics;
+package redstonedude.programs.projectboaty.client.graphics;
 
 import java.util.ArrayList;
 

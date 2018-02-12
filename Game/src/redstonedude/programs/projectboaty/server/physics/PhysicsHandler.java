@@ -1,10 +1,10 @@
-package redstonedude.programs.projectboaty.physics;
+package redstonedude.programs.projectboaty.server.physics;
 
-import redstonedude.programs.projectboaty.control.ControlHandler;
-import redstonedude.programs.projectboaty.graphics.DebugHandler;
-import redstonedude.programs.projectboaty.raft.Raft;
-import redstonedude.programs.projectboaty.raft.Tile;
-import redstonedude.programs.projectboaty.raft.TileThruster;
+import redstonedude.programs.projectboaty.client.control.ControlHandler;
+import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
+import redstonedude.programs.projectboaty.shared.raft.Raft;
+import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 
 public class PhysicsHandler {
 

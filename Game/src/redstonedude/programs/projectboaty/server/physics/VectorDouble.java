@@ -1,4 +1,4 @@
-package redstonedude.programs.projectboaty.physics;
+package redstonedude.programs.projectboaty.server.physics;
 
 public class VectorDouble {
 	

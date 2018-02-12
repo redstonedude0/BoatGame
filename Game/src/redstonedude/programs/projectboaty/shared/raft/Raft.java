@@ -1,8 +1,8 @@
-package redstonedude.programs.projectboaty.raft;
+package redstonedude.programs.projectboaty.shared.raft;
 
 import java.util.ArrayList;
 
-import redstonedude.programs.projectboaty.physics.VectorDouble;
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
 public class Raft {
 	
