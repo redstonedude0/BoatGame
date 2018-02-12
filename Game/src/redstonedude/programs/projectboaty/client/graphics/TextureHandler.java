@@ -13,7 +13,7 @@ public class TextureHandler {
 	
 	public static void init() {
 		try {
-			spritesheet = ImageIO.read(new File("resources/spritesheet.png"));
+			spritesheet = ImageIO.read(new File("resources/textures/spritesheet.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
