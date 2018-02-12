@@ -36,7 +36,7 @@ Alpha 0.6 (The Control Update): [TODO]
 			forward alone will set up thrusts to obtain maximum foward motion with 0 rotational motion
 			right alone will set up thrusts to obtain maximum clockwise rotation with 0 forward motion
 			forward and right will set up thrusts in some way? [discussion?]
-	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard?) [discussion]
+	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
 Alpha 0.7 (The Worlds Update): [TODO]
 	If it will be server-side, make the server
 		when a client connects they can request 1,2,3 as a raft and use it as normal
