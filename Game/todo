@@ -88,6 +88,17 @@ Alpha 0.92 (Company Setup): [TODO]
 	Decide how much the game should be worth. I think that we should go around the £7-£13 bracket. Discuss this.
 	Marketing - do we want to use advertisements? Facebook Page, Twitter, etc. Get PC Gamer to do a piece on it if poss? Send review copies
 		to YouTubers?
+	[R]: Could do, corporate meme might be a little harder on the paperwork side, idk tho, and need £40 to register as a PLC.
+			Defo sounds like it'd be cooler tho, and yeah I dig HCH games, we just gotta argue over which H is which XD.
+			As for automated banking that could be a good meme, the only issue might be that we need to deduct some cut to pay
+			for dedis before the share split, so have to consider that. Also need to discuss which shares who is getting in this meme.
+			Yeah i definitely think free review copies to a load of youtubers is a good idea. I was thinking aim it for like 9.99 to start,
+				bear in mind we get 70% after tax so that'd be like £6 profit per sale maybe, which isn't too bad.
+			Need to consider the whole steam meme - it'd cost £100 just to put the game on steam, however Java isn't natively compatible
+			with the steam API. We'd have to use a JNI to interface with the Steamworks API, which considering we might use an external
+			launcher anyways there's gonna be alot of external library memes. The only other alternatives are to either rewrite the entire
+			thing in C. Which isn't happening. Or to use web APIs and OPENID to authenticate the users, however they will have to
+			enter their steam details into our game in order to do that.
 Alpha 1.0 (Initial Gameplay): [TODO]
 	Clean up menus and everything to make it somewhat playable
 	Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
