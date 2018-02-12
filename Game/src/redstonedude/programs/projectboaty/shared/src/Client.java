@@ -6,16 +6,16 @@ import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
 import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 
-public class Main implements Runnable {
+public class Client implements Runnable {
 	
 	public static Thread thread;
-	public static Main m;
+	public static Client c; 
 	
 	public static void main(String[] args) {
-		m = new Main();
+		c = new Client();
 	}
 	
-	public Main() {
+	public Client() {
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
