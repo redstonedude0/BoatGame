@@ -2,23 +2,28 @@ package redstonedude.programs.projectboaty.server.physics;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
+import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 
-public class PhysicsHandler {
+public class ServerPhysicsHandler {
 
 	public static int c = 0;
-
-	public static Raft raft;
-	public static VectorDouble cameraPosition = new VectorDouble(0,0);
-
+	
 	public static void physicsUpdate() {
 		DebugHandler.clear();
-		
 		c++;
+		for (ServerUserData sud:ServerPacketHandler.userData) {
+			physicsUpdate(sud);
+		}
+	}
+	
+	public static void physicsUpdate(ServerUserData sud) {
+		Raft raft = sud.raft;
 		if (raft == null) {
-			createRaft();
+			//allow it, it'll be created shortly
+			return;
 		}
 
 		// calculate non-rotational physics, as well as updating thruster control values
@@ -114,21 +119,14 @@ public class PhysicsHandler {
 		// System.out.println(dcomx + ":" + dcomy);
 		raft.setPos(raft.getPos().subtract(new VectorDouble(dcomx, dcomy)));
 		
-		//move camera accordingly
-		VectorDouble posDiff = raft.getCOMPos().getAbsolute(unitx, unity).add(raft.getPos()).subtract(cameraPosition);
-		posDiff = posDiff.divide(10);//do it slower
-		cameraPosition = cameraPosition.add(posDiff);
+		
 		
 	}
 
-	public static void createRaft() {
-		createRaft(1);
-	}
-
-	public static void createRaft(int id) {
-		raft = new Raft();
+	public static void createRaft(int id, ServerUserData sud) {
+		Raft raft = new Raft();
 		raft.setPos(new VectorDouble(4, 3));
-		cameraPosition = new VectorDouble(4,3);
+		//sud.cameraPosition = new VectorDouble(4,3);
 		raft.theta = 0;
 		switch (id) {
 		case 1:
@@ -224,12 +222,14 @@ public class PhysicsHandler {
 			raft.tiles.add(thruster);
 			break;
 		}
+		sud.raft = raft;
 	}
 	
 	public static void reset() {
 		c = 0;
-		raft = null;
-		cameraPosition = new VectorDouble(0,0);
+		ServerPacketHandler.userData.clear();
+		//raft = null;
+		//cameraPosition = new VectorDouble(0,0);
 	}
 
 }

@@ -2,7 +2,6 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 
-import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
 public class Tile implements Serializable {
@@ -39,8 +38,8 @@ public class Tile implements Serializable {
 		//since the basis is flipped it will be flipped a -90 before is the same as a +90 after.
 		VectorDouble rotationalVelocity = new VectorDouble(displacement).rotate(-Math.PI/2).setMagnitude(parent.dtheta * Math.sqrt(displacement.getSquaredLength()));
 		VectorDouble absRot = new VectorDouble();
-		absRot.x = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().x+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().x;
-		absRot.y = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().y+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().y;
+		absRot.x = rotationalVelocity.x*parent.getUnitX().x+rotationalVelocity.y*parent.getUnitY().x;
+		absRot.y = rotationalVelocity.x*parent.getUnitX().y+rotationalVelocity.y*parent.getUnitY().y;
 		VectorDouble motion = new VectorDouble(linearVelocity).add(absRot).multiply(-0.2);
 		//this is total motion, now multiply by friction coefficients (negative since friction acts against motion)
 		return motion;
@@ -51,10 +50,10 @@ public class Tile implements Serializable {
 		VectorDouble absFriction = getAbsoluteFrictionVector(parent);
 		//convert to relative friction.
 		VectorDouble friction = new VectorDouble();
-		double a = PhysicsHandler.raft.getUnitX().x;
-		double b = PhysicsHandler.raft.getUnitY().x;
-		double c = PhysicsHandler.raft.getUnitX().y;
-		double d = PhysicsHandler.raft.getUnitY().y;
+		double a = parent.getUnitX().x;
+		double b = parent.getUnitY().x;
+		double c = parent.getUnitX().y;
+		double d = parent.getUnitY().y;
 		double determinant = a*d-b*c;
 		VectorDouble unitX = new VectorDouble(d, -c).divide(determinant);
 		VectorDouble unitY = new VectorDouble(-b, a).divide(determinant);

@@ -1,10 +1,13 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
-public class Raft {
+public class Raft implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private VectorDouble pos = new VectorDouble(); //absolute
 	public double theta = 0;

@@ -4,7 +4,7 @@ PACKETNAME;DATA1;DATA2;DATA3
 Server bound packets:
 
 PacketName	Data
-CONNECT		Username (String)
+USERDATA	Username (String)
 	Fired when a player connects to a server, shortly after the connection is established. Currently sends "" until steam is implemented
 	The userdata should be set up when this is received
 MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
@@ -12,13 +12,17 @@ MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (D
 REQUESTRAFT	Id (Int)
 	Request a new raft with raft id Id.	
 
-Server bound packets:
+Client bound packets:
 
 PacketName	Data
-NEWUSER		Username (String)
-	Fired when a player joins, contains string representation of their ip for now
-NEWRAFT		Username (String), [X,Y,TildID,{DATA}]
+CONNECT		uuid (String)
+	Sent when the client is connected to the server, for now it allows the rest of the client to begin running, tells it which user it is
+NEWUSER		uuid (String)
+	Fired when a player joins, contains string representation of their uuid for now
+	Sent to all players to represent the new player in their list of players
+NEWRAFT		uuid (String), [X,Y,TildID,{DATA}]
 	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
-	
+MOVERAFT	X (Double), Y (Double), Rot (Double), dX (Double), dY (Double), dRot (Double)
+	Fired when a server physics update is complete
 
 

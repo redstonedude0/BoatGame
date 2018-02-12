@@ -1,7 +1,7 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
-import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 
 public class TileHandler {
 	
@@ -24,7 +24,7 @@ public class TileHandler {
 		if (t instanceof TileThruster) {
 			TileThruster thruster = (TileThruster) t;
 			if (thruster.thrustStrength != 0) {
-				int index = PhysicsHandler.c%3;
+				int index = ClientPhysicsHandler.c%3;
 				return "TileThruster_" + index;
 			}
 			return "TileThruster_0";

@@ -10,8 +10,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
-import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -24,20 +26,21 @@ public class GraphicsHandler {
 
 	public static void graphicsUpdate() {
 		/*
-		 * drawing occurs in a 1920*1080 virtual screen, now it needs to be scaled to the actual screen
+		 * drawing occurs in a 1920*1080 virtual screen, now it needs to be scaled to
+		 * the actual screen
 		 */
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, 1920, 1080);
 		g2d.setColor(Color.WHITE);
-		
-		//cameraPosition*100 needs to line up with 960, 540
-		
+
+		// cameraPosition*100 needs to line up with 960, 540
+
 		switch (ControlHandler.mode) {
 		case MainMenu:
 			graphicsUpdateMenu();
 			break;
 		case Playing:
-			VectorDouble offset = new VectorDouble(960,540).subtract(PhysicsHandler.cameraPosition.multiply(100));
+			VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 			AffineTransform translate = new AffineTransform();
 			translate.translate(offset.x, offset.y);
 			g2d.transform(translate);
@@ -48,8 +51,11 @@ public class GraphicsHandler {
 				e.printStackTrace();
 			}
 			break;
+		case Connecting:
+			graphicsUpdateConnecting();
+			break;
 		}
-		
+
 		frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(), frame.getHeight(), frame);
 	}
 
@@ -58,10 +64,15 @@ public class GraphicsHandler {
 		g2d.drawString("Press Enter to start", 50, 100);
 	}
 
+	public static void graphicsUpdateConnecting() {
+		g2d.drawString("Connecting to server...", 50, 50);
+		g2d.drawString("Please wait", 50, 100);
+	}
+
 	public static void graphicsUpdatePlaying() {
 		// tesselate with water
 		g2d.setColor(Color.BLUE);
-		int index = PhysicsHandler.c % 8;
+		int index = ClientPhysicsHandler.c % 8;
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 10; j++) {
 				int x = 100 * i;
@@ -71,113 +82,55 @@ public class GraphicsHandler {
 			}
 		}
 		g2d.setColor(Color.WHITE);
-		g2d.drawString("phys tick " + PhysicsHandler.c, 50, 50);
-		if (PhysicsHandler.raft != null) {
-			VectorDouble unitx = PhysicsHandler.raft.getUnitX();
-			VectorDouble unity = PhysicsHandler.raft.getUnitY();
-			for (Tile tile : PhysicsHandler.raft.tiles) {
-				double x = tile.getAbsoluteX(PhysicsHandler.raft);
-				double y = tile.getAbsoluteY(PhysicsHandler.raft);
-				// using graphics instead of colors
-				AffineTransform rotator = new AffineTransform();
-				rotator.translate(100 * x, 100 * y);
-				rotator.rotate(PhysicsHandler.raft.theta);
-				if (tile instanceof TileThruster) {
+		g2d.drawString("local phys tick " + ClientPhysicsHandler.c, 50, 50);
+		for (UserData ud : ClientPacketHandler.userData) {
+			if (ud.raft != null) {
+				VectorDouble unitx = ud.raft.getUnitX();
+				VectorDouble unity = ud.raft.getUnitY();
+				for (Tile tile : ud.raft.tiles) {
+					double x = tile.getAbsoluteX(ud.raft);
+					double y = tile.getAbsoluteY(ud.raft);
+					// using graphics instead of colors
+					AffineTransform rotator = new AffineTransform();
+					rotator.translate(100 * x, 100 * y);
+					rotator.rotate(ud.raft.theta);
+					if (tile instanceof TileThruster) {
 
-					rotator.translate(50, -50);
-					rotator.rotate(-((TileThruster)tile).thrustAngle);
-					rotator.translate(-50, 50);
+						rotator.translate(50, -50);
+						rotator.rotate(-((TileThruster) tile).thrustAngle);
+						rotator.translate(-50, 50);
+					}
+					g2d.transform(rotator);
+					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(tile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					try {
+						g2d.transform(rotator.createInverse());
+					} catch (NoninvertibleTransformException e) {
+						e.printStackTrace();
+					}
+
 				}
-				g2d.transform(rotator);
-				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(tile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-				try {
-					g2d.transform(rotator.createInverse());
-				} catch (NoninvertibleTransformException e) {
-					e.printStackTrace();
-				}
-				
-				//DEBUG
-				//if (tile instanceof TileThruster) {
-					// also draw thrust vector, in the direction of force
-					//g2d.setColor(Color.GREEN);
-					//VectorDouble force = ((TileThruster) tile).getAbsoluteThrustVector(PhysicsHandler.raft);
-					//force = force.multiply(10);
-					//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
-				//}
-				//draw drag vector
-				//g2d.setColor(Color.RED);
-				//VectorDouble displacement = tile.getPos().add(new VectorDouble(0.5, 0.5)).subtract(PhysicsHandler.raft.getCOMPos());
-				//VectorDouble rotationalVelocity = new VectorDouble(displacement).rotate(-Math.PI/2).setMagnitude(PhysicsHandler.raft.dtheta * Math.sqrt(displacement.getSquaredLength()));
-				
-				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement);
-				//g2d.setColor(Color.GREEN);
-				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, displacement.rotate(-Math.PI/2));
-				//g2d.setColor(Color.BLUE);
-				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, rotationalVelocity);
-				//VectorDouble drag = tile.getAbsoluteFrictionVector(PhysicsHandler.raft);
-				//drag = drag.multiply(10);
-				//drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag);
-				
-				/*g2d.setColor(Color.BLUE);
-				VectorDouble dpos = new VectorDouble(tile.getPos());
-				dpos.add(new VectorDouble(0.5, 0.5));
-				dpos.subtract(PhysicsHandler.raft.getCOMPos());
-				VectorDouble absDpos = new VectorDouble();
-				absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
-				absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, absDpos);
-				*/
-				/*g2d.setColor(Color.BLUE);
-				VectorDouble displacement = tile.getPos();
-				displacement.add(new VectorDouble(0.5, 0.5));
-				displacement.subtract(PhysicsHandler.raft.getCOMPos());
-				//need to get vector at 90 clockwise rotation to it.
-				VectorDouble rotationalVelocity = new VectorDouble(displacement);
-				rotationalVelocity.rotate(-Math.PI/2);
-				rotationalVelocity.setMagnitude(PhysicsHandler.raft.dtheta * Math.sqrt(displacement.getSquaredLength()));
-				rotationalVelocity.multiply(20); //now transform
-				VectorDouble absRot = new VectorDouble();
-				absRot.x = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().x+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().x;
-				absRot.y = rotationalVelocity.x*PhysicsHandler.raft.getUnitX().y+rotationalVelocity.y*PhysicsHandler.raft.getUnitY().y;
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, absRot);*/
-				
-				/*VectorDouble dpos = new VectorDouble(tile.getPos());
-				dpos.add(new VectorDouble(0.5, 0.5));
-				dpos.subtract(PhysicsHandler.raft.getCOMPos());//this is relative dpos, calculate absolute
-				VectorDouble absDpos = new VectorDouble();
-				absDpos.x = dpos.x*PhysicsHandler.raft.getUnitX().x+dpos.y*PhysicsHandler.raft.getUnitY().x;
-				absDpos.y = dpos.x*PhysicsHandler.raft.getUnitX().y+dpos.y*PhysicsHandler.raft.getUnitY().y;
-				
-				if (tile instanceof TileThruster) {
-					TileThruster thruster = (TileThruster) tile;
-					VectorDouble force = new VectorDouble(thruster.getRelativeThrustVector());
-					drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, force);
-				}
-				//do drag also
-				VectorDouble drag2 = tile.getRelativeFrictionVector(PhysicsHandler.raft);
-				drag2.multiply(5);
-				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag2);*/
+				g2d.setColor(Color.WHITE);
+				g2d.drawLine((int) (100 * ud.raft.getPos().x), (int) (100 * ud.raft.getPos().y), (int) (100 * ud.raft.getPos().x + 100 * ud.raft.getUnitX().x), (int) (100 * ud.raft.getPos().y + 100 * ud.raft.getUnitX().y));
+				g2d.drawLine((int) (100 * ud.raft.getPos().x), (int) (100 * ud.raft.getPos().y), (int) (100 * ud.raft.getPos().x + 100 * ud.raft.getUnitY().x), (int) (100 * ud.raft.getPos().y + 100 * ud.raft.getUnitY().y));
+				int x = (int) (100 * (ud.raft.getPos().x + ud.raft.getCOMPos().x * unitx.x + ud.raft.getCOMPos().y * unity.x));
+				int y = (int) (100 * (ud.raft.getPos().y + ud.raft.getCOMPos().x * unitx.y + ud.raft.getCOMPos().y * unity.y));
+				g2d.drawOval(x - 10, y - 10, 20, 20);
 			}
-			g2d.setColor(Color.WHITE);
-			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitX().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitX().y));
-			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitY().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitY().y));
-			int x = (int) (100 * (PhysicsHandler.raft.getPos().x + PhysicsHandler.raft.getCOMPos().x * unitx.x + PhysicsHandler.raft.getCOMPos().y * unity.x));
-			int y = (int) (100 * (PhysicsHandler.raft.getPos().y + PhysicsHandler.raft.getCOMPos().x * unitx.y + PhysicsHandler.raft.getCOMPos().y * unity.y));
-			g2d.drawOval(x - 10, y - 10, 20, 20);
 		}
-		
-		//DEBUG
-		//for (DebugVector dv : DebugHandler.debugVectors) {
-		//	g2d.setColor(dv.color);
-		//	g2d.drawLine((int) (100 * dv.pos.x), (int) (100 * dv.pos.y), (int) (100 * dv.pos.x + 100 * dv.vector.x), (int) (100 * dv.pos.y + 100 * dv.vector.y));
-			
-		//}
+
+		// DEBUG
+		// for (DebugVector dv : DebugHandler.debugVectors) {
+		// g2d.setColor(dv.color);
+		// g2d.drawLine((int) (100 * dv.pos.x), (int) (100 * dv.pos.y), (int) (100 *
+		// dv.pos.x + 100 * dv.vector.x), (int) (100 * dv.pos.y + 100 * dv.vector.y));
+
+		// }
 		//
 		g2d.setColor(Color.RED);
-		g2d.drawOval((int) (100*PhysicsHandler.cameraPosition.x - 10), (int) (100*PhysicsHandler.cameraPosition.y - 10), 20, 20);
-		
+		g2d.drawOval((int) (100 * ClientPhysicsHandler.cameraPosition.x - 10), (int) (100 * ClientPhysicsHandler.cameraPosition.y - 10), 20, 20);
+
 		if (ControlHandler.escape_menu) {
-			g2d.setColor(new Color(0,0,0,127));
+			g2d.setColor(new Color(0, 0, 0, 127));
 			g2d.fillRect(480, 270, 960, 540);
 			g2d.setColor(Color.WHITE);
 			g2d.drawString("Press enter to return to main menu", 500, 300);

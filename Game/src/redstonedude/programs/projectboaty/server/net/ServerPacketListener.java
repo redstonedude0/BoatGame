@@ -20,6 +20,7 @@ public class ServerPacketListener implements Runnable {
 			ServerPacketHandler.startNewListener();
 			oos = out2;
 			Object inputObject;
+			ServerPacketHandler.playerJoin(this);
 			while ((inputObject = in.readObject()) != null) {
 				ServerPacketHandler.handlePacket(this, (Packet) inputObject);
 			}

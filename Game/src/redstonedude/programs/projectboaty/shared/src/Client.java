@@ -5,7 +5,7 @@ import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 
 public class Client implements Runnable {
@@ -19,7 +19,6 @@ public class Client implements Runnable {
 
 	public Client() {
 		ClientPacketHandler.hostName = "localhost";
-		ClientPacketHandler.startListener();
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
@@ -31,7 +30,7 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			while (true) {
-				PhysicsHandler.physicsUpdate();
+				ClientPhysicsHandler.physicsUpdate();
 				GraphicsHandler.graphicsUpdate();
 				Thread.sleep(20);// 50fps
 			}

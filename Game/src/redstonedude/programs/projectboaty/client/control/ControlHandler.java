@@ -3,7 +3,8 @@ package redstonedude.programs.projectboaty.client.control;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import redstonedude.programs.projectboaty.server.physics.PhysicsHandler;
+import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 
 public class ControlHandler implements KeyListener {
 
@@ -17,7 +18,7 @@ public class ControlHandler implements KeyListener {
 	public static boolean debug_menu = false;
 
 	public static enum Mode {
-		MainMenu, Playing
+		MainMenu, Playing, Connecting
 	}
 	public static boolean escape_menu = false;
 
@@ -31,6 +32,9 @@ public class ControlHandler implements KeyListener {
 		case Playing:
 			doPlayingKeyPressed(e);
 			break;
+		case Connecting:
+			//do nothing for now
+			break;
 		}
 	}
 
@@ -41,6 +45,9 @@ public class ControlHandler implements KeyListener {
 			break;
 		case Playing:
 			doPlayingKeyReleased(e);
+			break;
+		case Connecting:
+			//do nothing for now
 			break;
 		}
 	}
@@ -85,16 +92,18 @@ public class ControlHandler implements KeyListener {
 		case KeyEvent.VK_2:
 		case KeyEvent.VK_3:
 		case KeyEvent.VK_4:
-			PhysicsHandler.createRaft(Integer.parseInt("" + e.getKeyChar()));
+			//PhysicsHandler.createRaft(Integer.parseInt("" + e.getKeyChar()));
+			ClientPacketHandler.sendPacket(new PacketRequestRaft(Integer.parseInt("" + e.getKeyChar())));
 			break;
 		case KeyEvent.VK_ESCAPE:
 			escape_menu = !escape_menu;
 			break;
 		case KeyEvent.VK_ENTER:
 			if (escape_menu) {
-				PhysicsHandler.reset(); //redundancy
-				reset();
-				mode = Mode.MainMenu;
+				//PhysicsHandler.reset(); //redundancy
+				//TODO disconnect properly
+				//reset();
+				//mode = Mode.MainMenu;
 			}
 		}
 	}
@@ -123,9 +132,10 @@ public class ControlHandler implements KeyListener {
 	}
 	
 	public static void startPlaying() {
-		PhysicsHandler.reset();
-		reset();
-		mode = Mode.Playing;
+		//PhysicsHandler.reset();
+		//reset();
+		//mode = Mode.Playing;
+		ClientPacketHandler.startListener();
 	}
 	
 	public static void reset() {
