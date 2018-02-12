@@ -37,7 +37,8 @@ Alpha 0.6 (The Control Update): [TODO]
 			d alone will set up thrusts to clockwise rotation
 			w and d will set up thrusts to forward and clockwise
 			e alone will set up thrusts for rightward translation
-	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
+[R]	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
+(R)	Check that block masses are working properly
 Alpha 0.7 (The Worlds Update): [TODO]
 	If it will be server-side, make the server
 		when a client connects they can request 1,2,3 as a raft and use it as normal

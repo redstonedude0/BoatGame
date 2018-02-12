@@ -30,16 +30,25 @@ public class GraphicsHandler {
 		g2d.fillRect(0, 0, 1920, 1080);
 		g2d.setColor(Color.WHITE);
 		
+		//cameraPosition*100 needs to line up with 960, 540
+		
 		switch (ControlHandler.mode) {
 		case MainMenu:
 			graphicsUpdateMenu();
 			break;
 		case Playing:
+			VectorDouble offset = new VectorDouble(960,540).subtract(PhysicsHandler.cameraPosition.multiply(100));
+			AffineTransform translate = new AffineTransform();
+			translate.translate(offset.x, offset.y);
+			g2d.transform(translate);
 			graphicsUpdatePlaying();
+			try {
+				g2d.transform(translate.createInverse());
+			} catch (NoninvertibleTransformException e) {
+				e.printStackTrace();
+			}
 			break;
 		}
-		
-		
 		
 		frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(), frame.getHeight(), frame);
 	}
@@ -51,15 +60,17 @@ public class GraphicsHandler {
 
 	public static void graphicsUpdatePlaying() {
 		// tesselate with water
+		g2d.setColor(Color.BLUE);
 		int index = PhysicsHandler.c % 4;
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 10; j++) {
 				int x = 100 * i;
 				int y = 100 * j;
 				g2d.drawImage(TextureHandler.getTexture("Water_" + index), x, y, x + 100, y + 100, 0, 0, 32, 32, frame);
+				g2d.drawRect(x, y, 100, 100);
 			}
 		}
-
+		g2d.setColor(Color.WHITE);
 		g2d.drawString("phys tick " + PhysicsHandler.c, 50, 50);
 		if (PhysicsHandler.raft != null) {
 			VectorDouble unitx = PhysicsHandler.raft.getUnitX();
@@ -163,6 +174,8 @@ public class GraphicsHandler {
 			
 		//}
 		//
+		g2d.setColor(Color.RED);
+		g2d.drawOval((int) (100*PhysicsHandler.cameraPosition.x - 10), (int) (100*PhysicsHandler.cameraPosition.y - 10), 20, 20);
 		
 		if (ControlHandler.escape_menu) {
 			g2d.setColor(new Color(0,0,0,127));
