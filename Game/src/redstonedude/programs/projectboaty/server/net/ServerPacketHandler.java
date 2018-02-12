@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.shared.net.Packet;
@@ -18,6 +19,7 @@ import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.src.Logger;
+import redstonedude.programs.projectboaty.shared.src.Server;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
 public class ServerPacketHandler {
@@ -27,14 +29,14 @@ public class ServerPacketHandler {
 	public static int portNumber = 49555;
 
 	public static ServerUserData getUserData(String uuid) {
-		for (ServerUserData sud: userData) {
+		for (ServerUserData sud : userData) {
 			if (sud.uuid.equalsIgnoreCase(uuid)) {
 				return sud;
 			}
 		}
 		return null;
 	}
-	
+
 	public static void broadcastPacketExcept(ServerPacketListener ignore, Packet packet) {
 		// For each client, send the packet if they are not the ignored client
 		for (ServerPacketListener spl : listeners) {
@@ -66,23 +68,23 @@ public class ServerPacketHandler {
 
 	public static synchronized void handlePacket(ServerPacketListener connection, Packet packet) {
 		switch (packet.packetID) {
-		//case "PacketDebug":
-		//	PacketDebug packetDebug = (PacketDebug) packet;
-		//	ArrayList<Tile> t = (ArrayList<Tile>) packetDebug.data;
-		//	Logger.log(t.get(1).mass + ":");
-		//	break;
+		// case "PacketDebug":
+		// PacketDebug packetDebug = (PacketDebug) packet;
+		// ArrayList<Tile> t = (ArrayList<Tile>) packetDebug.data;
+		// Logger.log(t.get(1).mass + ":");
+		// break;
 		case "PacketUserData":
-			//ignore for now, no user data to set
+			// ignore for now, no user data to set
 			break;
 		case "PacketRequestRaft":
 			PacketRequestRaft prr = (PacketRequestRaft) packet;
-			//generate a new raft for this boik
-			
+			// generate a new raft for this boik
+
 			ServerUserData sud = getUserData(connection.listener_uuid);
 			ServerPhysicsHandler.createRaft(prr.raftID, sud);
 			PacketNewRaft pnr = new PacketNewRaft(connection.listener_uuid, sud.raft);
 			broadcastPacket(pnr);
-			
+
 			break;
 		case "PacketRequestMoveRaft":
 			PacketRequestMoveRaft prmr = (PacketRequestMoveRaft) packet;
@@ -142,27 +144,45 @@ public class ServerPacketHandler {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static synchronized void playerJoin(ServerPacketListener spl) {
-		//let the client know they have connected
+		// let the client know they have connected
 		ServerUserData ud = new ServerUserData();
-		ud.uuid = spl.listener_uuid;
-		userData.add(ud);
-		broadcastPacket(new PacketNewUser(spl.listener_uuid));
-		spl.send(new PacketConnect(ud.uuid, WorldHandler.key));
-		for (ServerUserData sud: userData) {
-			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
-				spl.send(new PacketNewUser(sud.uuid));
-				spl.send(new PacketNewRaft(sud.uuid, sud.raft));
+		ud.IP = spl.IP;
+		for (ServerUserData sud : ServerDataHandler.savedUsers) {
+			if (sud.IP.equals(spl.IP)) {
+				ud = sud;
 			}
 		}
+		ud.uuid = spl.listener_uuid;
+		userData.add(ud);
+		if (ud.raft == null) {
+			ServerPhysicsHandler.createRaft(1, ud);
+		}
+		broadcastPacket(new PacketNewUser(spl.listener_uuid));
+		spl.send(new PacketConnect(ud.uuid, WorldHandler.key));
+		for (ServerUserData sud : userData) {
+			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
+				spl.send(new PacketNewUser(sud.uuid));
+			}//the connecting player needs to know about their new raft
+			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
+		}
+		
 	}
-	
+
 	public static synchronized void playerDisconnect(ServerPacketListener spl) {
 		ServerUserData sud = getUserData(spl.listener_uuid);
-		userData.remove(sud);
-		listeners.remove(spl);
-		broadcastPacket(new PacketDelUser(spl.listener_uuid));
+		if (sud != null) {
+			userData.remove(sud);
+			listeners.remove(spl);
+			broadcastPacket(new PacketDelUser(spl.listener_uuid));
+			ServerDataHandler.savedUsers.add(sud);
+			if (listeners.size() == 1) {// is now empty (barring the open listener) and wasn't before - the last user
+										// has disconnected
+				Logger.log("shutdown caused by disconnection of :" + spl.IP.getHostAddress());
+				Server.shutdown();
+			}
+		}
 	}
 
 }

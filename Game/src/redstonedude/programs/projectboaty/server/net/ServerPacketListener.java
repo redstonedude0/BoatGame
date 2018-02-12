@@ -29,8 +29,11 @@ public class ServerPacketListener implements Runnable {
 			}
 		} catch (Exception e) {
 			//error occured, disconnect the user
-			ServerPacketHandler.playerDisconnect(this);
+			if (!e.getMessage().equalsIgnoreCase("Connection Reset") && !e.getMessage().equalsIgnoreCase("Socket Closed")) {
+				e.printStackTrace();
+			}
 			Logger.log("Disconnection: " + e.getMessage());
+			ServerPacketHandler.playerDisconnect(this);
 		}
 	}
 

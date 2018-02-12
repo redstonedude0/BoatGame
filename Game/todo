@@ -43,16 +43,17 @@ Alpha 0.7 (The Worlds Update): [TODO]
 [R]	If it will be server-side, make the server [test server connection with other game + discuss hacking prevention]
 		when a client connects they can request 1,2,3,4 as a raft and use it as normal
 		central server? client-run servers? local play?
-	Add world saving (save raft location etc)
+[R]	Add world saving (save raft location etc)
 	[decide how barrel spawning should work]
 	[discuss disconnection whilst in a server - 'ghost' ship raidable?]
 	[discuss ship destruction, abandonment, and hacking reporting systems?]
-	Add noisemap to represent small islands and land masses
-	Display islands based on noisemap
-	Save noisemap to world when world saves
+[R]	Add noisemap to represent small islands and land masses
+[R]	Display islands based on noisemap
+[R]	Save noisemap key to world when world saves
 [D] Add sounds
 Alpha 0.8 (The Entities Update): [TODO]
-	Add barrel entities
+	Add barrel entities [random spawn chance each tick?]
+	[discuss rejoin of players, and how overlapping will work]
 	Add player controlled entities, more can be spawned by a button press in debug menu
 	Player controlled entities can walk around
 	Player controlled entities walk across water to fetch barrels

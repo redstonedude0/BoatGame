@@ -1,5 +1,7 @@
 package redstonedude.programs.projectboaty.shared.src;
 
+import java.io.IOException;
+
 import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
@@ -35,6 +37,19 @@ public class Server implements Runnable {
 	public void start() {
 		thread = new Thread(this);
 		thread.start();
+	}
+	
+	public static void shutdown() {
+		Logger.log("Closing socket");
+		try {
+			ServerPacketHandler.serverSocket.close();
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+		Logger.log("Saving data");
+		ServerDataHandler.saveData();
+		Logger.log("Server Close");
+		System.exit(0);
 	}
 	
 }

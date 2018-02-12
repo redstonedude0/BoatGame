@@ -50,7 +50,7 @@ public class ClientPacketHandler {
 			//connected, send user data and set graphics variables, also store our UUID
 			PacketConnect pc = (PacketConnect) packet;
 			sendPacket(new PacketUserData());
-			sendPacket(new PacketRequestRaft(1));
+			//sendPacket(new PacketRequestRaft(1));
 			currentUserUUID = pc.uuid;
 			WorldHandler.key = pc.key;
 			ControlHandler.mode = Mode.Playing;
