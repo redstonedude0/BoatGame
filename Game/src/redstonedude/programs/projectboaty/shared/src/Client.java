@@ -25,6 +25,31 @@ public class Client implements Runnable {
 		GraphicsHandler.frame.addKeyListener(new ControlHandler());
 		MusicHandler.musicTester();
 		start();
+		/*try {
+		    if (!SteamAPI.init()) {
+		        // Steamworks initialization error, e.g. Steam client not running
+		    	System.out.println("Steam client dead");
+		    }
+		    System.out.println("bool: " + SteamAPI.isSteamRunning());
+		    SteamUser su = new SteamUser(new SteamUserCallback() {
+				
+				@Override
+				public void onValidateAuthTicket(SteamID arg0, AuthSessionResponse arg1, SteamID arg2) {
+				}
+				
+				@Override
+				public void onMicroTxnAuthorization(int arg0, long arg1, boolean arg2) {
+				}
+				
+				@Override
+				public void onEncryptedAppTicket(SteamResult arg0) {
+				}
+			});
+		    System.out.println("su: " + su.getSteamID());
+		} catch (SteamException e) {
+		    // Error extracting or loading native libraries
+			e.printStackTrace();
+		}//steam JNI code   */
 	}
 
 	public void run() {

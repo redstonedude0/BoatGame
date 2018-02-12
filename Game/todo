@@ -99,6 +99,9 @@ Alpha 0.92 (Company Setup): [TODO]
 			launcher anyways there's gonna be alot of external library memes. The only other alternatives are to either rewrite the entire
 			thing in C. Which isn't happening. Or to use web APIs and OPENID to authenticate the users, however they will have to
 			enter their steam details into our game in order to do that.
+			
+			Ait just gone and done some testing, got launch4j packing the .jar into a .exe just fine but I think we need to get steamworks
+			before we can look at interfacing the steam API properly. However I did get it to compile fine with steamworks4j.
 Alpha 1.0 (Initial Gameplay): [TODO]
 	Clean up menus and everything to make it somewhat playable
 	Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
