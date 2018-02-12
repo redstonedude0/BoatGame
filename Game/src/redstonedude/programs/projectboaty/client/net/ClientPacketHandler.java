@@ -3,6 +3,9 @@ package redstonedude.programs.projectboaty.client.net;
 import java.util.ArrayList;
 
 public class ClientPacketHandler {
+	
+	public static int portNumber = 49555;
+	public static String hostName = "";
 
 	private static synchronized void handlePacketUnpacked(ClientPacketListener connection, ArrayList<String> data) {
 		if (data.size() > 0) {
@@ -19,15 +22,7 @@ public class ClientPacketHandler {
 		}
 
 	}
-
-	/**
-	 * Handle a raw packet
-	 * 
-	 * @param connection
-	 *            The connection the packet came from (the server)
-	 * @param data
-	 *            The data in the packet
-	 */
+	
 	public static synchronized void handlePacket(ClientPacketListener connection, String data) {
 		// deserialize the data into a list of parsed data
 		int index;
@@ -44,33 +39,18 @@ public class ClientPacketHandler {
 		handlePacketUnpacked(connection, parsedData);
 	}
 
-	/**
-	 * Start the packet listener
-	 */
+	
 	public static synchronized void startListener() {
-		// Start the packet listener in a new thread
 		Thread newListenerThread = new Thread(new ClientPacketListener(), "NetListenerThread");
 		newListenerThread.start();
 	}
 
-	/**
-	 * Send data to the server
-	 * 
-	 * @param data
-	 *            Send a single string of data to the server
-	 */
+	
 	public static void sendPacket(String data) {
 		ClientPacketListener.send(data.length() + ";" + data);
 	}
 
-	/**
-	 * Send data to the server
-	 * 
-	 * @param data
-	 *            Send a list of strings of data to the server
-	 */
 	public static void sendPacket(String... data) {
-		// Serialize and send the data
 		String toSend = "";
 		for (String s : data) {
 			toSend += s.length() + ";" + s;
