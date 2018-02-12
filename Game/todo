@@ -27,8 +27,8 @@ Alpha 0.4 (The Vector Update): [TODO]
 [R]	Implement friction being applied based on relative velocity
 	[needs deeper testing, consider adding static friction? Possibly add matrix objects?]
 Alpha 0.5 (The Debug Update): [TODO]
-	Add functions to allow for easy debug, add a debug menu, add debug options to show moments?
-	Do it in chat?
+[R]	Add functions to allow for easy debug, add a debug menu, add debug options to show moments? (added vector display)
+[R] Add more vecor helper functions
 Alpha 0.6 (The Control Update): [TODO]
 	Make controls be based on how they will affect motion
 		i.e. right will always make you turn right?

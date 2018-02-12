@@ -1,6 +1,10 @@
 package redstonedude.programs.projectboaty.physics;
 
+import java.awt.Color;
+
 import redstonedude.programs.projectboaty.control.ControlHandler;
+import redstonedude.programs.projectboaty.graphics.DebugHandler;
+import redstonedude.programs.projectboaty.graphics.DebugVector;
 import redstonedude.programs.projectboaty.raft.Raft;
 import redstonedude.programs.projectboaty.raft.Tile;
 import redstonedude.programs.projectboaty.raft.TileThruster;
@@ -13,6 +17,8 @@ public class PhysicsHandler {
 	public static Raft raft;
 
 	public static void physicsUpdate() {
+		DebugHandler.clear();
+		
 		c++;
 		if (raft == null) {
 			createRaft();
@@ -37,6 +43,12 @@ public class PhysicsHandler {
 			}
 			//tiles will apply drag to the object
 			thrust = thrust.add(tile.getAbsoluteFrictionVector(raft));
+			
+			//DebugVector dv = new DebugVector();
+			//dv.pos = raft.getPos();
+			//dv.vector = tile.getAbsoluteFrictionVector(raft).multiply(100);
+			//dv.color = Color.RED;
+			//DebugHandler.debugVectors.add(dv);
 		}
 		// F=ma, a = F/m
 		VectorDouble acceleration = thrust.divide(mass);

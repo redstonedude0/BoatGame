@@ -156,6 +156,14 @@ public class GraphicsHandler {
 			g2d.drawOval(x - 10, y - 10, 20, 20);
 		}
 		
+		//DEBUG
+		//for (DebugVector dv : DebugHandler.debugVectors) {
+		//	g2d.setColor(dv.color);
+		//	g2d.drawLine((int) (100 * dv.pos.x), (int) (100 * dv.pos.y), (int) (100 * dv.pos.x + 100 * dv.vector.x), (int) (100 * dv.pos.y + 100 * dv.vector.y));
+			
+		//}
+		//
+		
 		if (ControlHandler.escape_menu) {
 			g2d.setColor(new Color(0,0,0,127));
 			g2d.fillRect(480, 270, 960, 540);

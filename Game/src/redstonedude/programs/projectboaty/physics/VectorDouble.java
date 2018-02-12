@@ -55,7 +55,7 @@ public class VectorDouble {
 	}
 	
 	public VectorDouble rotate(double theta) {
-		VectorDouble ans = new VectorDouble(this);
+		VectorDouble ans = new VectorDouble();
 		double cos = Math.cos(theta);
 		double sin = Math.sin(theta);
 		//[cos -sin] [yx (0) ] = [cosyx-sinyy]
@@ -77,6 +77,13 @@ public class VectorDouble {
 		ans.y /= currentMag;
 		ans.x *= mag;
 		ans.y *= mag;
+		return ans;
+	}
+	
+	public VectorDouble getAbsolute(VectorDouble unitx, VectorDouble unity) {
+		VectorDouble ans = new VectorDouble();
+		ans.x = x*unitx.x+y*unity.x;
+		ans.y = x*unitx.y+y*unity.y;
 		return ans;
 	}
 	
