@@ -3,6 +3,7 @@ package redstonedude.programs.projectboaty.server.net;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import redstonedude.programs.projectboaty.shared.net.Packet;
@@ -13,11 +14,13 @@ public class ServerPacketListener implements Runnable {
 	//private PrintWriter out;
 	private ObjectOutputStream oos;
 	public String listener_uuid = "";
-
+	public InetAddress IP;
+	
 	public void start(int portNumber) {
 		try (Socket clientSocket = ServerPacketHandler.serverSocket.accept(); ObjectOutputStream out2 = new ObjectOutputStream(clientSocket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());) {
 			// Start a new listener to handle the next client
 			ServerPacketHandler.startNewListener();
+			IP = clientSocket.getInetAddress();
 			oos = out2;
 			Object inputObject;
 			ServerPacketHandler.playerJoin(this);

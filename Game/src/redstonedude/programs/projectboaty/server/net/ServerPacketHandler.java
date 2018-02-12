@@ -18,6 +18,7 @@ import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.src.Logger;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
 public class ServerPacketHandler {
 
@@ -148,7 +149,7 @@ public class ServerPacketHandler {
 		ud.uuid = spl.listener_uuid;
 		userData.add(ud);
 		broadcastPacket(new PacketNewUser(spl.listener_uuid));
-		spl.send(new PacketConnect(ud.uuid));
+		spl.send(new PacketConnect(ud.uuid, WorldHandler.key));
 		for (ServerUserData sud: userData) {
 			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
 				spl.send(new PacketNewUser(sud.uuid));

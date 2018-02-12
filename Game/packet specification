@@ -17,7 +17,7 @@ REQUESTSETCONTROL Forward (Int), Rightward (Int), Clockwise (Int)
 Client bound packets:
 
 PacketName	Data
-CONNECT		uuid (String)
+CONNECT		uuid (String), world key (Long)
 	Sent when the client is connected to the server, for now it allows the rest of the client to begin running, tells it which user it is
 NEWUSER		uuid (String)
 	Fired when a player joins, contains string representation of their uuid for now

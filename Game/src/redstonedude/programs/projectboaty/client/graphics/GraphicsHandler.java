@@ -17,6 +17,8 @@ import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
 public class GraphicsHandler {
 
@@ -73,12 +75,21 @@ public class GraphicsHandler {
 		// tesselate with water
 		g2d.setColor(Color.BLUE);
 		int index = ClientPhysicsHandler.c % 8;
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 10; j++) {
+		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
+		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
+		for (int i = approxX-10; i < approxX+10; i++) {
+			for (int j = approxY-7; j < approxY+7; j++) {
 				int x = 100 * i;
 				int y = 100 * j;
-				g2d.drawImage(TextureHandler.getTexture("Water_" + index), x, y, x + 100, y + 100, 0, 0, 32, 32, frame);
-				g2d.drawRect(x, y, 100, 100);
+				TerrainType tt = WorldHandler.getTerrainType(i, j);
+				switch (tt) {
+				case Land:
+					break;
+				case Water:
+					g2d.drawImage(TextureHandler.getTexture("Water_" + index), x, y, x + 100, y + 100, 0, 0, 32, 32, frame);
+					g2d.drawRect(x, y, 100, 100);
+					break;
+				}
 			}
 		}
 		g2d.setColor(Color.WHITE);

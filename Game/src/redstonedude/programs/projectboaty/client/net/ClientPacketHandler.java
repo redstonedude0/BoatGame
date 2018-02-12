@@ -16,6 +16,7 @@ import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.src.Logger;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
 public class ClientPacketHandler {
 	
@@ -49,9 +50,10 @@ public class ClientPacketHandler {
 			//connected, send user data and set graphics variables, also store our UUID
 			PacketConnect pc = (PacketConnect) packet;
 			sendPacket(new PacketUserData());
-			ControlHandler.mode = Mode.Playing;
 			sendPacket(new PacketRequestRaft(1));
 			currentUserUUID = pc.uuid;
+			WorldHandler.key = pc.key;
+			ControlHandler.mode = Mode.Playing;
 			break;
 		case "PacketNewRaft":
 			PacketNewRaft pnr = (PacketNewRaft) packet;

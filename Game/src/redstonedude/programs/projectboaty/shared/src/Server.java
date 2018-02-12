@@ -1,7 +1,9 @@
 package redstonedude.programs.projectboaty.shared.src;
 
+import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
+import redstonedude.programs.projectboaty.server.world.ServerWorldHandler;
 
 public class Server implements Runnable {
 
@@ -13,6 +15,8 @@ public class Server implements Runnable {
 	}
 
 	public Server() {
+		ServerDataHandler.loadData();
+		ServerWorldHandler.init();
 		ServerPacketHandler.init();
 		start();
 	}
