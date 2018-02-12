@@ -101,15 +101,21 @@ Alpha 1.3 (The Boat Update): [TODO]
 	[discussion of pre-generated structures such a strongholds, ports, and dry docks]
 Alpha 1.4 (The Fighting Update): [TODO]
 	Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
-	
+Alpha TBC (Company Setup): [TODO]
+	Set up the company or whatever we need to do
+		I would like us to have a corporate meme because then we can be like a real company meme
+	Set up a bank that is in the company/corporate name
+	Create an automated banking system so that shares of the money are debitted as we earn?
 	
 	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
 
 
 Beta 1.0 (Public Gameplay): [TODO]
-	Relase the game on steam in a playable format
-	
+	Release the game on steam in a playable format
+Beta 1.1 (Tidying up): [TODO]
+	Add Controller support
+	Use user feedback to debug
 
 
 
