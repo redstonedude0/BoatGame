@@ -50,6 +50,7 @@ Alpha 0.7 (The Worlds Update): [TODO]
 	Add noisemap to represent small islands and land masses
 	Display islands based on noisemap
 	Save noisemap to world when world saves
+[D] Add sounds
 Alpha 0.8 (The Entities Update): [TODO]
 	Add barrel entities
 	Add player controlled entities, more can be spawned by a button press in debug menu
@@ -73,6 +74,19 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	Paddelling task is cancellable, make all other tasks cancellable
 	Implement paddelling, take it into account for control and physics calculations.
 		Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
+Alpha 0.91 (The Sounds Update): [TODO]
+	Decide on sound design
+	Make the music and sounds as necessary
+	Add a way to trigger sounds and music on events in the code
+Alpha 0.92 (Company Setup): [TODO]
+	Set up the company or whatever we need to do
+		I would like us to have a corporate meme because then we can be like a real company meme
+		Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.
+	Set up a bank that is in the company/corporate name
+	Create an automated banking system so that shares of the money are debitted as we earn?
+	Decide how much the game should be worth. I think that we should go around the £7-£13 bracket. Discuss this.
+	Marketing - do we want to use advertisements? Facebook Page, Twitter, etc. Get PC Gamer to do a piece on it if poss? Send review copies
+		to YouTubers?
 Alpha 1.0 (Initial Gameplay): [TODO]
 	Clean up menus and everything to make it somewhat playable
 	Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
@@ -101,15 +115,7 @@ Alpha 1.3 (The Boat Update): [TODO]
 	[discussion of pre-generated structures such a strongholds, ports, and dry docks]
 Alpha 1.4 (The Fighting Update): [TODO]
 	Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
-Alpha TBC (Company Setup): [TODO]
-	Set up the company or whatever we need to do
-		I would like us to have a corporate meme because then we can be like a real company meme
-		Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.
-	Set up a bank that is in the company/corporate name
-	Create an automated banking system so that shares of the money are debitted as we earn?
-	Decide how much the game should be worth. I think that we should go around the £7-£13 bracket. Discuss this.
-	Marketing - do we want to use advertisements? Facebook Page, Twitter, etc. Get PC Gamer to do a piece on it if poss? Send review copies
-		to YouTubers?
+
 	
 	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
