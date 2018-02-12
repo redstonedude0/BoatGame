@@ -8,7 +8,10 @@ public class TileThruster extends Tile {
 	public double thrustAngle = 0;
 	public double thrustStrength = 0;
 	public double maxThrustStrength = 0.1;
-	public double mass = 50;
+	
+	public TileThruster() {
+		mass = 50;
+	}
 	
 	//vector pointing in direction of thrust
 	//magnitude matches strength of thrust, relative to raft

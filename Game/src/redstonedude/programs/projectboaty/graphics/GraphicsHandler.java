@@ -157,7 +157,6 @@ public class GraphicsHandler {
 				VectorDouble drag2 = tile.getRelativeFrictionVector(PhysicsHandler.raft);
 				drag2.multiply(5);
 				drawSlantedLineOffset(x, y, 0.5, 0.5, unitx, unity, drag2);*/
-				
 			}
 			g2d.setColor(Color.WHITE);
 			g2d.drawLine((int) (100 * PhysicsHandler.raft.getPos().x), (int) (100 * PhysicsHandler.raft.getPos().y), (int) (100 * PhysicsHandler.raft.getPos().x + 100 * PhysicsHandler.raft.getUnitX().x), (int) (100 * PhysicsHandler.raft.getPos().y + 100 * PhysicsHandler.raft.getUnitX().y));
