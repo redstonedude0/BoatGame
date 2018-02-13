@@ -135,7 +135,7 @@ public class GraphicsHandler {
 			//System.out.println("entity");
 			VectorDouble pos = e.getPos();
 			if (e.absolutePosition) {
-				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), (int) (pos.x*100), (int) (pos.y*100), (int) (pos.x*100 + 100), (int) (pos.y*100 + 100), 0, 0, 32, 32, frame);
+				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID,e)), (int) (pos.x*100), (int) (pos.y*100), (int) (pos.x*100 + 100), (int) (pos.y*100 + 100), 0, 0, 32, 32, frame);
 			} else {
 				UserData ud = ClientPacketHandler.getUserData(e.raftUUID);
 				if (ud != null && ud.raft != null) {
@@ -145,7 +145,7 @@ public class GraphicsHandler {
 					rotator.translate(100 * pos.x, 100 * pos.y);
 					rotator.rotate(ud.raft.theta);
 					g2d.transform(rotator);
-					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID,e)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 					try {
 						g2d.transform(rotator.createInverse());
 					} catch (NoninvertibleTransformException e1) {

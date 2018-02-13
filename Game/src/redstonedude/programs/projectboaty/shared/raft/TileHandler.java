@@ -2,6 +2,8 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 
 public class TileHandler {
 	
@@ -18,7 +20,8 @@ public class TileHandler {
 		TextureHandler.loadTexture("Water_5", 160, 32, 32, 32);
 		TextureHandler.loadTexture("Water_6", 192, 32, 32, 32);
 		TextureHandler.loadTexture("Water_7", 224, 32, 32, 32);
-		TextureHandler.loadTexture("Dude_0", 0, 64, 32, 32);//probably need a more standard name than 'Dude', PCE? Character? Seaman?
+		TextureHandler.loadTexture("Character_Normal", 0, 64, 32, 32);//probably need a more standard name than 'Dude', PCE? Character? Seaman?
+		TextureHandler.loadTexture("Character_Barrel", 32, 64, 32, 32);
 		TextureHandler.loadTexture("Island", 128, 0, 32, 32);
 		TextureHandler.loadTexture("Barrel", 160, 0, 32, 32);
 	}
@@ -36,9 +39,14 @@ public class TileHandler {
 		}
 	}
 	
-	public static String getTextureName(String entityName) {
+	public static String getTextureName(String entityName, Entity e) {
 		if (entityName.equals("EntityCharacter")) {
-			return "Dude_0";
+			EntityCharacter ec = (EntityCharacter) e;
+			if (ec.carryingBarrel) {
+				return "Character_Barrel";
+			} else {
+				return "Character_Normal";
+			}
 		} else if (entityName.equals("EntityBarrel")) {
 			return "Barrel";
 		}
