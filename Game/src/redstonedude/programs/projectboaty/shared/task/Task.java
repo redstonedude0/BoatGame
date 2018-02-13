@@ -2,6 +2,8 @@ package redstonedude.programs.projectboaty.shared.task;
 
 import java.io.Serializable;
 
+import redstonedude.programs.projectboaty.shared.entity.Entity;
+
 public abstract class Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -13,6 +15,8 @@ public abstract class Task implements Serializable {
 	public abstract void execute();
 	
 	public abstract void init();
+	
+	public abstract boolean isEligible(Entity e);
 	
 	
 }

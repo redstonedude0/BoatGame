@@ -5,6 +5,7 @@ import java.io.Serializable;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 
@@ -41,6 +42,17 @@ public class TaskCollect extends TaskLocationTarget implements Serializable {
 	@Override
 	public void init() {
 		// no initialisation needed
+	}
+
+	@Override
+	public boolean isEligible(Entity e) {
+		if (e instanceof EntityCharacter) {
+			EntityCharacter ec = (EntityCharacter) e;
+			if (!ec.carryingBarrel) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

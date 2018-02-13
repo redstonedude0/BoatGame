@@ -15,15 +15,17 @@ public class TaskHandler {
 		if (size != 0) {
 			int index = rand.nextInt(size);
 			Task t = tasks.get(index);
-			t.assignedEntityID = ec.uuid;
-			tasks.remove(t);
-			return t;
-		} else {
-			TaskWander tw = new TaskWander(ec.uuid);
-			tw.targetLoc = new VectorDouble(0,1);
-			tw.targetLoc_absolute = false;
-			return tw;
-		}
+			if (t.isEligible(ec)) {
+				t.assignedEntityID = ec.uuid;
+				tasks.remove(t);
+				return t;
+			}
+		}  //else
+		TaskWander tw = new TaskWander(ec.uuid);
+		tw.targetLoc = new VectorDouble(0,1);
+		tw.targetLoc_absolute = false;
+		return tw;
+		
 	}
 	
 }
