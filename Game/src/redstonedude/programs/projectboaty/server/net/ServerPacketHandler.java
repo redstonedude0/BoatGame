@@ -167,12 +167,14 @@ public class ServerPacketHandler {
 			Entity e = ServerPhysicsHandler.getEntity(prcs.characterUUID);
 			if (e instanceof EntityCharacter) {
 				EntityCharacter ec = (EntityCharacter) e;
-				System.out.println("UUID:" + ec.uuid);
-				System.out.println("  PRCSU:" + prcs.currentTask.assignedEntityID);
-				System.out.println("  PRCST:" + prcs.currentTask.taskTypeID);
-				System.out.println("  PRCSC:" + prcs.currentTask.completed);
+				//System.out.println("  PRCSU:" + prcs.currentTask.assignedEntityID);
+				//System.out.println("  PRCST:" + prcs.currentTask.taskTypeID);
+				//System.out.println("  PRCSC:" + prcs.currentTask.completed);
+				//System.out.println("  PRCSB:" + prcs.carryingBarrel);
+				//System.out.println("  PRCSU:" + prcs.characterUUID);
 				ec.carryingBarrel = prcs.carryingBarrel;
 				ec.currentTask = prcs.currentTask;
+				ec.currentTask.assignedEntityID = prcs.characterUUID;//idk why it breaks in transport but it does
 				PacketCharacterState pcs = new PacketCharacterState();
 				pcs.characterUUID = prcs.characterUUID;
 				pcs.carryingBarrel = prcs.carryingBarrel;
