@@ -13,6 +13,7 @@ import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
@@ -77,8 +78,8 @@ public class GraphicsHandler {
 		int index = ClientPhysicsHandler.c % 8;
 		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
 		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
-		for (int i = approxX-11; i < approxX+11; i++) {
-			for (int j = approxY-7; j < approxY+7; j++) {
+		for (int i = approxX - 11; i < approxX + 11; i++) {
+			for (int j = approxY - 7; j < approxY + 7; j++) {
 				int x = 100 * i;
 				int y = 100 * j;
 				TerrainType tt = WorldHandler.getTerrainType(i, j);
@@ -130,6 +131,30 @@ public class GraphicsHandler {
 			}
 		}
 
+		for (Entity e : ClientPhysicsHandler.getEntities()) {
+			//System.out.println("entity");
+			VectorDouble pos = e.getPos();
+			if (e.absolutePosition) {
+				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), (int) pos.x*100, (int) pos.y*100, (int) pos.x*100 + 100, (int) pos.y*100 + 100, 0, 0, 32, 32, frame);
+			} else {
+				UserData ud = ClientPacketHandler.getUserData(e.raftUUID);
+				if (ud != null && ud.raft != null) {
+					pos = pos.getAbsolute(ud.raft.getUnitX(),ud.raft.getUnitY());
+					pos = pos.add(ud.raft.getPos());
+					AffineTransform rotator = new AffineTransform();
+					rotator.translate(100 * pos.x, 100 * pos.y);
+					rotator.rotate(ud.raft.theta);
+					g2d.transform(rotator);
+					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					try {
+						g2d.transform(rotator.createInverse());
+					} catch (NoninvertibleTransformException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
+
 		// DEBUG
 		// for (DebugVector dv : DebugHandler.debugVectors) {
 		// g2d.setColor(dv.color);
@@ -141,6 +166,13 @@ public class GraphicsHandler {
 		g2d.setColor(Color.RED);
 		g2d.drawOval((int) (100 * ClientPhysicsHandler.cameraPosition.x - 10), (int) (100 * ClientPhysicsHandler.cameraPosition.y - 10), 20, 20);
 
+		if (ControlHandler.debug_menu) {
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("1. lock position", 50, 70);
+			g2d.drawString("2. spawn character", 50, 90);
+			
+		}
+		
 		if (ControlHandler.escape_menu) {
 			g2d.setColor(new Color(0, 0, 0, 127));
 			g2d.fillRect(480, 270, 960, 540);

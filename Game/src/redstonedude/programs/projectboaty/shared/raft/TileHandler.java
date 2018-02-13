@@ -36,4 +36,13 @@ public class TileHandler {
 		}
 	}
 	
+	public static String getTextureName(String entityName) {
+		if (entityName.equals("EntityCharacter")) {
+			return "Dude_0";
+		} else if (entityName.equals("EntityBarrel")) {
+			return "Barrel";
+		}
+		return "Barrel"; //if something breaks atleast return a texture
+	}
+	
 }

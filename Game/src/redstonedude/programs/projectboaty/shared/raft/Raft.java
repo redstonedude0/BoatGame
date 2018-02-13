@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.task.Task;
 
 public class Raft implements Serializable {
 	
@@ -19,6 +20,7 @@ public class Raft implements Serializable {
 	private VectorDouble COMPos = new VectorDouble(); //relative 
 	
 	public ArrayList<Tile> tiles = new ArrayList<Tile>();
+	public ArrayList<Task> tasks = new ArrayList<Task>();
 	
 	public VectorDouble getUnitX() {
 		VectorDouble v = new VectorDouble();

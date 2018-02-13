@@ -13,6 +13,8 @@ REQUESTRAFT	Id (Int)
 	Request a new raft with raft id Id.
 REQUESTSETCONTROL Forward (Int), Rightward (Int), Clockwise (Int)
 	Set the 3 control integers
+REQUESTNEWCHARACTER
+	Requests a new character to be added to the raft
 
 Client bound packets:
 
@@ -22,7 +24,7 @@ CONNECT		uuid (String), world key (Long)
 NEWUSER		uuid (String)
 	Fired when a player joins, contains string representation of their uuid for now
 	Sent to all players to represent the new player in their list of players
-NEWRAFT		uuid (String), [X,Y,TildID,{DATA}]
+NEWRAFT		uuid (String), raft
 	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
 MOVERAFT	uuid, X, Y, Rot, dX, dY , dRot, COMX, COMY
 	Fired when a server physics update is complete
@@ -30,4 +32,5 @@ DELUSER		uuid (String)
 	For when a user disconnects or drops out
 SETCONTROL uuid, Forward (Int), Rightward (Int), Clockwise (Int)
 	Set the 3 control integers
-
+NEWENTITY	uuid (String), entity
+	Spawn a new entity

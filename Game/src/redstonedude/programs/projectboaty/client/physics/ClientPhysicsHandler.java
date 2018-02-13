@@ -1,9 +1,12 @@
 package redstonedude.programs.projectboaty.client.physics;
 
+import java.util.ArrayList;
+
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
@@ -15,6 +18,16 @@ public class ClientPhysicsHandler {
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
 	public static int c = 0;
+	private static ArrayList<Entity> entities = new ArrayList<Entity>();
+	
+	public synchronized static void addEntity(Entity e) {
+		entities.add(e);
+	}
+	
+	public synchronized static ArrayList<Entity> getEntities() {
+		return (ArrayList<Entity>) entities.clone();
+	}
+	
 
 	public static void physicsUpdate() {
 		if (ControlHandler.mode == Mode.Playing) {
@@ -148,7 +161,7 @@ public class ClientPhysicsHandler {
 		double dcomx = comx_after - comx_initial;
 		double dcomy = comy_after - comy_initial;
 		//System.out.println(comx_after + ":" + comx_initial);
-		if (ControlHandler.debug_menu) {
+		if (ControlHandler.debug_lockpos) {
 			raft.setPos(new VectorDouble(5,5));
 		}
 		// System.out.println(dcomx + ":" + dcomy);

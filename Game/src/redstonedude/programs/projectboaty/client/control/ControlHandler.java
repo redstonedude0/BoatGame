@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -18,6 +19,7 @@ public class ControlHandler implements KeyListener {
 	public static boolean control_backward = false;
 
 	public static boolean debug_menu = false;
+	public static boolean debug_lockpos = false;
 
 	public static enum Mode {
 		MainMenu, Playing, Connecting
@@ -66,6 +68,17 @@ public class ControlHandler implements KeyListener {
 	public static void doMenuKeyReleased(KeyEvent e) {
 		
 	}
+	
+	public static void doDebugButton(int i) {
+		switch (i) {
+		case 1://warp lock
+			debug_lockpos = !debug_lockpos;
+			break;
+		case 2://summon character
+			ClientPacketHandler.sendPacket(new PacketRequestNewCharacter());
+			break;
+		}
+	}
 
 	public static void doPlayingKeyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -94,8 +107,11 @@ public class ControlHandler implements KeyListener {
 		case KeyEvent.VK_2:
 		case KeyEvent.VK_3:
 		case KeyEvent.VK_4:
-			//PhysicsHandler.createRaft(Integer.parseInt("" + e.getKeyChar()));
-			ClientPacketHandler.sendPacket(new PacketRequestRaft(Integer.parseInt("" + e.getKeyChar())));
+			if (debug_menu) {
+				doDebugButton(Integer.parseInt("" + e.getKeyChar()));
+			} else {
+				ClientPacketHandler.sendPacket(new PacketRequestRaft(Integer.parseInt("" + e.getKeyChar())));
+			}
 			break;
 		case KeyEvent.VK_ESCAPE:
 			escape_menu = !escape_menu;

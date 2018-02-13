@@ -30,6 +30,8 @@ public class ClientPacketListener implements Runnable {
 			oos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+			//socket probably closed, disconnect here
+			
 		}
 	}
 	

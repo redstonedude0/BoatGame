@@ -79,12 +79,10 @@ public class ServerPacketHandler {
 		case "PacketRequestRaft":
 			PacketRequestRaft prr = (PacketRequestRaft) packet;
 			// generate a new raft for this boik
-
 			ServerUserData sud = getUserData(connection.listener_uuid);
 			ServerPhysicsHandler.createRaft(prr.raftID, sud);
 			PacketNewRaft pnr = new PacketNewRaft(connection.listener_uuid, sud.raft);
 			broadcastPacket(pnr);
-
 			break;
 		case "PacketRequestMoveRaft":
 			PacketRequestMoveRaft prmr = (PacketRequestMoveRaft) packet;
@@ -119,6 +117,9 @@ public class ServerPacketHandler {
 			psc.requiredRightwardTranslation = prsc.requiredRightwardTranslation;
 			psc.uuid = connection.listener_uuid;
 			broadcastPacketExcept(connection, psc);
+			break;
+		case "PacketRequestNewCharacter":
+			ServerPhysicsHandler.newCharacter(connection.listener_uuid);
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

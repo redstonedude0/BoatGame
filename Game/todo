@@ -49,16 +49,19 @@ Alpha 0.7 (The Worlds Update): [TODO]
 [R]	Save noisemap key to world when world saves
 [D] Add sounds
 Alpha 0.8 (The Entities Update): [TODO]
-	Add barrel entities [random spawn chance each tick?]
+[R]	Add barrel entities [random spawn chance each tick?]
+	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
 	[discuss rejoin of players, and how overlapping will work]
-	Add player controlled entities, more can be spawned by a button press in debug menu
+[R]	Add player controlled entities, more can be spawned by a button press in debug menu
 	Player controlled entities can walk around
 	Player controlled entities walk across water to fetch barrels
 	Player controlled entities walk back to boat 0,0 plank when there are no tasks
 	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
 	Task selection is done randomly
-	Boats collide with islands, somehow
+	Boats collide with islands, somehow [drag and destruction?]
+	Boats collide with barrels, also somehow, perhaps velocity setting?
+	[Consider overhauling texture system]
 Alpha 0.9 (The Intelligence Update): [TODO]
 	PCEs wander around the raft when they have nothing to do
 	Implement server-side chat?

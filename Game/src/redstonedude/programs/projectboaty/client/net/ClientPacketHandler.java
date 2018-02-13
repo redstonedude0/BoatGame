@@ -9,9 +9,9 @@ import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
+import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
-import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -93,6 +93,11 @@ public class ClientPacketHandler {
 			PacketDelUser pdu = (PacketDelUser) packet;
 			ud = getUserData(pdu.uuid);
 			userData.remove(ud);
+			break;
+		case "PacketNewEntity":
+			PacketNewEntity pne = (PacketNewEntity) packet;
+			ClientPhysicsHandler.addEntity(pne.entity);
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
