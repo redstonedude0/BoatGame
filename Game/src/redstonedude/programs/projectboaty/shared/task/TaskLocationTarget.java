@@ -24,10 +24,10 @@ public abstract class TaskLocationTarget extends Task implements Serializable {
 		Entity e = ClientPhysicsHandler.getEntity(assignedEntityID);
 		if (e != null) {
 			if (targetLoc_absolute && !e.absolutePosition) {
-				//need to jump in water
+				//need to jump in water, need COM to be in same pos so adjust by 0.5
 				UserData ud = ClientPacketHandler.getUserData(e.raftUUID);
 				e.absolutePosition = true;
-				e.setPos(e.getPos().getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()));
+				e.setPos(e.getPos().add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5)));
 				e.raftUUID="";
 			}
 			if (!targetLoc_absolute && e.absolutePosition) {
