@@ -77,13 +77,14 @@ public class GraphicsHandler {
 		int index = ClientPhysicsHandler.c % 8;
 		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
 		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
-		for (int i = approxX-10; i < approxX+10; i++) {
+		for (int i = approxX-11; i < approxX+11; i++) {
 			for (int j = approxY-7; j < approxY+7; j++) {
 				int x = 100 * i;
 				int y = 100 * j;
 				TerrainType tt = WorldHandler.getTerrainType(i, j);
 				switch (tt) {
 				case Land:
+					g2d.drawImage(TextureHandler.getTexture("Island"), x, y, x + 100, y + 100, 0, 0, 32, 32, frame);
 					break;
 				case Water:
 					g2d.drawImage(TextureHandler.getTexture("Water_" + index), x, y, x + 100, y + 100, 0, 0, 32, 32, frame);
