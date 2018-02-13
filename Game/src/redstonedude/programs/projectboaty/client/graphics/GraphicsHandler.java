@@ -6,6 +6,7 @@ import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -14,10 +15,14 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
+import redstonedude.programs.projectboaty.shared.task.Task;
+import redstonedude.programs.projectboaty.shared.task.TaskCollect;
+import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
@@ -53,12 +58,23 @@ public class GraphicsHandler {
 			} catch (NoninvertibleTransformException e) {
 				e.printStackTrace();
 			}
+			if (ControlHandler.build_menu) {
+				g2d.setColor(new Color(0,0,0,127));
+				g2d.fillRect(0, 1000, 100, 60);
+				g2d.setColor(Color.WHITE);
+				g2d.drawString("[W]ooden floor", 10, 1010);
+				g2d.drawString("[T]hruster", 10, 1030);
+				g2d.drawString("[C]ollect Barrel", 10, 1050);
+			}
+			g2d.setColor(new Color(0,0,0,127));
+			g2d.fillRect(0, 1060, 100, 20);
+			g2d.setColor(Color.WHITE);
+			g2d.drawString("[B]uild/Assign", 10, 1070);
 			break;
 		case Connecting:
 			graphicsUpdateConnecting();
 			break;
 		}
-
 		frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(), frame.getHeight(), frame);
 	}
 
@@ -100,7 +116,7 @@ public class GraphicsHandler {
 			if (ud.raft != null) {
 				VectorDouble unitx = ud.raft.getUnitX();
 				VectorDouble unity = ud.raft.getUnitY();
-				for (Tile tile : ud.raft.tiles) {
+				for (Tile tile : ud.raft.getTiles()) {
 					double x = tile.getAbsoluteX(ud.raft);
 					double y = tile.getAbsoluteY(ud.raft);
 					// using graphics instead of colors
@@ -128,6 +144,63 @@ public class GraphicsHandler {
 				int x = (int) (100 * (ud.raft.getPos().x + ud.raft.getCOMPos().x * unitx.x + ud.raft.getCOMPos().y * unity.x));
 				int y = (int) (100 * (ud.raft.getPos().y + ud.raft.getCOMPos().x * unitx.y + ud.raft.getCOMPos().y * unity.y));
 				g2d.drawOval(x - 10, y - 10, 20, 20);
+			}
+		}
+		//draw construction tile and task tiles
+		UserData cud = ClientPacketHandler.getCurrentUserData();
+		if (cud != null && cud.raft != null) {
+			ControlHandler.updateConstructionTile();
+			Tile constructionTile = cud.raft.getConstructionTile();
+			if (constructionTile != null) {
+				double x = constructionTile.getAbsoluteX(cud.raft);
+				double y = constructionTile.getAbsoluteY(cud.raft);
+				// using graphics instead of colors
+				AffineTransform rotator = new AffineTransform();
+				rotator.translate(100 * x, 100 * y);
+				rotator.rotate(cud.raft.theta);
+				g2d.transform(rotator);
+				g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+				try {
+					g2d.transform(rotator.createInverse());
+				} catch (NoninvertibleTransformException e) {
+					e.printStackTrace();
+				}
+			}
+			//draw tasks
+			ArrayList<Task> tasks = cud.raft.getTasks();
+			for (Entity e: ClientPhysicsHandler.getEntities()) {
+				if (e instanceof EntityCharacter) {
+					EntityCharacter ec = (EntityCharacter) e;
+					if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID) && ec.currentTask != null) {
+						tasks.add(ec.currentTask);
+					}
+				}
+			}
+			for (Task t: tasks) {
+				if (t instanceof TaskCollect) {
+					TaskCollect tc = (TaskCollect) t;
+					if (!tc.collected) {
+						VectorDouble pos = tc.targetLoc;
+						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100*pos.x), (int) (100*pos.y), (int) (100*pos.x+100), (int) (100*pos.y+100), 0, 0, 32, 32, frame);
+					}
+				} else if (t instanceof TaskConstruct) {
+					TaskConstruct tc = (TaskConstruct) t;
+					if (!tc.constructed) {
+						double x = tc.resultantTile.getAbsoluteX(cud.raft);
+						double y = tc.resultantTile.getAbsoluteY(cud.raft);
+						// using graphics instead of colors
+						AffineTransform rotator = new AffineTransform();
+						rotator.translate(100 * x, 100 * y);
+						rotator.rotate(cud.raft.theta);
+						g2d.transform(rotator);
+						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+						try {
+							g2d.transform(rotator.createInverse());
+						} catch (NoninvertibleTransformException e) {
+							e.printStackTrace();
+						}
+					}
+				}
 			}
 		}
 

@@ -4,8 +4,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
@@ -13,9 +15,12 @@ import redstonedude.programs.projectboaty.shared.net.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
+import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 
-public class ControlHandler implements KeyListener, MouseListener {
+public class ControlHandler implements KeyListener, MouseListener, MouseMotionListener {
 
 	public static boolean control_left_rotate = false;
 	public static boolean control_right_rotate = false;
@@ -26,11 +31,16 @@ public class ControlHandler implements KeyListener, MouseListener {
 
 	public static boolean debug_menu = false;
 	public static boolean debug_lockpos = false;
+	
+	public static boolean build_menu = false;
 
 	public static enum Mode {
 		MainMenu, Playing, Connecting
 	}
 	public static boolean escape_menu = false;
+	
+	public static boolean clickmode_collection = true;
+	public static boolean clickmode_building_wood = false;
 
 	public static Mode mode = Mode.MainMenu;
 
@@ -85,8 +95,31 @@ public class ControlHandler implements KeyListener, MouseListener {
 			break;
 		}
 	}
+	
+	public static void doBuildMenuKeyPress(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_B:
+			build_menu = !build_menu;
+			break;
+		case KeyEvent.VK_W://shit system. replace it.
+			clickmode_collection = false;
+			clickmode_building_wood = true;
+			break;
+		case KeyEvent.VK_T:
+			clickmode_collection = false;
+			clickmode_building_wood = false;
+			break;
+		case KeyEvent.VK_C:
+			clickmode_collection = true;
+			break;
+		}
+	}
 
 	public static void doPlayingKeyPressed(KeyEvent e) {
+		if (build_menu) {
+			doBuildMenuKeyPress(e);
+			return;
+		}
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_A:
 			control_left_rotate = true;
@@ -124,11 +157,12 @@ public class ControlHandler implements KeyListener, MouseListener {
 			break;
 		case KeyEvent.VK_ENTER:
 			if (escape_menu) {
-				//PhysicsHandler.reset(); //redundancy
-				//TODO disconnect properly
-				//reset();
-				//mode = Mode.MainMenu;
+				ClientPacketListener.disconnect();
 			}
+			break;
+		case KeyEvent.VK_B:
+			build_menu = !build_menu;
+			break;
 		}
 	}
 
@@ -222,13 +256,28 @@ public class ControlHandler implements KeyListener, MouseListener {
 	}
 	
 	public static void doPlayingPress(MouseEvent e) {
-		
 		int screenx = e.getX();
 		int screeny = e.getY();
+		//see if any barrels were clicked on
+		doPlayingPress(getAbsoluteVectorFromScreenCoordinates(screenx, screeny));
+	}
+	
+	public static VectorDouble getAbsoluteVectorFromScreenCoordinates(int screenx, int screeny) {
 		VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 		VectorDouble clicked = new VectorDouble(screenx, screeny);
 		clicked = clicked.subtract(offset).divide(100);
-		//see if any barrels were clicked on
+		return clicked;
+	}
+	
+	public static void doPlayingPress(VectorDouble clicked) {
+		if (clickmode_collection) {
+			doBarrelPress(clicked);
+		} else {
+			doBuildingPress(clicked);
+		}
+	}
+	
+	public static void doBarrelPress(VectorDouble clicked) {
 		for (Entity ent: ClientPhysicsHandler.getEntities()) {
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.absolutePosition) {
@@ -244,18 +293,50 @@ public class ControlHandler implements KeyListener, MouseListener {
 								t.targetLoc = ent.getPos();
 								t.targetLoc_absolute = true;
 								t.targetLoc_raftuuid = "";
-								ud.raft.tasks.add(t);
+								ud.raft.addTask(t);
 							}
 						}
 					}
 				}
 			}
 		}
-		
-		//EntityBarrel eb = new EntityBarrel();
-		//b.absolutePosition = true;
-		//eb.setPos(clicked);
-		//ClientPhysicsHandler.addEntity(eb);
+	}
+	
+	public static void doBuildingPress(VectorDouble clicked) {
+		//convert to relative coordinates
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		VectorDouble blockPos = getBlockPosFromScreenCoordinates(mouseX, mouseY,ud);
+		Tile tile;
+		if (clickmode_building_wood) {
+			tile = new Tile();
+		} else {
+			tile = new TileThruster();
+		}
+		tile.setPos(blockPos);
+		TaskConstruct t = new TaskConstruct();
+		t.resultantTile = tile;
+		t.targetLoc = blockPos;
+		t.targetLoc_absolute = false;
+		t.targetLoc_raftuuid = ud.uuid;
+		ud.raft.addTask(t);
+	}
+	
+	public static VectorDouble getBlockPosFromScreenCoordinates(int screenx, int screeeny, UserData currentUserData) {
+		VectorDouble absolute = getAbsoluteVectorFromScreenCoordinates(mouseX, mouseY);
+		VectorDouble relative = absolute.subtract(currentUserData.raft.getPos()).getRelative(currentUserData.raft.getUnitX(), currentUserData.raft.getUnitY());
+		VectorDouble blockPos = new VectorDouble(Math.floor(relative.x), Math.floor(relative.y));
+		return blockPos;
+	}
+	
+	public static void updateConstructionTile() {
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		if (!clickmode_collection) {
+			Tile t = new Tile();
+			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY,ud));
+			ud.raft.setConstructionTile(t);
+		} else {
+			ud.raft.setConstructionTile(null);
+		}
 	}
 	
 
@@ -289,6 +370,19 @@ public class ControlHandler implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	}
+
+	public static int mouseX = 0;
+	public static int mouseY = 0;
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
 	}
 
 }

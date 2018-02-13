@@ -90,7 +90,7 @@ public class ClientPhysicsHandler {
 							//ud.raft.tasks.remove(ec.currentTask);
 							//System.out.println("removed " + ec.currentTask.taskTypeID);
 						}
-						Task t = TaskHandler.getTask(ud.raft.tasks, ec);
+						Task t = TaskHandler.getTask(ud.raft,ec);
 						ec.currentTask = t;
 						ec.currentTask.init();
 					}
@@ -110,7 +110,7 @@ public class ClientPhysicsHandler {
 	public static void approxPhysicsUpdate(UserData sud) {
 		Raft raft = sud.raft;
 		if (raft != null) {
-			for (Tile tile : raft.tiles) {
+			for (Tile tile : raft.getTiles()) {
 				if (tile instanceof TileThruster) {
 					TileThruster thruster = (TileThruster) tile;
 					thruster.setThrustStrength(raft, sud.requiredClockwiseRotation, sud.requiredForwardTranslation, sud.requiredRightwardTranslation);
@@ -135,7 +135,7 @@ public class ClientPhysicsHandler {
 		// calculate non-rotational physics, as well as updating thruster control values
 		VectorDouble thrust = new VectorDouble();
 		double mass = 0;
-		for (Tile tile : raft.tiles) {
+		for (Tile tile : raft.getTiles()) {
 			mass += tile.mass;
 			if (tile instanceof TileThruster) {
 				TileThruster thruster = (TileThruster) tile;
@@ -160,7 +160,7 @@ public class ClientPhysicsHandler {
 		// a = Fr/mrr
 		// centre of mass must first be located.
 		VectorDouble massMoments = new VectorDouble();
-		for (Tile tile : raft.tiles) {
+		for (Tile tile : raft.getTiles()) {
 			VectorDouble moment = tile.getPos().add(new VectorDouble(0.5, 0.5)).multiply(tile.mass);
 			massMoments = massMoments.add(moment);
 		}
@@ -171,7 +171,7 @@ public class ClientPhysicsHandler {
 		// calculate moments of inertia about this point
 		double forcemoments = 0;
 		double squareradiusofgyration = 0;
-		for (Tile tile : raft.tiles) {
+		for (Tile tile : raft.getTiles()) {
 			VectorDouble dpos = tile.getPos().add(new VectorDouble(0.5, 0.5)).subtract(centreOfMass);// this is relative dpos, calculate absolute
 
 			double squaredistance = dpos.getSquaredLength();

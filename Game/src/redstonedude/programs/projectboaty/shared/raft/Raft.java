@@ -19,11 +19,40 @@ public class Raft implements Serializable {
 	public double cos = 1;
 	private VectorDouble COMPos = new VectorDouble(); //relative 
 	
-	public ArrayList<Tile> tiles = new ArrayList<Tile>();
-	public ArrayList<Task> tasks = new ArrayList<Task>();
+	private ArrayList<Tile> tiles = new ArrayList<Tile>();
+	private ArrayList<Task> tasks = new ArrayList<Task>();
+	private Tile constructionTile; //used to show current mouse position
+	
+	public synchronized Tile getConstructionTile() {
+		return constructionTile;
+	}
+	
+	public synchronized void setConstructionTile(Tile t) {
+		constructionTile = t;
+	}
+	
+	public synchronized ArrayList<Tile> getTiles() {
+		return (ArrayList<Tile>) tiles.clone();
+	}
+	
+	public synchronized void addTile(Tile t) {
+		tiles.add(t);
+	}
+	
+	public synchronized ArrayList<Task> getTasks() {
+		return (ArrayList<Task>) tasks.clone();
+	}
+	
+	public synchronized void addTask(Task t) {
+		tasks.add(t);
+	}
+	
+	public synchronized void removeTask(Task t) {
+		tasks.remove(t);
+	}
 	
 	public Tile getTileAt(int x, int y) {
-		for (Tile t: tiles) {
+		for (Tile t: getTiles()) {
 			if ((int) t.getPos().x == x) {
 				if ((int) t.getPos().y == y) {
 					return t;

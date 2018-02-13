@@ -89,6 +89,23 @@ public class VectorDouble implements Serializable {
 		return ans;
 	}
 	
+	public VectorDouble getRelative(VectorDouble unitx, VectorDouble unity) {
+		VectorDouble ans = new VectorDouble();
+		// [Xx Yx][Rx] = [Ax]
+		// [Xy Yy][Ry] = [Ay]
+		
+		// 1/det[YY -Yx][Ax] = [Rx]
+		//      [-Xy Xx][Ay] = [Ry]
+		double a = unitx.x;
+		double b = unity.x;
+		double c = unitx.y;
+		double d = unity.y;
+		double det = a*d-b*c;
+		ans.x = x*d-y*b;
+		ans.y = -x*c+y*a;
+		ans = ans.divide(det);
+		return ans;
+	}
 	
 	
 }

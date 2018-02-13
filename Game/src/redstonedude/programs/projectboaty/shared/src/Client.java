@@ -25,6 +25,7 @@ public class Client implements Runnable {
 		ControlHandler ch = new ControlHandler();
 		GraphicsHandler.frame.addKeyListener(ch);
 		GraphicsHandler.frame.addMouseListener(ch);
+		GraphicsHandler.frame.addMouseMotionListener(ch);
 		MusicHandler.musicTester();
 		start();
 		/*try {

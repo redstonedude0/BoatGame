@@ -5,19 +5,21 @@ import java.util.Random;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.raft.Raft;
 
 public class TaskHandler {
 	
 	public static Random rand = new Random();
 	
-	public static Task getTask(ArrayList<Task> tasks, EntityCharacter ec) {
+	public static Task getTask(Raft raft, EntityCharacter ec) {
+		ArrayList<Task> tasks = raft.getTasks();
 		int size = tasks.size();
 		if (size != 0) {
 			int index = rand.nextInt(size);
 			Task t = tasks.get(index);
 			if (t.isEligible(ec)) {
 				t.assignedEntityID = ec.uuid;
-				tasks.remove(t);
+				raft.removeTask(t);
 				return t;
 			}
 		}  //else
