@@ -61,6 +61,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
 	Task selection is done randomly
+	Boats collide with islands, somehow
 Alpha 0.9 (The Intelligence Update): [TODO]
 	PCEs wander around the raft when they have nothing to do
 	Implement server-side chat?
