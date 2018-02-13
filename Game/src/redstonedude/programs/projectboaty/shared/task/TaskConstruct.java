@@ -33,6 +33,7 @@ public class TaskConstruct extends TaskLocationTarget implements Serializable {
 			prrt.tiles = ud.raft.getTiles();
 			ClientPacketHandler.sendPacket(prrt); //update the server on this
 			ce.carryingBarrel = false;
+			ce.sendState();
 			// now relocate the target to the ships current origin
 			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship
 			targetLoc_absolute = false;

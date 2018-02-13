@@ -8,6 +8,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestCharacterState;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -81,6 +82,7 @@ public class ClientPhysicsHandler {
 		switch (e.entityTypeID) {
 		case "EntityCharacter":
 			EntityCharacter ec = (EntityCharacter) e;
+			//System.out.println(ec.ownerUUID + ":" + ClientPacketHandler.currentUserUUID);
 			if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
 				UserData ud = ClientPacketHandler.getUserData(ec.ownerUUID);
 				if (ud != null && ud.raft != null) {
@@ -93,8 +95,11 @@ public class ClientPhysicsHandler {
 						Task t = TaskHandler.getTask(ud.raft,ec);
 						ec.currentTask = t;
 						ec.currentTask.init();
+						ec.sendState();
 					}
 					ec.currentTask.execute();
+				} else {
+					//System.out.println("e1");
 				}
 				PacketRequestMoveCharacter prmc = new PacketRequestMoveCharacter();
 				prmc.uuid = ec.uuid;
@@ -102,7 +107,11 @@ public class ClientPhysicsHandler {
 				prmc.absolutePos = ec.absolutePosition;
 				prmc.raftPosID = ec.raftUUID;
 				ClientPacketHandler.sendPacket(prmc);
-			}//do not try to use other players characters
+			} else {
+				//System.out.println("other player");
+			}
+			
+			//do not try to use other players characters
 			break;
 		}
 	}

@@ -19,6 +19,10 @@ REQUESTCHARACTERMOVE	uuid, pos
 	Requests to move a character
 REQUESTRAFTTILES	ArrayList<Tile>
 	Requests to update all tiles in a raft
+*REQUESTCHARACTERSTATE	uuid, currentTask, carryingBarrel
+	Requests to make a change to a character state
+*REQUESTSETTASKLIST	ArrayList<Task>
+	Request to set the task list
 
 Client bound packets:
 
@@ -42,3 +46,19 @@ CHARACTERMOVE	uuid, pos
 	character moved
 RAFTTILES	uuid, ArrayList<Tile>
 	Update all tiles in a raft
+*CHARACTERSTATE	uuid, currentTask, carryingBarrel
+	Make a change to a character state
+//SETTASKLIST	uuid, ArrayList<Task>    #removed - not needed, tasks should be sent on NEWRAFT
+//	Set the task list of a boat, currently only sent on player join (doesn't bounce from requestsettasklist)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

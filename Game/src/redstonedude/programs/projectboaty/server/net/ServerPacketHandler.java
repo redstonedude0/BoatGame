@@ -9,7 +9,9 @@ import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.Packet;
+import redstonedude.programs.projectboaty.shared.net.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveCharacter;
@@ -18,11 +20,13 @@ import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.PacketRaftTiles;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestCharacterState;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestSetTaskList;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.src.Server;
@@ -158,6 +162,31 @@ public class ServerPacketHandler {
 			prt.tiles = prrt.tiles;
 			broadcastPacketExcept(connection, prt);
 			break;
+		case "PacketRequestCharacterState":
+			PacketRequestCharacterState prcs = (PacketRequestCharacterState) packet;
+			Entity e = ServerPhysicsHandler.getEntity(prcs.characterUUID);
+			if (e instanceof EntityCharacter) {
+				EntityCharacter ec = (EntityCharacter) e;
+				System.out.println("UUID:" + ec.uuid);
+				System.out.println("  PRCSU:" + prcs.currentTask.assignedEntityID);
+				System.out.println("  PRCST:" + prcs.currentTask.taskTypeID);
+				System.out.println("  PRCSC:" + prcs.currentTask.completed);
+				ec.carryingBarrel = prcs.carryingBarrel;
+				ec.currentTask = prcs.currentTask;
+				PacketCharacterState pcs = new PacketCharacterState();
+				pcs.characterUUID = prcs.characterUUID;
+				pcs.carryingBarrel = prcs.carryingBarrel;
+				pcs.currentTask = prcs.currentTask;
+				broadcastPacketExcept(connection, pcs);
+			}
+			break;
+		case "PacketRequestSetTaskList":
+			PacketRequestSetTaskList prstl = (PacketRequestSetTaskList) packet;
+			sud = getUserData(connection.listener_uuid);
+			if (sud != null && sud.raft != null) {
+				sud.raft.setTasks(prstl.tasks);
+			}
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -211,8 +240,14 @@ public class ServerPacketHandler {
 			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 		}
 		for (Entity e: ServerPhysicsHandler.getEntities()) {
+			//if (e instanceof EntityCharacter) {
+			//	System.out.println("new character:");
+			//	EntityCharacter ec = (EntityCharacter) e;
+			//	System.out.println("  UUIDS:" + ec.uuid + ":" + ec.currentTask.assignedEntityID);
+			//}
 			spl.send(new PacketNewEntity(e));
 		}
+		
 		
 	}
 

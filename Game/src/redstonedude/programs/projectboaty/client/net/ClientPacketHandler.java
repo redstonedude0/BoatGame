@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.Packet;
+import redstonedude.programs.projectboaty.shared.net.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveCharacter;
@@ -15,7 +18,6 @@ import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.PacketRaftTiles;
-import redstonedude.programs.projectboaty.shared.net.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -55,6 +57,7 @@ public class ClientPacketHandler {
 			sendPacket(new PacketUserData());
 			//sendPacket(new PacketRequestRaft(1));
 			currentUserUUID = pc.uuid;
+			//System.out.println("JOINED AS USER: " + currentUserUUID);
 			WorldHandler.key = pc.key;
 			ControlHandler.mode = Mode.Playing;
 			break;
@@ -113,6 +116,15 @@ public class ClientPacketHandler {
 			ud = getUserData(prt.uuid);
 			if (ud != null && ud.raft != null) {
 				ud.raft.setTiles(prt.tiles);
+			}
+			break;
+		case "PacketCharacterState":
+			PacketCharacterState pcs = (PacketCharacterState) packet;
+			e = ServerPhysicsHandler.getEntity(pcs.characterUUID);
+			if (e instanceof EntityCharacter) {
+				EntityCharacter ec = (EntityCharacter) e;
+				ec.carryingBarrel = pcs.carryingBarrel;
+				ec.currentTask = pcs.currentTask;
 			}
 			break;
 		default:

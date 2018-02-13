@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.task.Task;
+import redstonedude.programs.projectboaty.shared.task.TaskHandler;
 
 public class Raft implements Serializable {
 	
@@ -43,16 +44,22 @@ public class Raft implements Serializable {
 		tiles.add(t);
 	}
 	
+	public synchronized void setTasks(ArrayList<Task> t) {
+		tasks = t; //don't need to update TaskHandler since this was received from the server
+	}
+	
 	public synchronized ArrayList<Task> getTasks() {
 		return (ArrayList<Task>) tasks.clone();
 	}
 	
 	public synchronized void addTask(Task t) {
 		tasks.add(t);
+		TaskHandler.sendList(this);
 	}
 	
 	public synchronized void removeTask(Task t) {
 		tasks.remove(t);
+		TaskHandler.sendList(this);
 	}
 	
 	public Tile getTileAt(int x, int y) {
