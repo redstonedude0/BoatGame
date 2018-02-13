@@ -14,6 +14,8 @@ import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
+import redstonedude.programs.projectboaty.shared.net.PacketRaftTiles;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -105,6 +107,13 @@ public class ClientPacketHandler {
 			e.absolutePosition = pmc.absolutePos;
 			e.setPos(pmc.pos);
 			e.raftUUID = pmc.raftPosID;
+			break;
+		case "PacketRaftTiles":
+			PacketRaftTiles prt = (PacketRaftTiles) packet;
+			ud = getUserData(prt.uuid);
+			if (ud != null && ud.raft != null) {
+				ud.raft.setTiles(prt.tiles);
+			}
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

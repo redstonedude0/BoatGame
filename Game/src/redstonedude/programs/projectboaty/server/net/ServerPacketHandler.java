@@ -14,11 +14,14 @@ import redstonedude.programs.projectboaty.shared.net.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
+import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
+import redstonedude.programs.projectboaty.shared.net.PacketRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.src.Logger;
@@ -130,7 +133,7 @@ public class ServerPacketHandler {
 			break;
 		case "PacketRequestMoveCharacter":
 			PacketRequestMoveCharacter prmc = (PacketRequestMoveCharacter) packet;
-			for (Entity e: ServerPhysicsHandler.entities) {
+			for (Entity e: ServerPhysicsHandler.getEntities()) {
 				if (e.uuid.equals(prmc.uuid)) {
 					e.setPos(prmc.pos);
 					e.absolutePosition = prmc.absolutePos;
@@ -143,6 +146,17 @@ public class ServerPacketHandler {
 			pmc.absolutePos = prmc.absolutePos;
 			pmc.raftPosID = prmc.raftPosID;
 			broadcastPacketExcept(connection, pmc);
+			break;
+		case "PacketRequestRaftTiles":
+			PacketRequestRaftTiles prrt = (PacketRequestRaftTiles) packet;
+			sud = getUserData(connection.listener_uuid);
+			if (sud != null && sud.raft != null) {
+				sud.raft.setTiles(prrt.tiles);
+			}
+			PacketRaftTiles prt = new PacketRaftTiles();
+			prt.uuid = connection.listener_uuid;
+			prt.tiles = prrt.tiles;
+			broadcastPacketExcept(connection, prt);
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
@@ -175,7 +189,9 @@ public class ServerPacketHandler {
 		ud.IP = spl.IP;
 		for (ServerUserData sud : ServerDataHandler.savedUsers) {
 			if (sud.IP.equals(spl.IP)) {
+				//REMOVE THE FOLLOWING 2 LINES TO TEST MULTIPLAYER FROM THE SAME IP, REMEMBER TO ADD THEM BACK THOUGH
 				ud = sud;
+				spl.listener_uuid = ud.uuid; //last chance to change the UUID, so change it to what it was before
 			}
 		}
 		ud.uuid = spl.listener_uuid;
@@ -194,6 +210,9 @@ public class ServerPacketHandler {
 			}//the connecting player needs to know about everyones raft
 			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 		}
+		for (Entity e: ServerPhysicsHandler.getEntities()) {
+			spl.send(new PacketNewEntity(e));
+		}
 		
 	}
 
@@ -203,6 +222,16 @@ public class ServerPacketHandler {
 			userData.remove(sud);
 			listeners.remove(spl);
 			broadcastPacket(new PacketDelUser(spl.listener_uuid));
+			//clear away old profile
+			ServerUserData toRemove = null;
+			for (ServerUserData d: ServerDataHandler.savedUsers) {
+				if (d.IP.equals(sud.IP)) {
+					toRemove = d;
+				}
+			}
+			if (toRemove != null) {
+				ServerDataHandler.savedUsers.remove(toRemove);
+			}
 			ServerDataHandler.savedUsers.add(sud);
 			if (listeners.size() == 1) {// is now empty (barring the open listener) and wasn't before - the last user
 										// has disconnected

@@ -21,7 +21,7 @@ public class Raft implements Serializable {
 	
 	private ArrayList<Tile> tiles = new ArrayList<Tile>();
 	private ArrayList<Task> tasks = new ArrayList<Task>();
-	private Tile constructionTile; //used to show current mouse position
+	private transient Tile constructionTile; //used to show current mouse position, doesn't need to be serialized or even stored server-side
 	
 	public synchronized Tile getConstructionTile() {
 		return constructionTile;
@@ -33,6 +33,10 @@ public class Raft implements Serializable {
 	
 	public synchronized ArrayList<Tile> getTiles() {
 		return (ArrayList<Tile>) tiles.clone();
+	}
+	
+	public synchronized void setTiles(ArrayList<Tile> t) {
+		tiles = t;
 	}
 	
 	public synchronized void addTile(Tile t) {

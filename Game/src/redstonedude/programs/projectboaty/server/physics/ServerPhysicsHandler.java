@@ -18,7 +18,41 @@ public class ServerPhysicsHandler {
 
 	public static int c = 0;
 	
-	public static ArrayList<Entity> entities = new ArrayList<Entity>();
+	private static ArrayList<Entity> entities = new ArrayList<Entity>();
+	
+	public synchronized static void addEntity(Entity e) {
+		entities.add(e);
+	}
+
+	public synchronized static ArrayList<Entity> getEntities() {
+		return (ArrayList<Entity>) entities.clone();
+	}
+	
+	public synchronized static void setEntities(ArrayList<Entity> e) {
+		entities = e;
+	}
+
+	public synchronized static Entity getEntity(String uuid) {
+		for (Entity e : entities) {
+			if (e.uuid.equals(uuid)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public synchronized static void removeEntity(String uuid) {
+		Entity del = null;
+		for (Entity e : entities) {
+			if (e.uuid.equals(uuid)) {
+				del = e;
+				break;
+			}
+		}
+		if (del != null) {
+			entities.remove(del);
+		}
+	}
 	
 	public static void physicsUpdate() {
 		DebugHandler.clear();
@@ -43,7 +77,7 @@ public class ServerPhysicsHandler {
 			double yFar2 = pos.y+16;
 			double yClose2 = pos.y+8;
 			double count = 0;
-			for (Entity e: entities) {
+			for (Entity e: getEntities()) {
 				if (e instanceof EntityBarrel) {
 					VectorDouble epos = e.getPos();
 					if (epos.x > xFar1 && epos.x < xFar2) {
@@ -76,7 +110,7 @@ public class ServerPhysicsHandler {
 		eb.setPos(new VectorDouble(x, y));
 		eb.uuid = UUID.randomUUID().toString();
 		eb.absolutePosition = true;
-		entities.add(eb);
+		addEntity(eb);
 		ServerPacketHandler.broadcastPacket(new PacketNewEntity(eb));
 	}
 	
@@ -89,12 +123,13 @@ public class ServerPhysicsHandler {
 			ec.ownerUUID = clientuuid;
 			ec.raftUUID = clientuuid;
 			ec.absolutePosition = false;
-			entities.add(ec);
+			addEntity(ec);
 			ServerPacketHandler.broadcastPacket(new PacketNewEntity(ec));
 		}
 	}
 
 	public static void createRaft(int id, ServerUserData sud) {
+		//System.out.println("RIIIIIIIGHT WE ARE ACTUALLY MKAING A RAFT RIGHT NOW");
 		Raft raft = new Raft();
 		raft.setPos(new VectorDouble(4, 3));
 		//sud.cameraPosition = new VectorDouble(4,3);

@@ -17,6 +17,8 @@ REQUESTNEWCHARACTER
 	Requests a new character to be added to the raft
 REQUESTCHARACTERMOVE	uuid, pos
 	Requests to move a character
+REQUESTRAFTTILES	ArrayList<Tile>
+	Requests to update all tiles in a raft
 
 Client bound packets:
 
@@ -38,3 +40,5 @@ NEWENTITY	uuid (String), entity
 	Spawn a new entity
 CHARACTERMOVE	uuid, pos
 	character moved
+RAFTTILES	uuid, ArrayList<Tile>
+	Update all tiles in a raft

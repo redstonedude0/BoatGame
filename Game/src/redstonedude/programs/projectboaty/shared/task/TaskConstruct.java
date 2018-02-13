@@ -7,6 +7,7 @@ import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.net.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
@@ -28,6 +29,9 @@ public class TaskConstruct extends TaskLocationTarget implements Serializable {
 			EntityCharacter ce = (EntityCharacter) ClientPhysicsHandler.getEntity(assignedEntityID);
 			UserData ud = ClientPacketHandler.getUserData(ce.ownerUUID);
 			ud.raft.addTile(resultantTile);
+			PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
+			prrt.tiles = ud.raft.getTiles();
+			ClientPacketHandler.sendPacket(prrt); //update the server on this
 			ce.carryingBarrel = false;
 			// now relocate the target to the ships current origin
 			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship

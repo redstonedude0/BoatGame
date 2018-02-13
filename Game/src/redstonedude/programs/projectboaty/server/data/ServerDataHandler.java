@@ -11,8 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.server.world.ServerWorldHandler;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
@@ -27,9 +29,13 @@ public class ServerDataHandler {
 			f.createNewFile();
 			try (FileOutputStream fos = new FileOutputStream(f); ObjectOutputStream oos = new ObjectOutputStream(fos);) {
 				for (ServerUserData sud: savedUsers) {
+					Logger.log("saved user data");
 					oos.writeObject(sud);
 				}
+				oos.writeObject(ServerPhysicsHandler.getEntities());
+				Logger.log("saved entities");
 				oos.writeObject(new Long(WorldHandler.key));
+				Logger.log("saved world key");
 				oos.flush();
 			} catch (Exception e) {
 				Logger.log("Failed save: " + e.getMessage());
@@ -55,6 +61,9 @@ public class ServerDataHandler {
 						//its the worldgen key
 						ServerWorldHandler.key = (Long) inputObject;
 						Logger.log("loaded key");
+					} else if (inputObject instanceof ArrayList<?>) {
+						ServerPhysicsHandler.setEntities((ArrayList<Entity>) inputObject);
+						Logger.log("loaded entities");
 					} else {
 						Logger.log("unknown class error in loading");
 					}
