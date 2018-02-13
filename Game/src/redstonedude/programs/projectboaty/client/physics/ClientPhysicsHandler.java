@@ -84,9 +84,14 @@ public class ClientPhysicsHandler {
 			if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
 				UserData ud = ClientPacketHandler.getUserData(ec.ownerUUID);
 				if (ud != null && ud.raft != null) {
-					if (ec.currentTask == null) {
+					if (ec.currentTask == null || ec.currentTask.completed) {
+						if (ec.currentTask != null) {
+							//compeleted
+							ud.raft.tasks.remove(ec.currentTask);
+						}
 						Task t = TaskHandler.getTask(ud.raft.tasks, ec);
 						ec.currentTask = t;
+						ec.currentTask.init();
 					}
 					ec.currentTask.execute();
 				}

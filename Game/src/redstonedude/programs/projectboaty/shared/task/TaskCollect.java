@@ -21,4 +21,9 @@ public class TaskCollect extends TaskLocationTarget implements Serializable {
 		completed = true;
 	}
 
+	@Override
+	public void init() {
+		//no initialisation needed
+	}
+
 }

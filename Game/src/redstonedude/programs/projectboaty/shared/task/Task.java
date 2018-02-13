@@ -12,5 +12,7 @@ public abstract class Task implements Serializable {
 	
 	public abstract void execute();
 	
+	public abstract void init();
+	
 	
 }
