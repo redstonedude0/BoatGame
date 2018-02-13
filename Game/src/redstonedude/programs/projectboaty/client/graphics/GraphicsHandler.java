@@ -8,6 +8,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
@@ -29,6 +30,7 @@ import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 public class GraphicsHandler {
 
 	public static JFrame frame;
+	
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
 
@@ -272,6 +274,12 @@ public class GraphicsHandler {
 		backbuffer = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_RGB);
 		g2d = backbuffer.createGraphics();
 		frame = new JFrame("Raft Game");
+		//panel for graphics
+		//panel for button overlay
+		//buttons
+		//add buttons to panel
+		//add graphics to panel
+		//add panels to frame
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
