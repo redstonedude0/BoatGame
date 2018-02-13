@@ -86,8 +86,9 @@ public class ClientPhysicsHandler {
 				if (ud != null && ud.raft != null) {
 					if (ec.currentTask == null || ec.currentTask.completed) {
 						if (ec.currentTask != null) {
-							//compeleted
-							ud.raft.tasks.remove(ec.currentTask);
+							//compeleted, should've already been removed when it was taken up
+							//ud.raft.tasks.remove(ec.currentTask);
+							//System.out.println("removed " + ec.currentTask.taskTypeID);
 						}
 						Task t = TaskHandler.getTask(ud.raft.tasks, ec);
 						ec.currentTask = t;

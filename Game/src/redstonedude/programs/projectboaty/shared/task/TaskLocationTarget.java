@@ -30,15 +30,21 @@ public abstract class TaskLocationTarget extends Task implements Serializable {
 				e.setPos(e.getPos().add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5)));
 				e.raftUUID="";
 			}
+			VectorDouble target = targetLoc;
 			if (!targetLoc_absolute && e.absolutePosition) {
-				//need to climb aboard
-				//oh well, screw it
+				//System.out.println("using different target");
+				//need to navigate to ship and then climb aboard
+				//overwrite target to point to absolute
+				UserData ud = ClientPacketHandler.getUserData(targetLoc_raftuuid);
+				target = target.add(new VectorDouble(0.5, 0.5)).getAbsolute(ud.raft.getUnitX(),ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5));
 			}
 			VectorDouble pos = e.getPos();
-			VectorDouble diff = targetLoc.subtract(pos);
+			VectorDouble diff = target.subtract(pos);
 			if (diff.getSquaredLength() <= 0.01) {
 				//less than 0.1 away
 				e.setPos(targetLoc);
+				e.absolutePosition = targetLoc_absolute;
+				e.raftUUID = targetLoc_raftuuid;
 				targetReached();
 			} else {
 				diff = diff.setMagnitude(0.1);

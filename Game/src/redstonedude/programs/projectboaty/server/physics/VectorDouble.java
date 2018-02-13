@@ -23,14 +23,12 @@ public class VectorDouble implements Serializable {
 	
 	
 	
-	/**
-	 * Add another vector to this vector
-	 * @param v the vector to add to this vector
-	 */
+	
 	public VectorDouble add(VectorDouble v) {
-		x += v.x;
-		y += v.y;
-		return this;
+		VectorDouble ans = new VectorDouble(this);
+		ans.x += v.x;
+		ans.y += v.y;
+		return ans;
 	}
 	
 	public VectorDouble subtract(VectorDouble v) {

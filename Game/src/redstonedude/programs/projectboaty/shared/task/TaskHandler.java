@@ -16,6 +16,7 @@ public class TaskHandler {
 			int index = rand.nextInt(size);
 			Task t = tasks.get(index);
 			t.assignedEntityID = ec.uuid;
+			tasks.remove(t);
 			return t;
 		} else {
 			TaskWander tw = new TaskWander(ec.uuid);

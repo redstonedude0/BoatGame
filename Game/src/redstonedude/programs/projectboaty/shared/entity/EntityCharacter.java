@@ -10,6 +10,7 @@ public class EntityCharacter extends Entity implements Serializable{
 	
 	public String ownerUUID = "";
 	public Task currentTask = null;
+	public boolean carryingBarrel = false;
 	
 	public EntityCharacter() {
 		super();
