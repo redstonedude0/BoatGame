@@ -1,6 +1,7 @@
 package redstonedude.programs.projectboaty.shared.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 
@@ -12,6 +13,10 @@ public class Entity implements Serializable {
 	public String uuid = "";
 	public boolean absolutePosition = false;
 	public String raftUUID = "";
+	
+	public Entity() {
+		uuid = UUID.randomUUID().toString();
+	}
 	
 	public void setPos(VectorDouble pos) {
 		this.pos = pos;

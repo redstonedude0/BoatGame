@@ -22,7 +22,9 @@ public class Client implements Runnable {
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
-		GraphicsHandler.frame.addKeyListener(new ControlHandler());
+		ControlHandler ch = new ControlHandler();
+		GraphicsHandler.frame.addKeyListener(ch);
+		GraphicsHandler.frame.addMouseListener(ch);
 		MusicHandler.musicTester();
 		start();
 		/*try {

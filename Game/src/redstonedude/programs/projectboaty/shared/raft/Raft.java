@@ -22,6 +22,17 @@ public class Raft implements Serializable {
 	public ArrayList<Tile> tiles = new ArrayList<Tile>();
 	public ArrayList<Task> tasks = new ArrayList<Task>();
 	
+	public Tile getTileAt(int x, int y) {
+		for (Tile t: tiles) {
+			if ((int) t.getPos().x == x) {
+				if ((int) t.getPos().y == y) {
+					return t;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public VectorDouble getUnitX() {
 		VectorDouble v = new VectorDouble();
 		v.x = cos;

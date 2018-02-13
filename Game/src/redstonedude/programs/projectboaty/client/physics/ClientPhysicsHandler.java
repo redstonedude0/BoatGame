@@ -5,13 +5,17 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
+import redstonedude.programs.projectboaty.shared.task.Task;
+import redstonedude.programs.projectboaty.shared.task.TaskHandler;
 
 public class ClientPhysicsHandler {
 	// consider making this do all the physics for local boats perhaps?
@@ -28,6 +32,15 @@ public class ClientPhysicsHandler {
 		return (ArrayList<Entity>) entities.clone();
 	}
 	
+	public synchronized static Entity getEntity(String uuid) {
+		for (Entity e: entities) {
+			if (e.uuid.equals(uuid)) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
 
 	public static void physicsUpdate() {
 		if (ControlHandler.mode == Mode.Playing) {
@@ -40,12 +53,31 @@ public class ClientPhysicsHandler {
 					approxPhysicsUpdate(ud);
 				}
 			}
+			for (Entity e: getEntities()) {
+				physicsUpdate(e);
+			}
 			// move camera accordingly
 			if (currentUser != null && currentUser.raft != null) {
 				VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
 				posDiff = posDiff.divide(10);// do it slower
 				ClientPhysicsHandler.cameraPosition = ClientPhysicsHandler.cameraPosition.add(posDiff);
 			}
+		}
+	}
+	
+	public static void physicsUpdate(Entity e) {
+		switch (e.entityTypeID) {
+		case "EntityCharacter":
+			EntityCharacter ec = (EntityCharacter) e;
+			UserData ud = ClientPacketHandler.getUserData(ec.ownerUUID);
+			if (ud != null && ud.raft != null) {
+				if (ec.currentTask == null) {
+					Task t = TaskHandler.getTask(ud.raft.tasks, ec);
+					ec.currentTask = t;
+				}
+				ec.currentTask.execute();
+			}
+			break;
 		}
 	}
 

@@ -135,7 +135,7 @@ public class GraphicsHandler {
 			//System.out.println("entity");
 			VectorDouble pos = e.getPos();
 			if (e.absolutePosition) {
-				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), (int) pos.x*100, (int) pos.y*100, (int) pos.x*100 + 100, (int) pos.y*100 + 100, 0, 0, 32, 32, frame);
+				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID)), (int) (pos.x*100), (int) (pos.y*100), (int) (pos.x*100 + 100), (int) (pos.y*100 + 100), 0, 0, 32, 32, frame);
 			} else {
 				UserData ud = ClientPacketHandler.getUserData(e.raftUUID);
 				if (ud != null && ud.raft != null) {

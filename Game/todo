@@ -53,7 +53,8 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
 	[discuss rejoin of players, and how overlapping will work]
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
-	Player controlled entities can walk around
+[R]	Player controlled entities can walk around
+	Player controlled entities fall in water if they are no longer on a block
 	Player controlled entities walk across water to fetch barrels
 	Player controlled entities walk back to boat 0,0 plank when there are no tasks
 	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
@@ -62,8 +63,9 @@ Alpha 0.8 (The Entities Update): [TODO]
 	Boats collide with islands, somehow [drag and destruction?]
 	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[Consider overhauling texture system]
+	Make click system more accurate?
+[R]	PCEs wander around the raft when they have nothing to do
 Alpha 0.9 (The Intelligence Update): [TODO]
-	PCEs wander around the raft when they have nothing to do
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]
 	Implement PCE stats system [walk speed, swim speed]

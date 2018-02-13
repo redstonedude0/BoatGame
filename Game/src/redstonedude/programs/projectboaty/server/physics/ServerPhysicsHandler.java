@@ -24,7 +24,7 @@ public class ServerPhysicsHandler {
 		DebugHandler.clear();
 		c++;
 		for (ServerUserData sud:ServerPacketHandler.userData) {
-			physicsUpdate(sud);
+			physicsUpdate(sud); //todo comod safety
 		}
 	}
 	
@@ -85,6 +85,7 @@ public class ServerPhysicsHandler {
 		if (sud != null && sud.raft != null) {
 			EntityCharacter ec = new EntityCharacter();
 			ec.setPos(new VectorDouble(0,0));
+			ec.uuid = UUID.randomUUID().toString();
 			ec.ownerUUID = clientuuid;
 			ec.raftUUID = clientuuid;
 			ec.absolutePosition = false;

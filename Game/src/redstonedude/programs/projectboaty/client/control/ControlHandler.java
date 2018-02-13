@@ -2,14 +2,19 @@ package redstonedude.programs.projectboaty.client.control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 
-public class ControlHandler implements KeyListener {
+public class ControlHandler implements KeyListener, MouseListener {
 
 	public static boolean control_left_rotate = false;
 	public static boolean control_right_rotate = false;
@@ -209,6 +214,71 @@ public class ControlHandler implements KeyListener {
 		prsc.requiredForwardTranslation = requiredForwardTranslation;
 		prsc.requiredRightwardTranslation = requiredRightwardTranslation;
 		ClientPacketHandler.sendPacket(prsc);
+	}
+	
+	public static void doMenuPress(MouseEvent e) {
+		//do nothing for now
+	}
+	
+	public static void doPlayingPress(MouseEvent e) {
+		
+		int screenx = e.getX();
+		int screeny = e.getY();
+		VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
+		VectorDouble clicked = new VectorDouble(screenx, screeny);
+		clicked = clicked.subtract(offset).divide(100);
+		//see if any barrels were clicked on
+		for (Entity ent: ClientPhysicsHandler.getEntities()) {
+			if (ent.entityTypeID.equals("EntityBarrel")) {
+				if (ent.absolutePosition) {
+					VectorDouble vd = ent.getPos();
+					VectorDouble diff = clicked.subtract(vd);
+					if (diff.x >= 0 && diff.x <= 1) {
+						if (diff.y >= 0 && diff.y <= 1) {
+							//ent.setPos(new VectorDouble(0,0));
+						}
+					}
+				}
+			}
+		}
+		
+		//EntityBarrel eb = new EntityBarrel();
+		//b.absolutePosition = true;
+		//eb.setPos(clicked);
+		//ClientPhysicsHandler.addEntity(eb);
+	}
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		switch (mode) {
+		case MainMenu:
+			doMenuPress(e);
+			break;
+		case Playing:
+			doPlayingPress(e);
+			break;
+		case Connecting:
+			//do nothing for now
+			break;
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 
 }

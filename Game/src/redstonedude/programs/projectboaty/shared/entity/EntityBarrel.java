@@ -8,6 +8,7 @@ public class EntityBarrel extends Entity implements Serializable{
 	
 	
 	public EntityBarrel() {
+		super();
 		entityTypeID = "EntityBarrel";
 	}
 	
