@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
+import redstonedude.programs.projectboaty.shared.net.PacketMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
@@ -44,7 +46,6 @@ public class ClientPacketHandler {
 	}
 	
 	public static synchronized void handlePacket(ClientPacketListener connection, Packet packet) {
-		//Logger.log(" packet received: " + packet.packetID);
 		switch (packet.packetID) {
 		case "PacketConnect":
 			//connected, send user data and set graphics variables, also store our UUID
@@ -72,7 +73,7 @@ public class ClientPacketHandler {
 		case "PacketMoveRaft":
 			PacketMoveRaft pmr = (PacketMoveRaft) packet;
 			ud = getUserData(pmr.uuid);
-			if (ud != null) {
+			if (ud != null && ud.raft != null) {
 				ud.raft.setPos(pmr.pos);
 				ud.raft.theta = pmr.theta;
 				ud.raft.setVelocity(pmr.velocity);
@@ -97,6 +98,13 @@ public class ClientPacketHandler {
 		case "PacketNewEntity":
 			PacketNewEntity pne = (PacketNewEntity) packet;
 			ClientPhysicsHandler.addEntity(pne.entity);
+			break;
+		case "PacketMoveCharacter":
+			PacketMoveCharacter pmc = (PacketMoveCharacter) packet;
+			Entity e = ClientPhysicsHandler.getEntity(pmc.uuid);
+			e.absolutePosition = pmc.absolutePos;
+			e.setPos(pmc.pos);
+			e.raftUUID = pmc.raftPosID;
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

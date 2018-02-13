@@ -31,7 +31,7 @@ public class ClientPacketListener implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 			//socket probably closed, disconnect here
-			
+			System.exit(1);
 		}
 	}
 	

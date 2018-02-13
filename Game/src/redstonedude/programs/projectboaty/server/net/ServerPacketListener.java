@@ -29,7 +29,7 @@ public class ServerPacketListener implements Runnable {
 			}
 		} catch (Exception e) {
 			//error occured, disconnect the user
-			if (!e.getMessage().equalsIgnoreCase("Connection Reset") && !e.getMessage().equalsIgnoreCase("Socket Closed")) {
+			if (e.getMessage() == null || (!e.getMessage().equalsIgnoreCase("Connection Reset") && !e.getMessage().equalsIgnoreCase("Socket Closed"))) {
 				e.printStackTrace();
 			}
 			Logger.log("Disconnection: " + e.getMessage());
@@ -44,6 +44,9 @@ public class ServerPacketListener implements Runnable {
 				oos.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
+				Logger.log("Disconnection: " + e.getMessage());
+				ServerPacketHandler.playerDisconnect(this);
+				oos = null;//close this connection
 			}
 		}
 	}

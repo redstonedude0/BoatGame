@@ -14,7 +14,9 @@ public class TaskHandler {
 		int size = tasks.size();
 		if (size != 0) {
 			int index = rand.nextInt(size);
-			return tasks.get(index);
+			Task t = tasks.get(index);
+			t.assignedEntityID = ec.uuid;
+			return t;
 		} else {
 			TaskWander tw = new TaskWander(ec.uuid);
 			tw.targetLoc = new VectorDouble(0,1);

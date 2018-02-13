@@ -13,6 +13,7 @@ import redstonedude.programs.projectboaty.shared.net.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 
 public class ControlHandler implements KeyListener, MouseListener {
 
@@ -236,6 +237,15 @@ public class ControlHandler implements KeyListener, MouseListener {
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
 							//ent.setPos(new VectorDouble(0,0));
+							UserData ud = ClientPacketHandler.getCurrentUserData();
+							if (ud != null && ud.raft != null) {
+								TaskCollect t = new TaskCollect();
+								t.collectionUUID = ent.uuid;
+								t.targetLoc = ent.getPos();
+								t.targetLoc_absolute = true;
+								t.targetLoc_raftuuid = "";
+								ud.raft.tasks.add(t);
+							}
 						}
 					}
 				}

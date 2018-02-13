@@ -15,6 +15,8 @@ REQUESTSETCONTROL Forward (Int), Rightward (Int), Clockwise (Int)
 	Set the 3 control integers
 REQUESTNEWCHARACTER
 	Requests a new character to be added to the raft
+REQUESTCHARACTERMOVE	uuid, pos
+	Requests to move a character
 
 Client bound packets:
 
@@ -34,3 +36,5 @@ SETCONTROL uuid, Forward (Int), Rightward (Int), Clockwise (Int)
 	Set the 3 control integers
 NEWENTITY	uuid (String), entity
 	Spawn a new entity
+CHARACTERMOVE	uuid, pos
+	character moved
