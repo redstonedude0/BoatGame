@@ -9,18 +9,18 @@ import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.Packet;
-import redstonedude.programs.projectboaty.shared.net.PacketCharacterState;
-import redstonedude.programs.projectboaty.shared.net.PacketConnect;
-import redstonedude.programs.projectboaty.shared.net.PacketDelUser;
-import redstonedude.programs.projectboaty.shared.net.PacketMoveCharacter;
-import redstonedude.programs.projectboaty.shared.net.PacketMoveRaft;
-import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
-import redstonedude.programs.projectboaty.shared.net.PacketNewRaft;
-import redstonedude.programs.projectboaty.shared.net.PacketNewUser;
-import redstonedude.programs.projectboaty.shared.net.PacketRaftTiles;
-import redstonedude.programs.projectboaty.shared.net.PacketSetControl;
-import redstonedude.programs.projectboaty.shared.net.PacketUserData;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacterState;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelUser;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveCharacter;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveRaft;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewRaft;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewUser;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketRaftTiles;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketSetControl;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketUserData;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
@@ -120,7 +120,7 @@ public class ClientPacketHandler {
 			break;
 		case "PacketCharacterState":
 			PacketCharacterState pcs = (PacketCharacterState) packet;
-			e = ServerPhysicsHandler.getEntity(pcs.characterUUID);
+			e = ClientPhysicsHandler.getEntity(pcs.characterUUID);
 			if (e instanceof EntityCharacter) {
 				EntityCharacter ec = (EntityCharacter) e;
 				ec.carryingBarrel = pcs.carryingBarrel;

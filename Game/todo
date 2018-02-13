@@ -51,7 +51,8 @@ Alpha 0.7 (The Worlds Update): [TODO]
 Alpha 0.8 (The Entities Update): [TODO]
 [R]	Add barrel entities [random spawn chance each tick?]
 	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
-	[discuss rejoin of players, and how overlapping will work]
+	[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
+		[possibly implement transparency?]
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
 [R]	Player controlled entities can walk around
 	Player controlled entities fall in water if they are no longer on a block

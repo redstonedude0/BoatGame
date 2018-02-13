@@ -1,7 +1,8 @@
-package redstonedude.programs.projectboaty.shared.net;
+package redstonedude.programs.projectboaty.shared.net.serverbound;
 
 import java.io.Serializable;
 
+import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.task.Task;
 
 public class PacketRequestCharacterState extends Packet implements Serializable {

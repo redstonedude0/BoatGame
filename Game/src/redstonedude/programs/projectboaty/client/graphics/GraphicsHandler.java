@@ -48,6 +48,7 @@ public class GraphicsHandler {
 			graphicsUpdateMenu();
 			break;
 		case Playing:
+			//scale for standard AR, crop for nonstandard
 			VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 			AffineTransform translate = new AffineTransform();
 			translate.translate(offset.x, offset.y);

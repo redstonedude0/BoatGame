@@ -1,8 +1,9 @@
-package redstonedude.programs.projectboaty.shared.net;
+package redstonedude.programs.projectboaty.shared.net.serverbound;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
 public class PacketRequestRaftTiles extends Packet implements Serializable {

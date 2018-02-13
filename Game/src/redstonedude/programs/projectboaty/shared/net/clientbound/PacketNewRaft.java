@@ -1,7 +1,8 @@
-package redstonedude.programs.projectboaty.shared.net;
+package redstonedude.programs.projectboaty.shared.net.clientbound;
 
 import java.io.Serializable;
 
+import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 
 public class PacketNewRaft  extends Packet implements Serializable {

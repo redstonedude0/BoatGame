@@ -9,7 +9,7 @@ import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
-import redstonedude.programs.projectboaty.shared.net.PacketNewEntity;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;

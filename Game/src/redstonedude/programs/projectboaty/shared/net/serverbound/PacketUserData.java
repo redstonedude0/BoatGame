@@ -1,6 +1,8 @@
-package redstonedude.programs.projectboaty.shared.net;
+package redstonedude.programs.projectboaty.shared.net.serverbound;
 
 import java.io.Serializable;
+
+import redstonedude.programs.projectboaty.shared.net.Packet;
 
 public class PacketUserData  extends Packet implements Serializable {
 	

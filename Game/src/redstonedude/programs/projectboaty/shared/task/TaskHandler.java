@@ -6,7 +6,7 @@ import java.util.Random;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
-import redstonedude.programs.projectboaty.shared.net.PacketRequestSetTaskList;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetTaskList;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 
 public class TaskHandler {
