@@ -10,12 +10,13 @@ public class PacketRequestTileState extends Packet implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Tile tile;
+	public final Tile tile;
 	public String uniqueTestingID;
 	
-	public PacketRequestTileState() {
+	public PacketRequestTileState(Tile t) {
 		super("PacketRequestTileState");
 		uniqueTestingID = UUID.randomUUID().toString();
+		tile = t;
 	}
 
 }

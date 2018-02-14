@@ -9,11 +9,12 @@ public class PacketTileState extends Packet implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public Tile tile;
+	public final Tile tile;
 	public String uuid;
 	
-	public PacketTileState() {
+	public PacketTileState(Tile t) {
 		super("PacketTileState");
+		tile = t;
 	}
 
 }

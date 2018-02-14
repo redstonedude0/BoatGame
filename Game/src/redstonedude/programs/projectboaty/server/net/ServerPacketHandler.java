@@ -215,9 +215,9 @@ public class ServerPacketHandler {
 				//System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
 				//Tile t = sud.raft.set
 				sud.raft.setTileAt(prts.tile);
-				PacketTileState pts = new PacketTileState();
+				PacketTileState pts = new PacketTileState(prts.tile);
 				pts.uuid = connection.listener_uuid;
-				pts.tile = prts.tile;
+				//pts.tile = prts.tile;
 				broadcastPacketExcept(connection, pts);
 			}
 			break;

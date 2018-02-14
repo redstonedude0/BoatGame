@@ -64,10 +64,17 @@ public class Raft implements Serializable {
 	}
 	
 	public void setTileAt(Tile tile) {
+		Tile target = null;
 		for (Tile t: tiles) {
+			//System.out.println("compare: " + t.getPos().x + ":" + tile.getPos().x);
 			if (t.getPos().equals(tile.getPos())) {
-				t = tile;
+				target = t;
+				break;
 			}
+		}
+		if (target != null) {
+			tiles.remove(target);
+			tiles.add(tile);
 		}
 	}
 	

@@ -44,6 +44,11 @@ public class ServerPacketListener implements Runnable {
 			try {
 				oos.writeObject(data);
 				oos.flush();
+				//If at any point data is going slow its cos of this reset.
+				//The stream caches objects so if we change a variable it wont send properly
+				//so we need to reset the stream for this. The alternative is to manually serialize
+				//or clone objects before sending them and reset less often to clear the cache
+				oos.reset();
 			} catch (IOException e) {
 				e.printStackTrace();
 				Logger.log("Disconnection: " + e.getMessage());

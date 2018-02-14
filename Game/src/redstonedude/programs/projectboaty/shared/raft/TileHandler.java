@@ -24,6 +24,7 @@ public class TileHandler {
 		TextureHandler.loadTexture("Character_Barrel", 32, 64, 32, 32);
 		TextureHandler.loadTexture("Island", 128, 0, 32, 32);
 		TextureHandler.loadTexture("Barrel", 160, 0, 32, 32);
+		TextureHandler.loadTexture("TileConstruction", 192, 0, 32, 32);
 		TextureHandler.loadTexture("TileDamage_25", 64, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_50", 96, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_75", 128, 64, 32, 32);

@@ -144,7 +144,7 @@ public class ClientPacketHandler {
 			PacketTileState pts = (PacketTileState) packet;
 			ud = getUserData(pts.uuid);
 			if (ud != null && ud.raft != null) {
-				//System.out.println("pts c" + pts.tile.hp);
+				System.out.println("pts c " + pts.tile.hp);
 				// Tile t = sud.raft.set
 				ud.raft.setTileAt(pts.tile);
 			}

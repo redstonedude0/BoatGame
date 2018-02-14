@@ -218,6 +218,7 @@ public class GraphicsHandler {
 			if (constructionTile != null) {
 				double x = constructionTile.getAbsoluteX(cud.raft);
 				double y = constructionTile.getAbsoluteY(cud.raft);
+				g2d.drawLine(0, 0, (int) (x*100),(int) (y*100));
 				// using graphics instead of colors
 				AffineTransform rotator = new AffineTransform();
 				rotator.translate(100 * x, 100 * y);

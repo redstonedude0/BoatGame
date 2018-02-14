@@ -35,6 +35,9 @@ public class ClientPacketListener implements Runnable {
 		try {
 			oos.writeObject(data);
 			oos.flush();
+			//this slows the stream down
+			//DO NOT REMOVE before reading the note in ServerPacketListener
+			oos.reset();
 		} catch (IOException e) {
 			e.printStackTrace();
 			disconnect();

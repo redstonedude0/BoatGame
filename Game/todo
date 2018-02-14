@@ -54,6 +54,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
 		[possibly implement transparency?]
 	Do barrel despawning
+	Do barrel velocities and global wind
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
 [R]	Player controlled entities can walk around
 	Player controlled entities fall in water if they are no longer on a block
@@ -93,6 +94,12 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	Paddelling task is cancellable, make all other tasks cancellable
 	Implement paddelling, take it into account for control and physics calculations.
 		Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
+	[Make GUI graphical if it isn't done already]
+	Add larger worldmap, openable in the GUI.
+	Add scrolling to world scale
+	Add GUI scale into a graphics settings page?
+	Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+	
 Alpha 0.91 (The Sounds Update): [TODO]
 	Decide on sound design
 	Make the music and sounds as necessary
