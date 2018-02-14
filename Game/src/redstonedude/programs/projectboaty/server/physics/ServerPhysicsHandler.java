@@ -93,8 +93,8 @@ public class ServerPhysicsHandler {
 			if (count < 50) {
 				//spawn another barrel
 				Random rand = new Random();
-				int x = (int) (rand.nextInt(48)+Math.floor(pos.x));
-				int y = (int) (rand.nextInt(32)+Math.floor(pos.y));
+				int x = (int) (rand.nextInt(48)+Math.floor(pos.x)-24);
+				int y = (int) (rand.nextInt(32)+Math.floor(pos.y)-16);
 				if (x > xClose1 && x < xClose2) {
 					if (y > yClose1 && y < yClose2) {
 						//too close, don't spawn
