@@ -11,6 +11,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -257,7 +258,14 @@ public class ClientPhysicsHandler {
 				brokenTiles.add(tile);
 			}
 		}
-		raft.removeAllTiles(brokenTiles);
+		if (!brokenTiles.isEmpty()) {
+			//some change occurred
+			raft.removeAllTiles(brokenTiles);
+			PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
+			prrt.tiles = raft.getTiles();
+			ClientPacketHandler.sendPacket(prrt); //update the server on this
+		}
+		
 	}
 
 }

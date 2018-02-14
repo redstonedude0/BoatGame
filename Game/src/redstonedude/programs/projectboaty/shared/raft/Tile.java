@@ -2,13 +2,15 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 
+import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
 public class Tile implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	private VectorDouble pos = new VectorDouble();
 	public double mass = 10;
@@ -16,6 +18,16 @@ public class Tile implements Serializable {
 
 	public void damage(float dmg) {
 		hp -= dmg;
+		//if damage is non-0 sent packet
+		if (dmg != 0) {
+			PacketRequestTileState prts = new PacketRequestTileState();
+			prts.tile = this;
+			System.out.println("PRTSC DATA: (" + prts.uniqueTestingID + ")");
+			System.out.println("  " + prts.tile.hp);
+			System.out.println("  " + prts.tile.mass);
+			System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
+			ClientPacketHandler.sendPacket(prts);
+		}
 	}
 
 	public double getAbsoluteX(Raft parent) {

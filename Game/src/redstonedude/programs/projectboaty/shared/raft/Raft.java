@@ -52,6 +52,25 @@ public class Raft implements Serializable {
 		tiles.removeAll(t);
 	}
 	
+	public Tile getTileAt(int x, int y) {
+		for (Tile t: getTiles()) {
+			if ((int) t.getPos().x == x) {
+				if ((int) t.getPos().y == y) {
+					return t;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public void setTileAt(Tile tile) {
+		for (Tile t: tiles) {
+			if (t.getPos().equals(tile.getPos())) {
+				t = tile;
+			}
+		}
+	}
+	
 	public synchronized void setTasks(ArrayList<Task> t) {
 		tasks = t; //don't need to update TaskHandler since this was received from the server
 	}
@@ -86,17 +105,6 @@ public class Raft implements Serializable {
 	public synchronized void removeTask(Task t) {
 		tasks.remove(t);
 		TaskHandler.sendList(this);
-	}
-	
-	public Tile getTileAt(int x, int y) {
-		for (Tile t: getTiles()) {
-			if ((int) t.getPos().x == x) {
-				if ((int) t.getPos().y == y) {
-					return t;
-				}
-			}
-		}
-		return null;
 	}
 	
 	public VectorDouble getUnitX() {

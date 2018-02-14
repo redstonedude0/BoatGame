@@ -22,6 +22,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketSetControl;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestCharacterState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
@@ -29,6 +30,7 @@ import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRa
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetTaskList;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.src.Server;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
@@ -203,6 +205,22 @@ public class ServerPacketHandler {
 				sud.raft.setTasks(prstl.tasks);
 			}
 			break;
+		case "PacketRequestTileState":
+			PacketRequestTileState prts = (PacketRequestTileState) packet;
+			sud = getUserData(connection.listener_uuid);
+			if (sud != null && sud.raft != null) {
+				System.out.println("PRTSS DATA: (" + prts.uniqueTestingID + ")");
+				System.out.println("  " + prts.tile.hp);
+				System.out.println("  " + prts.tile.mass);
+				System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
+				//Tile t = sud.raft.set
+				sud.raft.setTileAt(prts.tile);
+				PacketTileState pts = new PacketTileState();
+				pts.uuid = connection.listener_uuid;
+				pts.tile = prts.tile;
+				broadcastPacketExcept(connection, pts);
+			}
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -236,8 +254,8 @@ public class ServerPacketHandler {
 		for (ServerUserData sud : ServerDataHandler.savedUsers) {
 			if (sud.IP.equals(spl.IP)) {
 				//REMOVE THE FOLLOWING 2 LINES TO TEST MULTIPLAYER FROM THE SAME IP, REMEMBER TO ADD THEM BACK THOUGH
-				ud = sud;
-				spl.listener_uuid = ud.uuid; //last chance to change the UUID, so change it to what it was before
+				//ud = sud;
+				//spl.listener_uuid = ud.uuid; //last chance to change the UUID, so change it to what it was before
 			}
 		}
 		ud.uuid = spl.listener_uuid;

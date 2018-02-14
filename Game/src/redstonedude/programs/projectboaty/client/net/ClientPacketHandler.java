@@ -22,17 +22,19 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewRaft;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewUser;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketSetControl;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketUserData;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
 public class ClientPacketHandler {
-	
+
 	public static int portNumber = 49555;
 	public static String hostName = "";
 	public static ArrayList<UserData> userData = new ArrayList<UserData>();
 	public static String currentUserUUID = "";
-	
+
 	public static ConcurrentLinkedQueue<Packet> queuedPackets = new ConcurrentLinkedQueue<Packet>();
 
 	public static void handlePackets() {
@@ -41,34 +43,34 @@ public class ClientPacketHandler {
 			handlePacket(p);
 		}
 	}
-	
+
 	public static UserData getCurrentUserData() {
-		for (UserData ud: userData) {
+		for (UserData ud : userData) {
 			if (ud.uuid.equalsIgnoreCase(currentUserUUID)) {
 				return ud;
 			}
 		}
 		return null;
 	}
-	
+
 	public static UserData getUserData(String uuid) {
-		for (UserData ud: userData) {
+		for (UserData ud : userData) {
 			if (ud.uuid.equalsIgnoreCase(uuid)) {
 				return ud;
 			}
 		}
 		return null;
 	}
-	
+
 	public static synchronized void handlePacket(Packet packet) {
 		switch (packet.packetID) {
 		case "PacketConnect":
-			//connected, send user data and set graphics variables, also store our UUID
+			// connected, send user data and set graphics variables, also store our UUID
 			PacketConnect pc = (PacketConnect) packet;
 			sendPacket(new PacketUserData());
-			//sendPacket(new PacketRequestRaft(1));
+			// sendPacket(new PacketRequestRaft(1));
 			currentUserUUID = pc.uuid;
-			//System.out.println("JOINED AS USER: " + currentUserUUID);
+			// System.out.println("JOINED AS USER: " + currentUserUUID);
 			WorldHandler.key = pc.key;
 			ControlHandler.mode = Mode.Playing;
 			break;
@@ -138,6 +140,15 @@ public class ClientPacketHandler {
 				ec.currentTask = pcs.currentTask;
 			}
 			break;
+		case "PacketTileState":
+			PacketTileState pts = (PacketTileState) packet;
+			ud = getUserData(pts.uuid);
+			if (ud != null && ud.raft != null) {
+				//System.out.println("pts c" + pts.tile.hp);
+				// Tile t = sud.raft.set
+				ud.raft.setTileAt(pts.tile);
+			}
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -147,7 +158,7 @@ public class ClientPacketHandler {
 	public static synchronized void sendPacket(Packet packet) {
 		ClientPacketListener.send(packet);
 	}
-	
+
 	public static synchronized void startListener() {
 		Thread newListenerThread = new Thread(new ClientPacketListener(), "NetListenerThread");
 		newListenerThread.start();
