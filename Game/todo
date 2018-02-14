@@ -60,7 +60,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Player controlled entities walk back to boat 0,0 plank when there are no tasks
 [R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 [R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
-(R)	Update GUI to be graphical
+	Update GUI to be graphical based on buttons
 (R)	Update display to show the tile and orientation of construction tile
 [R]	Task selection is done randomly
 (R)	Boats collide with islands, somehow [drag and destruction?]
