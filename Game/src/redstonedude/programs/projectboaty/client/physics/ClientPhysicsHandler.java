@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
-import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestCharacterState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
@@ -164,12 +162,9 @@ public class ClientPhysicsHandler {
 			}
 			// tiles will apply drag to the object
 			thrust = thrust.add(tile.getAbsoluteFrictionVector(raft));
-
-			// DebugVector dv = new DebugVector();
-			// dv.pos = raft.getPos();
-			// dv.vector = tile.getAbsoluteFrictionVector(raft).multiply(100);
-			// dv.color = Color.RED;
-			// DebugHandler.debugVectors.add(dv);
+			
+			
+			
 		}
 		// F=ma, a = F/m
 		VectorDouble acceleration = thrust.divide(mass);
@@ -253,7 +248,16 @@ public class ClientPhysicsHandler {
 		prmr.cos = raft.cos;
 		prmr.COMPos = raft.getCOMPos();
 		ClientPacketHandler.sendPacket(prmr);
-
+		
+		//do damage to the tiles
+		ArrayList<Tile> brokenTiles = new ArrayList<Tile>();
+		for (Tile tile : raft.getTiles()) {
+			tile.damage(tile.getDamage(raft));
+			if (tile.hp < 0) {
+				brokenTiles.add(tile);
+			}
+		}
+		raft.removeAllTiles(brokenTiles);
 	}
 
 }

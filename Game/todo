@@ -64,6 +64,8 @@ Alpha 0.8 (The Entities Update): [TODO]
 (R)	Update display to show the tile and orientation of construction tile
 [R]	Task selection is done randomly
 (R)	Boats collide with islands, somehow [drag and destruction?]
+	Boat complete destruction should cause new boat respawn at random location?
+	[Boat destruction down the middle will need to cause fleeting in future?]
 (R)	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[Consider overhauling texture system]
 [R]	Make click system more accurate? Add graphics scaling

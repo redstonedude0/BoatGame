@@ -7,7 +7,16 @@ public class WorldHandler {
 	public static long key = 0;
 	
 	public static enum TerrainType {
-		Water, Land
+		Water(0.2F, 0F), Land(5F, 50F);
+		
+		public float frictionCoefficient;
+		public float damageCoefficient; //1m will do this much damage
+		
+		TerrainType(float f, float d) {
+			frictionCoefficient = f;
+			damageCoefficient = d;
+		}
+		
 	};
 	
 	public static TerrainType getTerrainType(double x, double y) {

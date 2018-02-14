@@ -48,6 +48,10 @@ public class Raft implements Serializable {
 		tiles.add(t);
 	}
 	
+	public synchronized void removeAllTiles(ArrayList<Tile> t) {
+		tiles.removeAll(t);
+	}
+	
 	public synchronized void setTasks(ArrayList<Task> t) {
 		tasks = t; //don't need to update TaskHandler since this was received from the server
 	}
