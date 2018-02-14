@@ -13,8 +13,7 @@ public class PacketRequestSetTaskList extends Packet implements Serializable {
 	public ArrayList<Task> tasks;
 	
 	public PacketRequestSetTaskList() {
-		super();
-		packetID = "PacketRequestSetTaskList";
+		super("PacketRequestSetTaskList");
 	}
 
 }

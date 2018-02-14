@@ -12,8 +12,7 @@ public class PacketConnect extends Packet implements Serializable {
 	public long key;
 	
 	public PacketConnect(String u, long k) {
-		super();
-		packetID = "PacketConnect";
+		super("PacketConnect");
 		uuid = u;
 		key = k;
 	}

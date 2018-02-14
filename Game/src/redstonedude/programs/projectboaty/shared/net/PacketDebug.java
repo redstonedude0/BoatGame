@@ -9,9 +9,8 @@ public class PacketDebug extends Packet implements Serializable {
 	public Object data;
 	
 	public PacketDebug(Object d) {
-		super();
+		super("PacketDebug");
 		data = d;
-		packetID = "PacketDebug";
 	}
 	
 }

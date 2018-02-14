@@ -209,10 +209,10 @@ public class ServerPacketHandler {
 			PacketRequestTileState prts = (PacketRequestTileState) packet;
 			sud = getUserData(connection.listener_uuid);
 			if (sud != null && sud.raft != null) {
-				System.out.println("PRTSS DATA: (" + prts.uniqueTestingID + ")");
-				System.out.println("  " + prts.tile.hp);
-				System.out.println("  " + prts.tile.mass);
-				System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
+				//System.out.println("PRTSS DATA: (" + prts.uniqueTestingID + ")");
+				//System.out.println("  " + prts.tile.hp);
+				//System.out.println("  " + prts.tile.mass);
+				//System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
 				//Tile t = sud.raft.set
 				sud.raft.setTileAt(prts.tile);
 				PacketTileState pts = new PacketTileState();

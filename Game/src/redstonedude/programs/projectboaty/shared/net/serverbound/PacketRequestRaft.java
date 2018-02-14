@@ -11,8 +11,7 @@ public class PacketRequestRaft  extends Packet implements Serializable {
 	public int raftID;
 	
 	public PacketRequestRaft(int id) {
-		super();
-		packetID = "PacketRequestRaft";
+		super("PacketRequestRaft");
 		raftID = id;
 	}
 

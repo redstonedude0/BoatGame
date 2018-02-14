@@ -13,8 +13,7 @@ public class PacketNewRaft  extends Packet implements Serializable {
 	public Raft raft;
 	
 	public PacketNewRaft(String u, Raft r) {
-		super();
-		packetID = "PacketNewRaft";
+		super("PacketNewRaft");
 		uuid = u;
 		raft = r;
 	}

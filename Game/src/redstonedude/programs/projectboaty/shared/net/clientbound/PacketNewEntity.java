@@ -11,9 +11,8 @@ public class PacketNewEntity  extends Packet implements Serializable {
 	public Entity entity;
 	
 	public PacketNewEntity(Entity e) {
-		super();
+		super("PacketNewEntity");
 		entity = e;
-		packetID = "PacketNewEntity";
 	}
 
 }

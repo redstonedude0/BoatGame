@@ -15,8 +15,7 @@ public class PacketRequestMoveCharacter extends Packet implements Serializable {
 	public String uuid = "";
 	
 	public PacketRequestMoveCharacter() {
-		super();
-		packetID = "PacketRequestMoveCharacter";
+		super("PacketRequestMoveCharacter");
 	}
 
 }

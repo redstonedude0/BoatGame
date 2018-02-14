@@ -10,9 +10,8 @@ public class PacketNewUser  extends Packet implements Serializable {
 	public String uuid;
 	
 	public PacketNewUser(String u) {
-		super();
+		super("PacketNewUser");
 		uuid = u;
-		packetID = "PacketNewUser";
 	}
 
 }

@@ -10,9 +10,8 @@ public class PacketDelUser  extends Packet implements Serializable {
 	public String uuid;
 	
 	public PacketDelUser(String u) {
-		super();
+		super("PacketDelUser");
 		uuid = u;
-		packetID = "PacketDelUser";
 	}
 
 }

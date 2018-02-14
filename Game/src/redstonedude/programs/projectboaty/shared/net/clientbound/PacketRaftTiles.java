@@ -14,8 +14,7 @@ public class PacketRaftTiles extends Packet implements Serializable {
 	public String uuid;
 	
 	public PacketRaftTiles() {
-		super();
-		packetID = "PacketRaftTiles";
+		super("PacketRaftTiles");
 	}
 
 }

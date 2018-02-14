@@ -13,8 +13,7 @@ public class PacketRequestRaftTiles extends Packet implements Serializable {
 	public ArrayList<Tile> tiles;
 	
 	public PacketRequestRaftTiles() {
-		super();
-		packetID = "PacketRequestRaftTiles";
+		super("PacketRequestRaftTiles");
 	}
 
 }

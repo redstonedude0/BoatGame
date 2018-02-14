@@ -14,8 +14,7 @@ public class PacketCharacterState extends Packet implements Serializable {
 	public boolean carryingBarrel;
 	
 	public PacketCharacterState() {
-		super();
-		packetID = "PacketCharacterState";
+		super("PacketCharacterState");
 	}
 
 }

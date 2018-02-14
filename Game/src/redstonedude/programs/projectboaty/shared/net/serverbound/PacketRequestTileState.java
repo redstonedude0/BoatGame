@@ -14,8 +14,7 @@ public class PacketRequestTileState extends Packet implements Serializable {
 	public String uniqueTestingID;
 	
 	public PacketRequestTileState() {
-		super();
-		packetID = "PacketRequestTileState";
+		super("PacketRequestTileState");
 		uniqueTestingID = UUID.randomUUID().toString();
 	}
 

@@ -53,6 +53,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
 	[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
 		[possibly implement transparency?]
+	Do barrel despawning
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
 [R]	Player controlled entities can walk around
 	Player controlled entities fall in water if they are no longer on a block
@@ -78,6 +79,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	Investigate barrel spawn mechanics?
 	Change everything to use floats instead of doubles
 	Wrap packet handlers in try catches to prevent thread crashes
+	Look into strictfp and trial asssert
 Alpha 0.9 (The Intelligence Update): [TODO]
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]

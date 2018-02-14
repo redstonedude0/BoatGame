@@ -13,8 +13,7 @@ public class PacketTileState extends Packet implements Serializable {
 	public String uuid;
 	
 	public PacketTileState() {
-		super();
-		packetID = "PacketTileState";
+		super("PacketTileState");
 	}
 
 }

@@ -15,8 +15,7 @@ public class PacketSetControl extends Packet implements Serializable {
 	public double requiredRightwardTranslation = 0;
 
 	public PacketSetControl() {
-		super();
-		packetID = "PacketSetControl";
+		super("PacketSetControl");
 	}
 
 }

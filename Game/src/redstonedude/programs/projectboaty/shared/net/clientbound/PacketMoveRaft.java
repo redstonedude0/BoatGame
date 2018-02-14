@@ -21,8 +21,7 @@ public class PacketMoveRaft extends Packet implements Serializable {
 	public VectorDouble COMPos = new VectorDouble();
 
 	public PacketMoveRaft() {
-		super();
-		packetID = "PacketMoveRaft";
+		super("PacketMoveRaft");
 	}
 
 }
