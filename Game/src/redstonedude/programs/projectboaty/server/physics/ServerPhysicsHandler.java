@@ -30,7 +30,7 @@ public class ServerPhysicsHandler {
 	}
 	
 	public synchronized static void setEntities(ArrayList<Entity> e) {
-		entities = e;
+		entities = e; 
 	}
 
 	public synchronized static Entity getEntity(String uuid) {
