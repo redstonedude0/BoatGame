@@ -54,14 +54,14 @@ CHARACTERSTATE	uuid, currentTask, carryingBarrel
 //	Set the task list of a boat, currently only sent on player join (doesn't bounce from requestsettasklist)
 TILESTATE	uuid, Tile
 	Update the state on a single tile, used to update HP
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+DELENTITY	uuid(entity uuid to delete)
+	Delete an entity
+
+
+
+
+
+
+
+
+

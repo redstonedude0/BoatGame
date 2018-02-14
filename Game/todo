@@ -53,8 +53,9 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
 	[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
 		[possibly implement transparency?]
-	Do barrel despawning
-	Do barrel velocities and global wind
+[R]	Do barrel despawning
+	[consider overhauling despawn and spawn system to have global barrel count and increase efficiency?]
+(R)	Do barrel velocities and global wind
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
 [R]	Player controlled entities can walk around
 	Player controlled entities fall in water if they are no longer on a block
@@ -77,7 +78,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Solve comod exceptions (packets, clicks), perhaps use queues?
 [R]	Fix comod for player join and disconnect
 [R]	Check task overlap on barrels and construction?
-	Investigate barrel spawn mechanics?
+[R]	Investigate barrel spawn mechanics?
 	Change everything to use floats instead of doubles
 	Wrap packet handlers in try catches to prevent thread crashes
 	Look into strictfp and trial asssert

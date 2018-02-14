@@ -10,6 +10,7 @@ import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
@@ -60,6 +61,32 @@ public class ServerPhysicsHandler {
 		ServerPacketHandler.handlePackets();
 		DebugHandler.clear();
 		c++;
+		//do  barrel despawning
+		ArrayList<Entity> toDespawn = new ArrayList<Entity>();
+		for (Entity e: entities) {
+			if (e instanceof EntityBarrel) {
+				//it's a barrel boiks, see if its near any raft
+				float shortestSquareDistance = -1;
+				for (ServerUserData sud: ServerPacketHandler.userData) {
+					if (sud.raft != null) {
+						float squareDistance = (float) sud.raft.getPos().subtract(e.getPos()).getSquaredLength();
+						if (squareDistance < shortestSquareDistance || shortestSquareDistance == -1) {
+							shortestSquareDistance = squareDistance;
+						}
+					}
+				}
+				if (shortestSquareDistance > 2500) {
+					//over 50 blocks from any raft
+					toDespawn.add(e);
+				}
+			}
+		}
+		entities.removeAll(toDespawn);
+		for (Entity e: toDespawn) {
+			PacketDelEntity pde = new PacketDelEntity();
+			pde.uuid = e.uuid;
+			ServerPacketHandler.broadcastPacket(pde);
+		}
 		for (ServerUserData sud:ServerPacketHandler.userData) {
 			physicsUpdate(sud); //todo comod safety
 		}

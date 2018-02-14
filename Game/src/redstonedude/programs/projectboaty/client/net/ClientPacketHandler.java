@@ -14,6 +14,7 @@ import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveRaft;
@@ -148,6 +149,10 @@ public class ClientPacketHandler {
 				// Tile t = sud.raft.set
 				ud.raft.setTileAt(pts.tile);
 			}
+			break;
+		case "PacketDelEntity":
+			PacketDelEntity pde = (PacketDelEntity) packet;
+			ClientPhysicsHandler.removeEntity(pde.uuid);
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
