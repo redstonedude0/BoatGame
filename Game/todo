@@ -66,13 +66,14 @@ Alpha 0.8 (The Entities Update): [TODO]
 (R)	Boats collide with islands, somehow [drag and destruction?]
 (R)	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[Consider overhauling texture system]
-(R)	Make click system more accurate? Add graphics scaling
+[R]	Make click system more accurate? Add graphics scaling
 [R]	PCEs wander around the raft when they have nothing to do
 [R] fixed errors in new rafts not being sent
 [R]	Solve comod exceptions (packets, clicks), perhaps use queues?
 [R]	Fix comod for player join and disconnect
 [R]	Check task overlap on barrels and construction?
 	Investigate barrel spawn mechanics?
+	Change everything to use floats instead of doubles
 Alpha 0.9 (The Intelligence Update): [TODO]
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]

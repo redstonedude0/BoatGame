@@ -8,7 +8,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
@@ -16,7 +15,6 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
-import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
@@ -51,8 +49,31 @@ public class GraphicsHandler {
 			break;
 		case Playing:
 			//scale for standard AR, crop for nonstandard
-			VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
+			
+			float screenHeight = frame.getHeight();
+			float screenWidth = frame.getWidth();
+			float gHeight = 1080;
+			float gWidth = 1920;
+			//Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction 
+			float scaleForWidth = screenWidth/gWidth;
+			float scaleForHeight = screenHeight/gHeight;
+			float scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
+			//screen needs to be multipled by scale, and the cameraposition(midpoint?) of g needs to correspond with the midpoint of the screen.
+			
+			//graphics are stretched to fill 0,0 to width,height
+			
+			
+			//scale to ensure that midpoint of g lines up to camera
+			float midX = screenWidth/2;
+			float midY = screenHeight/2;
+			midX /= scale;
+			midY /= scale;
+			VectorDouble offset = new VectorDouble(midX, midY).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 			AffineTransform translate = new AffineTransform();
+			//need to scale here to overcome the stretching effects of the window 
+			//translate.scale(scaleForHeight/scale, scaleForWidth/scale);
+			translate.scale(scale/scaleForWidth,scale/scaleForHeight);
+			//translate.scale(1/scale, 1/scale);
 			translate.translate(offset.x, offset.y);
 			g2d.transform(translate);
 			graphicsUpdatePlaying();
@@ -61,6 +82,16 @@ public class GraphicsHandler {
 			} catch (NoninvertibleTransformException e) {
 				e.printStackTrace();
 			}
+			//gameplay screen has been drawn, draw menus
+			//since screen will be stretched from 0,0 to width,height, we need to unscale the g2d first to compensate.
+			//this is not the true unscale account for cropping, it is the raw scale to make text the same size
+			AffineTransform trans = new AffineTransform();
+			trans.scale(1/scaleForWidth, 1/scaleForHeight);
+			g2d.transform(trans);
+			//doing GUI in bottom left, so translate as well
+			float transX = 0;
+			float transY = screenHeight-gHeight;
+			g2d.translate(transX, transY);
 			if (ControlHandler.build_menu) {
 				g2d.setColor(new Color(0,0,0,127));
 				g2d.fillRect(0, 1000, 100, 60);
@@ -73,6 +104,13 @@ public class GraphicsHandler {
 			g2d.fillRect(0, 1060, 100, 20);
 			g2d.setColor(Color.WHITE);
 			g2d.drawString("[B]uild/Assign", 10, 1070);
+			//now undo the menu transform so it can be drawn normally again
+			g2d.translate(-transX, -transY);
+			try {
+				g2d.transform(trans.createInverse());
+			} catch (NoninvertibleTransformException e) {
+				e.printStackTrace();
+			}
 			break;
 		case Connecting:
 			graphicsUpdateConnecting();

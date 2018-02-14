@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
@@ -264,9 +265,29 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	}
 	
 	public static VectorDouble getAbsoluteVectorFromScreenCoordinates(int screenx, int screeny) {
-		VectorDouble offset = new VectorDouble(960, 540).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
+		float screenHeight = GraphicsHandler.frame.getHeight();
+		float screenWidth = GraphicsHandler.frame.getWidth();
+		float gHeight = 1080;
+		float gWidth = 1920;
+		//Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction 
+		float scaleForWidth = screenWidth/gWidth;
+		float scaleForHeight = screenHeight/gHeight;
+		float scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
+		float midX = screenWidth/2;
+		float midY = screenHeight/2;
+		midX /= scale;
+		midY /= scale;
+		VectorDouble offset = new VectorDouble(midX, midY).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 		VectorDouble clicked = new VectorDouble(screenx, screeny);
-		clicked = clicked.subtract(offset).divide(100);
+		clicked.x = clicked.x*1920/screenWidth; //undo stretching
+		clicked.y = clicked.y*1080/screenHeight;
+		//now undo scaling
+		//translate.scale(scale/scaleForWidth,scale/scaleForHeight);
+		clicked.x = (clicked.x*scaleForWidth)/scale;
+		clicked.y = (clicked.y*scaleForHeight)/scale;
+
+		clicked = clicked.subtract(offset);//.divide(100);
+		clicked = clicked.divide(100);//convert from screen cords to absolute coordinates
 		return clicked;
 	}
 	
