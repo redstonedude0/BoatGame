@@ -69,8 +69,10 @@ Alpha 0.8 (The Entities Update): [TODO]
 (R)	Make click system more accurate? Add graphics scaling
 [R]	PCEs wander around the raft when they have nothing to do
 [R] fixed errors in new rafts not being sent
-(R)	Solve comod exceptions (packets, clicks), perhaps use queues?
-(R)	Check task overlap on barrels and construction?
+[R]	Solve comod exceptions (packets, clicks), perhaps use queues?
+[R]	Fix comod for player join and disconnect
+[R]	Check task overlap on barrels and construction?
+	Investigate barrel spawn mechanics?
 Alpha 0.9 (The Intelligence Update): [TODO]
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]

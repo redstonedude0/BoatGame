@@ -24,10 +24,11 @@ public class TaskCollect extends TaskLocationTarget implements Serializable {
 	public void targetReached() {
 		if (!collected) {
 			// great, for now just delete the barrel and give the character the item
-			ClientPhysicsHandler.removeEntity(collectionUUID);
 			EntityCharacter ce = (EntityCharacter) ClientPhysicsHandler.getEntity(assignedEntityID);
-			ce.carryingBarrel = true;
-			ce.sendState();
+			if (ClientPhysicsHandler.removeEntity(collectionUUID)){
+				ce.carryingBarrel = true;
+				ce.sendState();
+			}
 			// now relocate the target to the ships current origin
 			UserData ud = ClientPacketHandler.getUserData(ce.ownerUUID);
 			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship

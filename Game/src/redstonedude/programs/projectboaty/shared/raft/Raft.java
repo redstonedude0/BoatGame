@@ -3,7 +3,11 @@ package redstonedude.programs.projectboaty.shared.raft;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskHandler;
 
@@ -50,6 +54,24 @@ public class Raft implements Serializable {
 	
 	public synchronized ArrayList<Task> getTasks() {
 		return (ArrayList<Task>) tasks.clone();
+	}
+	
+	/**
+	 * Returns all tasks, including both the list of unstarted tasks from getTasks() and the tasks currently in progress
+	 * CLIENTSIDE
+	 * @return
+	 */
+	public synchronized ArrayList<Task> getAllTasks() {
+		ArrayList<Task> ts = getTasks();
+		for (Entity e: ClientPhysicsHandler.getEntities()) {
+			if (e instanceof EntityCharacter) {
+				EntityCharacter ec = (EntityCharacter) e;
+				if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID) && ec.currentTask != null) {
+					ts.add(ec.currentTask);
+				}
+			}
+		}
+		return ts;
 	}
 	
 	public synchronized void addTask(Task t) {

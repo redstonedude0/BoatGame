@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
@@ -112,6 +113,15 @@ public class ServerPhysicsHandler {
 		eb.setPos(new VectorDouble(x, y));
 		eb.uuid = UUID.randomUUID().toString();
 		eb.absolutePosition = true;
+		for (Entity ent: ServerPhysicsHandler.getEntities()) {
+			if (ent.entityTypeID.equals("EntityBarrel")) {
+				if (ent.absolutePosition) {
+					if (ent.getPos().equals(eb.getPos())) {
+						return;//already a barrel here
+					}
+				}
+			}
+		}
 		addEntity(eb);
 		ServerPacketHandler.broadcastPacket(new PacketNewEntity(eb));
 	}

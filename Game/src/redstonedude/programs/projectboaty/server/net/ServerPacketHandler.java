@@ -43,7 +43,12 @@ public class ServerPacketHandler {
 	public static void handlePackets() {
 		while (!queuedPackets.isEmpty()) {
 			ServerQueuedPacket sqp = queuedPackets.remove();
-			handlePacket(sqp.spl, sqp.packet);
+			if (sqp.packet != null) {
+				handlePacket(sqp.spl, sqp.packet);
+			} else {
+				//player join
+				playerJoinOrDisconnect(sqp.spl);
+			}
 		}
 	}
 	
@@ -223,8 +228,8 @@ public class ServerPacketHandler {
 		}
 	}
 
-	public static synchronized void playerJoin(ServerPacketListener spl) {
-		//TODO queue this
+	public static void playerJoin(ServerPacketListener spl) {
+		//synchronized so should no throw comod exceptions?
 		// let the client know they have connected
 		ServerUserData ud = new ServerUserData();
 		ud.IP = spl.IP;
@@ -252,18 +257,21 @@ public class ServerPacketHandler {
 			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 		}
 		for (Entity e: ServerPhysicsHandler.getEntities()) {
-			//if (e instanceof EntityCharacter) {
-			//	System.out.println("new character:");
-			//	EntityCharacter ec = (EntityCharacter) e;
-			//	System.out.println("  UUIDS:" + ec.uuid + ":" + ec.currentTask.assignedEntityID);
-			//}
 			spl.send(new PacketNewEntity(e));
 		}
 		
 		
 	}
+	
+	public static void playerJoinOrDisconnect(ServerPacketListener spl) {
+		if (getUserData(spl.listener_uuid) == null) {
+			playerJoin(spl);
+		} else {
+			playerDisconnect(spl);
+		}
+	}
 
-	public static synchronized void playerDisconnect(ServerPacketListener spl) {
+	public static void playerDisconnect(ServerPacketListener spl) {
 		ServerUserData sud = getUserData(spl.listener_uuid);
 		if (sud != null) {
 			userData.remove(sud);

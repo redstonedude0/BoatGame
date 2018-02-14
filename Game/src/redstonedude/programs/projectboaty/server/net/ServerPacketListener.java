@@ -23,7 +23,8 @@ public class ServerPacketListener implements Runnable {
 			IP = clientSocket.getInetAddress();
 			oos = out2;
 			Object inputObject;
-			ServerPacketHandler.playerJoin(this);
+			ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player join with null packet for now
+			//ServerPacketHandler.playerJoin(this);
 			while ((inputObject = in.readObject()) != null) {
 				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket((Packet)inputObject,this));
 				//ServerPacketHandler.handlePacket(this, (Packet) inputObject);
@@ -46,7 +47,8 @@ public class ServerPacketListener implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 				Logger.log("Disconnection: " + e.getMessage());
-				ServerPacketHandler.playerDisconnect(this);
+				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now
+				//ServerPacketHandler.playerDisconnect(this);
 				oos = null;//close this connection
 			}
 		}

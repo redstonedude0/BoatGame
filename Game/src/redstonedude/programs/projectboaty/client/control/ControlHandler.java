@@ -17,6 +17,7 @@ import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRa
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetControl;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
+import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 
@@ -278,7 +279,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	}
 	
 	public static void doBarrelPress(VectorDouble clicked) {
-		for (Entity ent: ClientPhysicsHandler.getEntities()) {
+		entityLoop: for (Entity ent: ClientPhysicsHandler.getEntities()) {
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.absolutePosition) {
 					VectorDouble vd = ent.getPos();
@@ -293,6 +294,15 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 								t.targetLoc = ent.getPos();
 								t.targetLoc_absolute = true;
 								t.targetLoc_raftuuid = "";
+								for (Task t2: ud.raft.getAllTasks()) {
+									if (t2 instanceof TaskCollect) {
+										TaskCollect tc = (TaskCollect) t2;
+										if (tc.collectionUUID.equals(t.collectionUUID)) {
+											continue entityLoop; //this barrel is already being collected,
+											//try the next entity however
+										}
+									}
+								}
 								ud.raft.addTask(t);
 							}
 						}
@@ -318,7 +328,21 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		t.targetLoc = blockPos;
 		t.targetLoc_absolute = false;
 		t.targetLoc_raftuuid = ud.uuid;
+		for (Task t2: ud.raft.getAllTasks()) {
+			if (t2 instanceof TaskConstruct) {
+				TaskConstruct tc = (TaskConstruct) t2;
+				if (tc.resultantTile.getPos().equals(t.resultantTile.getPos())) {
+					return;
+				}
+			}
+		}
+		for (Tile til: ud.raft.getTiles()) {
+			if (t.resultantTile.getPos().equals(til.getPos())) {
+				return;
+			}
+		}
 		ud.raft.addTask(t);
+		
 	}
 	
 	public static VectorDouble getBlockPosFromScreenCoordinates(int screenx, int screeeny, UserData currentUserData) {

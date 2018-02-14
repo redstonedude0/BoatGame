@@ -42,8 +42,13 @@ public class ClientPhysicsHandler {
 		}
 		return null;
 	}
-
-	public synchronized static void removeEntity(String uuid) {
+	
+	/**
+	 * return true if an entity was removed
+	 * @param uuid
+	 * @return
+	 */
+	public synchronized static boolean removeEntity(String uuid) {
 		Entity del = null;
 		for (Entity e : entities) {
 			if (e.uuid.equals(uuid)) {
@@ -53,6 +58,9 @@ public class ClientPhysicsHandler {
 		}
 		if (del != null) {
 			entities.remove(del);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

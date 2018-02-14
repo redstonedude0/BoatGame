@@ -170,15 +170,7 @@ public class GraphicsHandler {
 				}
 			}
 			//draw tasks
-			ArrayList<Task> tasks = cud.raft.getTasks();
-			for (Entity e: ClientPhysicsHandler.getEntities()) {
-				if (e instanceof EntityCharacter) {
-					EntityCharacter ec = (EntityCharacter) e;
-					if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID) && ec.currentTask != null) {
-						tasks.add(ec.currentTask);
-					}
-				}
-			}
+			ArrayList<Task> tasks = cud.raft.getAllTasks();
 			for (Task t: tasks) {
 				if (t instanceof TaskCollect) {
 					TaskCollect tc = (TaskCollect) t;
