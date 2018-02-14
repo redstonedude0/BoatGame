@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
@@ -37,7 +38,15 @@ public class ServerPacketHandler {
 	public static ArrayList<ServerPacketListener> listeners = new ArrayList<ServerPacketListener>();
 	public static ArrayList<ServerUserData> userData = new ArrayList<ServerUserData>();
 	public static int portNumber = 49555;
+	public static ConcurrentLinkedQueue<ServerQueuedPacket> queuedPackets = new ConcurrentLinkedQueue<ServerQueuedPacket>();
 
+	public static void handlePackets() {
+		while (!queuedPackets.isEmpty()) {
+			ServerQueuedPacket sqp = queuedPackets.remove();
+			handlePacket(sqp.spl, sqp.packet);
+		}
+	}
+	
 	public static ServerUserData getUserData(String uuid) {
 		for (ServerUserData sud : userData) {
 			if (sud.uuid.equalsIgnoreCase(uuid)) {
@@ -215,6 +224,7 @@ public class ServerPacketHandler {
 	}
 
 	public static synchronized void playerJoin(ServerPacketListener spl) {
+		//TODO queue this
 		// let the client know they have connected
 		ServerUserData ud = new ServerUserData();
 		ud.IP = spl.IP;

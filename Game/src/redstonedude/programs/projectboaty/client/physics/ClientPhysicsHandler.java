@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
@@ -56,6 +57,8 @@ public class ClientPhysicsHandler {
 	}
 
 	public static void physicsUpdate() {
+		//before we do anything handle all packets from this last tick
+		ClientPacketHandler.handlePackets();
 		if (ControlHandler.mode == Mode.Playing) {
 			c++;
 			UserData currentUser = ClientPacketHandler.getCurrentUserData();

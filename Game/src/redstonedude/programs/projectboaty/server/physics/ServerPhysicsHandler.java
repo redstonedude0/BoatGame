@@ -55,6 +55,8 @@ public class ServerPhysicsHandler {
 	}
 	
 	public static void physicsUpdate() {
+		//before we do anything handle all packets from this last tick
+		ServerPacketHandler.handlePackets();
 		DebugHandler.clear();
 		c++;
 		for (ServerUserData sud:ServerPacketHandler.userData) {

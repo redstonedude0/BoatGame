@@ -1,10 +1,12 @@
 package redstonedude.programs.projectboaty.client.net;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.server.net.ServerQueuedPacket;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
@@ -31,6 +33,15 @@ public class ClientPacketHandler {
 	public static ArrayList<UserData> userData = new ArrayList<UserData>();
 	public static String currentUserUUID = "";
 	
+	public static ConcurrentLinkedQueue<Packet> queuedPackets = new ConcurrentLinkedQueue<Packet>();
+
+	public static void handlePackets() {
+		while (!queuedPackets.isEmpty()) {
+			Packet p = queuedPackets.remove();
+			handlePacket(p);
+		}
+	}
+	
 	public static UserData getCurrentUserData() {
 		for (UserData ud: userData) {
 			if (ud.uuid.equalsIgnoreCase(currentUserUUID)) {
@@ -49,7 +60,7 @@ public class ClientPacketHandler {
 		return null;
 	}
 	
-	public static synchronized void handlePacket(ClientPacketListener connection, Packet packet) {
+	public static synchronized void handlePacket(Packet packet) {
 		switch (packet.packetID) {
 		case "PacketConnect":
 			//connected, send user data and set graphics variables, also store our UUID

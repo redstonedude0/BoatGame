@@ -7,6 +7,8 @@ import java.net.Socket;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
+import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
+import redstonedude.programs.projectboaty.server.net.ServerQueuedPacket;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 
@@ -21,7 +23,8 @@ public class ClientPacketListener implements Runnable {
 			sock = socket;
 			Object inputObject;
 			while ((inputObject = in.readObject()) != null) {
-				ClientPacketHandler.handlePacket(this, (Packet) inputObject);
+				//ClientPacketHandler.handlePacket(this, (Packet) inputObject);
+				ClientPacketHandler.queuedPackets.add((Packet)inputObject);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

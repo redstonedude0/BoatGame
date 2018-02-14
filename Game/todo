@@ -60,17 +60,17 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Player controlled entities walk back to boat 0,0 plank when there are no tasks
 [R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 [R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
-	Update GUI to be graphical
-	Update display to show the tile and orientation of construction tile
+(R)	Update GUI to be graphical
+(R)	Update display to show the tile and orientation of construction tile
 [R]	Task selection is done randomly
-	Boats collide with islands, somehow [drag and destruction?]
-	Boats collide with barrels, also somehow, perhaps velocity setting?
+(R)	Boats collide with islands, somehow [drag and destruction?]
+(R)	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[Consider overhauling texture system]
-	Make click system more accurate?
+(R)	Make click system more accurate? Add graphics scaling
 [R]	PCEs wander around the raft when they have nothing to do
 [R] fixed errors in new rafts not being sent
-	Solve comod exceptions (packets, clicks), perhaps use queues?
-	Check task overlap on barrels and construction?
+(R)	Solve comod exceptions (packets, clicks), perhaps use queues?
+(R)	Check task overlap on barrels and construction?
 Alpha 0.9 (The Intelligence Update): [TODO]
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]

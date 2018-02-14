@@ -25,7 +25,8 @@ public class ServerPacketListener implements Runnable {
 			Object inputObject;
 			ServerPacketHandler.playerJoin(this);
 			while ((inputObject = in.readObject()) != null) {
-				ServerPacketHandler.handlePacket(this, (Packet) inputObject);
+				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket((Packet)inputObject,this));
+				//ServerPacketHandler.handlePacket(this, (Packet) inputObject);
 			}
 		} catch (Exception e) {
 			//error occured, disconnect the user
