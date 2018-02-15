@@ -5,16 +5,18 @@ import java.util.Random;
 import java.util.UUID;
 
 import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
-import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler;
+import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
 public class ServerPhysicsHandler {
 
@@ -32,6 +34,19 @@ public class ServerPhysicsHandler {
 	
 	public synchronized static void setEntities(ArrayList<Entity> e) {
 		entities = e; 
+	}
+	
+	public synchronized static void setEntity(Entity ent) {
+		Entity replace = null;
+		for (Entity e : entities) {
+			if (e.uuid.equals(ent.uuid)) {
+				replace = e;
+			}
+		}
+		if (replace != null) {
+			entities.remove(replace);
+			entities.add(ent);
+		}
 	}
 
 	public synchronized static Entity getEntity(String uuid) {
@@ -78,6 +93,30 @@ public class ServerPhysicsHandler {
 				if (shortestSquareDistance > 2500) {
 					//over 50 blocks from any raft
 					toDespawn.add(e);
+				} else {
+					//not despawning, do physics
+					EntityBarrel eb = (EntityBarrel) e;
+					VectorDouble pos = eb.getPos();
+					VectorDouble vel = eb.getVel();
+					TerrainType tt = WorldHandler.getTerrainType(pos.x+0.5, pos.y+0.5);
+					//it will have some intial velocity, apply drag 
+					VectorDouble drag = vel.multiply(-tt.frictionCoefficient);
+					//F=ma, a=F/m
+					vel = vel.add(drag.divide(10/*mass*/));
+					//System.out.println("here: " + vel.x);
+					if (tt == TerrainType.Water) {
+						vel = vel.add(WorldHandler.getWind().divide(10/*mass*/));
+					}
+					//add the velocity to position and send packet
+					//System.out.println(vel.x);
+					//System.out.println(WorldHandler.getWind().x);
+					//System.out.println(WorldHandler.getWind().divide(10).x);
+					//System.out.println(drag.x);
+					//System.out.println(vel.x);
+					eb.setVel(vel);
+					eb.setPos(pos.add(vel));
+					PacketEntityState pes = new PacketEntityState(eb);
+					ServerPacketHandler.broadcastPacket(pes);
 				}
 			}
 		}
@@ -143,8 +182,12 @@ public class ServerPhysicsHandler {
 		for (Entity ent: ServerPhysicsHandler.getEntities()) {
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.absolutePosition) {
-					if (ent.getPos().equals(eb.getPos())) {
-						return;//already a barrel here
+					VectorDouble entPos = ent.getPos();
+					VectorDouble ebPos = eb.getPos();
+					if (ebPos.x > entPos.x && ebPos.x < entPos.x+1) {
+						if (ebPos.y > entPos.y && ebPos.y < entPos.y+1) {
+							return;//already a barrel here
+						}
 					}
 				}
 			}

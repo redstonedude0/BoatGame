@@ -2,9 +2,12 @@ package redstonedude.programs.projectboaty.shared.world;
 
 import java.util.Random;
 
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+
 public class WorldHandler {
 	
 	public static long key = 0;
+	private static VectorDouble wind;
 	
 	public static enum TerrainType {
 		Water(0.2F, 0F), Land(5F, 50F);
@@ -19,6 +22,17 @@ public class WorldHandler {
 		
 	};
 	
+	public static VectorDouble getWind() {
+		if (wind == null) {
+			return null;
+		}
+		return new VectorDouble(wind);
+	}
+	
+	public static void setWind(VectorDouble w) {
+		wind = w;
+	}
+	
 	public static TerrainType getTerrainType(double x, double y) {
 		if (getTerrainHeight(x, y) >= 0.8) {
 			return TerrainType.Land;
@@ -28,7 +42,8 @@ public class WorldHandler {
 	}
 	
 	public static double getTerrainHeight(double x, double y) {
-		//System.out.println("terrain at " + x + "," + y);
+		x = Math.floor(x);
+		y = Math.floor(y);
 		//generates in 16x16 chunks.
 		//do in x direction
 		double xHeight = get1DHeightAtBlock(x, 0);

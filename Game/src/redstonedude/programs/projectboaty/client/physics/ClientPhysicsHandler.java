@@ -42,6 +42,19 @@ public class ClientPhysicsHandler {
 		return null;
 	}
 	
+	public synchronized static void setEntity(Entity ent) {
+		Entity replace = null;
+		for (Entity e : entities) {
+			if (e.uuid.equals(ent.uuid)) {
+				replace = e;
+			}
+		}
+		if (replace != null) {
+			entities.remove(replace);
+			entities.add(ent);
+		}
+	}
+	
 	/**
 	 * return true if an entity was removed
 	 * @param uuid
@@ -76,8 +89,14 @@ public class ClientPhysicsHandler {
 					approxPhysicsUpdate(ud);
 				}
 			}
+			//update tasks
 			for (Entity e : getEntities()) {
 				physicsUpdate(e);
+			}
+			if (currentUser != null && currentUser.raft != null) {
+				for (Task t: currentUser.raft.getTasks()) {
+					t.passiveUpdate();
+				}
 			}
 			// move camera accordingly
 			if (currentUser != null && currentUser.raft != null) {
@@ -135,10 +154,23 @@ public class ClientPhysicsHandler {
 					thruster.setThrustStrength(raft, sud.requiredClockwiseRotation, sud.requiredForwardTranslation, sud.requiredRightwardTranslation);
 				}
 			}
+			//still need physics to account for rotation to be about COM
 			raft.setPos(raft.getPos().add(raft.getVelocity()));
+			VectorDouble unitx = raft.getUnitX();
+			VectorDouble unity = raft.getUnitY();
+			VectorDouble centreOfMass = raft.getCOMPos();
+			double comx_initial = centreOfMass.x * unitx.x + centreOfMass.y * unity.x;
+			double comy_initial = centreOfMass.x * unitx.y + centreOfMass.y * unity.y;
 			raft.theta += raft.dtheta;
 			raft.sin = Math.sin(raft.theta);
 			raft.cos = Math.cos(raft.theta);
+			unitx = raft.getUnitX();
+			unity = raft.getUnitY();
+			double comx_after = centreOfMass.x * unitx.x + centreOfMass.y * unity.x;
+			double comy_after = centreOfMass.x * unitx.y + centreOfMass.y * unity.y;
+			double dcomx = comx_after - comx_initial;
+			double dcomy = comy_after - comy_initial;
+			raft.setPos(raft.getPos().subtract(new VectorDouble(dcomx, dcomy)));
 		}
 	}
 
@@ -148,13 +180,13 @@ public class ClientPhysicsHandler {
 			// allow it, it'll be created shortly
 			return;
 		}
-		System.out.println("Raft output:");
-		System.out.println("  TRG:" + raft.cos + "," + raft.sin);
-		System.out.println("  THE:" + raft.theta + "," + raft.dtheta);
-		System.out.println("  POS:" + raft.getPos().x + "," + raft.getPos().y);
-		System.out.println("  COM:" + raft.getCOMPos().x + "," + raft.getCOMPos().y);
-		System.out.println("  UNX:" + raft.getUnitX().x + "," + raft.getUnitX().y);
-		System.out.println("  UNY:" + raft.getUnitY().x + "," + raft.getUnitY().y);
+		//System.out.println("Raft output:");
+		//System.out.println("  TRG:" + raft.cos + "," + raft.sin);
+		//System.out.println("  THE:" + raft.theta + "," + raft.dtheta);
+		//System.out.println("  POS:" + raft.getPos().x + "," + raft.getPos().y);
+		//System.out.println("  COM:" + raft.getCOMPos().x + "," + raft.getCOMPos().y);
+		//System.out.println("  UNX:" + raft.getUnitX().x + "," + raft.getUnitX().y);
+		//System.out.println("  UNY:" + raft.getUnitY().x + "," + raft.getUnitY().y);
 
 		ControlHandler.setControlDoubles();
 

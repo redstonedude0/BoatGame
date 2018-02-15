@@ -25,11 +25,13 @@ REQUESTSETTASKLIST	ArrayList<Task>
 	Request to set the task list
 REQUESTTILESTATE	uuid, Tile
 	Request to update the state on a single tile, used to update HP
+REQUESTENTITYSTATE	Entity
+	Request to update state on an entity
 
 Client bound packets:
 
 PacketName	Data
-CONNECT		uuid (String), world key (Long)
+CONNECT		uuid (String), world key (Long), wind (VectorDouble)
 	Sent when the client is connected to the server, for now it allows the rest of the client to begin running, tells it which user it is
 NEWUSER		uuid (String)
 	Fired when a player joins, contains string representation of their uuid for now
@@ -37,7 +39,7 @@ NEWUSER		uuid (String)
 NEWRAFT		uuid (String), raft
 	Fired when a new raft is set for a player, each tile contains optional tiledata such as angle.
 MOVERAFT	uuid, X, Y, Rot, dX, dY , dRot, COMX, COMY
-	Fired when a server physics update is complete
+	Fired when a raft is moved
 DELUSER		uuid (String)
 	For when a user disconnects or drops out
 SETCONTROL uuid, Forward (Int), Rightward (Int), Clockwise (Int)
@@ -56,6 +58,8 @@ TILESTATE	uuid, Tile
 	Update the state on a single tile, used to update HP
 DELENTITY	uuid(entity uuid to delete)
 	Delete an entity
+ENTITYSTATE	Entity
+	Used to update the state on an entity
 
 
 

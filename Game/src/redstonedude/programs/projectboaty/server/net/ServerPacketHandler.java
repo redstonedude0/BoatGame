@@ -15,6 +15,7 @@ import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelUser;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
@@ -24,6 +25,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketRaftTiles
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestCharacterState;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaft;
@@ -63,7 +65,7 @@ public class ServerPacketHandler {
 		return null;
 	}
 
-	public static void broadcastPacketExcept(ServerPacketListener ignore, Packet packet) {
+	public static synchronized void broadcastPacketExcept(ServerPacketListener ignore, Packet packet) {
 		// For each client, send the packet if they are not the ignored client
 		for (ServerPacketListener spl : listeners) {
 			if (!spl.listener_uuid.equals(ignore.listener_uuid)) {
@@ -72,7 +74,7 @@ public class ServerPacketHandler {
 		}
 	}
 
-	public static void broadcastPacket(Packet packet) {
+	public static synchronized void broadcastPacket(Packet packet) {
 		try {
 			// For every client, send them the packet
 			for (ServerPacketListener spl : listeners) {
@@ -221,6 +223,11 @@ public class ServerPacketHandler {
 				broadcastPacketExcept(connection, pts);
 			}
 			break;
+		case "PacketRequestEntityState":
+			PacketRequestEntityState pres = (PacketRequestEntityState) packet;
+			ServerPhysicsHandler.setEntity(pres.entity);
+			PacketEntityState pes = new PacketEntityState(pres.entity);
+			broadcastPacketExcept(connection, pes);
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 
@@ -266,7 +273,7 @@ public class ServerPacketHandler {
 		//tell all users about this new user, including their raft
 		broadcastPacket(new PacketNewUser(spl.listener_uuid));
 		broadcastPacketExcept(spl, new PacketNewRaft(ud.uuid, ud.raft));
-		spl.send(new PacketConnect(ud.uuid, WorldHandler.key));
+		spl.send(new PacketConnect(ud.uuid, WorldHandler.key, WorldHandler.getWind()));
 		for (ServerUserData sud : userData) {
 			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
 				//tell the new user about all other new users

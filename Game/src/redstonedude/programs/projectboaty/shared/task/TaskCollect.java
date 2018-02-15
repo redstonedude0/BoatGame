@@ -9,7 +9,7 @@ import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 
-public class TaskCollect extends TaskLocationTarget implements Serializable {
+public class TaskCollect extends TaskLocationMovingTarget implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,6 +55,14 @@ public class TaskCollect extends TaskLocationTarget implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void updateLocation() {
+		Entity target = ClientPhysicsHandler.getEntity(collectionUUID);
+		if (target != null) {
+			targetLoc = target.getPos();
+		}
 	}
 
 }

@@ -16,6 +16,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacter
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelUser;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
@@ -73,6 +74,7 @@ public class ClientPacketHandler {
 			currentUserUUID = pc.uuid;
 			// System.out.println("JOINED AS USER: " + currentUserUUID);
 			WorldHandler.key = pc.key;
+			WorldHandler.setWind(pc.wind);
 			ControlHandler.mode = Mode.Playing;
 			break;
 		case "PacketNewRaft":
@@ -153,6 +155,10 @@ public class ClientPacketHandler {
 		case "PacketDelEntity":
 			PacketDelEntity pde = (PacketDelEntity) packet;
 			ClientPhysicsHandler.removeEntity(pde.uuid);
+			break;
+		case "PacketEntityState":
+			PacketEntityState pes = (PacketEntityState) packet;
+			ClientPhysicsHandler.setEntity(pes.entity);
 			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);

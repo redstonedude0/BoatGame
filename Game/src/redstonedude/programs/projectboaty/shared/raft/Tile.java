@@ -94,7 +94,7 @@ public class Tile implements Serializable {
 
 	public TerrainType getTerrain(Raft parent) {
 		VectorDouble pos = getPos().add(new VectorDouble(0.5, 0.5)).getAbsolute(parent.getUnitX(), parent.getUnitY()).add(parent.getPos());
-		return WorldHandler.getTerrainType(Math.floor(pos.x), Math.floor(pos.y));
+		return WorldHandler.getTerrainType(pos.x, pos.y);
 	}
 
 	public VectorDouble getRelativeFrictionVector(Raft parent) {

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
+import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.server.world.ServerWorldHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.src.Logger;
@@ -36,6 +37,8 @@ public class ServerDataHandler {
 				Logger.log("saved entities");
 				oos.writeObject(new Long(WorldHandler.key));
 				Logger.log("saved world key");
+				oos.writeObject(WorldHandler.getWind());
+				Logger.log("saved wind");
 				oos.flush();
 			} catch (Exception e) {
 				Logger.log("Failed save: " + e.getMessage());
@@ -64,6 +67,9 @@ public class ServerDataHandler {
 					} else if (inputObject instanceof ArrayList<?>) {
 						ServerPhysicsHandler.setEntities((ArrayList<Entity>) inputObject);
 						Logger.log("loaded entities");
+					} else if (inputObject instanceof VectorDouble) {
+						ServerWorldHandler.setWind((VectorDouble) inputObject);
+						Logger.log("loaded wind");
 					} else {
 						Logger.log("unknown class error in loading");
 					}
