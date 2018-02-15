@@ -28,6 +28,7 @@ import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 public class GraphicsHandler {
 
 	public static JFrame frame;
+	
 
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
@@ -119,6 +120,7 @@ public class GraphicsHandler {
 			graphicsUpdateConnecting();
 			break;
 		}
+		//gPan.getGraphics().drawImage(backbuffer, 0, 0, gPan.getWidth(), gPan.getHeight(), gPan);
 		frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(), frame.getHeight(), frame);
 	}
 
@@ -329,12 +331,7 @@ public class GraphicsHandler {
 		backbuffer = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_RGB);
 		g2d = backbuffer.createGraphics();
 		frame = new JFrame("Raft Game");
-		// panel for graphics
-		// panel for button overlay
-		// buttons
-		// add buttons to panel
-		// add graphics to panel
-		// add panels to frame
+		
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
