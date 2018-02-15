@@ -50,15 +50,12 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Update barrel spawning so they don't overlap?
 	[R]	Add player controlled entities, more can be spawned by a button press in debug menu
 	[R]	Player controlled entities can walk around
--P-		Player controlled entities fall in water if they are no longer on a block
 	[R]	Player controlled entities walk across water to fetch barrels
 	[R]	Player controlled entities walk back to boat 0,0 plank when there are no tasks
 	[R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 	[R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
--P-		Update GUI to be graphical based on buttons
 	[R]	Task selection is done randomly
 	[R]	Boats collide with islands, somehow 
--P-		Boat complete destruction should cause new boat respawn at random location?
 	[R]	Investigate NaN when a line of tiles is detroyed?
 			tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
 	[R]	Boats collide with barrels, also somehow, perhaps velocity setting?
@@ -69,23 +66,25 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Fix comod for player join and disconnect
 	[R]	Check task overlap on barrels and construction?
 	[R]	Investigate barrel spawn mechanics?
--P-		Change everything to use floats instead of doubles
--P-		Wrap packet handlers in try catches to prevent thread crashes
--P-		Look into strictfp and trial asssert
 	[R]	Investigate physics between clients being weird
+Alpha 0.9 (The Intelligence Update): [TODO]
+-P-		Player controlled entities fall in water if they are no longer on a block
+-P-		Update GUI to be graphical based on buttons
+-P-		Boat complete destruction should cause new boat respawn at random location?
+-P-		Change everything to use floats instead of doubles
+-P-		Wrap packet handlers in try catches to prevent thread crashes [disconnect client?]
 -P-		Move createNewListener server-side to playerJoin to fix comod exceptions
 -P-		Rotation soft follow?
-Alpha 0.9 (The Intelligence Update): [TODO]
 		Implement server-side chat?
-		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
-		Implement PCE stats system [walk speed, swim speed][discuss]
+		Implement PCE stats system [walk speed, swim speed]?
 		Add construction time (make construction a lasting task)
 		Make thrusters require 2 wood
 		Make intelligent task selection (take into account distance, swim/walk speeds)
+		Intelligent dismounting + pathfinding?
+			Overhaul task system?
 		If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-		Add character status effects (cold, wet) gained from swimming, lost over time [discuss]
+		Add character status effects (cold, wet) gained from swimming, lost over time?
 		Add repair task? [automatically added? option in GUI?]
-		[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
 		Add paddelling task, must be placed adjacent to empty spot, can be rotated
 		Paddelling task is cancellable, make all other tasks cancellable
 		Implement paddelling, take it into account for control and physics calculations.
@@ -93,11 +92,11 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Perhaps set as unreachable if speed difference is too great?
 		[Make GUI graphical if it isn't done already]
 		Add larger worldmap, openable in the GUI.
-		Add scrolling to world scale
+		Add scrolling to world scale?
 		Add GUI scale into a graphics settings page?
 		Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
 		Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
-Alpha 0.91 (The Sounds Update): [TODO]
+Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
 		Add a way to trigger sounds and music on events in the code
@@ -157,7 +156,10 @@ Alpha 1.4 (The Fighting Update): [TODO]
 
 List of discussion and decision points:
 		[discuss PCE stats system]
+		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
+		[discuss PCE status effects - 'cold','wet']
 		[terrain tile system or polygonal?]
+		[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
 		[consider change in angular momentum when a block gets destroyed?]
 		[consider adding static friction?]
 		[decide how barrel spawning should work]
@@ -193,6 +195,7 @@ List of discussion and decision points:
 			Should it also display on the task once clicked?
 			Task icon for repair?
 			Should repair have a layer of enforced transparency to cause holes in objects?
+		[Discuss assert and keep in mind strictfp if needed]
 			
 	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
