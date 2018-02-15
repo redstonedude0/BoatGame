@@ -78,7 +78,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 Alpha 0.9 (The Intelligence Update): [TODO]
 		Implement server-side chat?
 		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
-		Implement PCE stats system [walk speed, swim speed] [discuss]
+		Implement PCE stats system [walk speed, swim speed][discuss]
 		Add construction time (make construction a lasting task)
 		Make thrusters require 2 wood
 		Make intelligent task selection (take into account distance, swim/walk speeds)
@@ -156,6 +156,7 @@ Alpha 1.4 (The Fighting Update): [TODO]
 
 
 List of discussion and decision points:
+		[discuss PCE stats system]
 		[terrain tile system or polygonal?]
 		[consider change in angular momentum when a block gets destroyed?]
 		[consider adding static friction?]
