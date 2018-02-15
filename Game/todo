@@ -69,7 +69,8 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Boats collide with islands, somehow [drag and destruction?]
 	Boat complete destruction should cause new boat respawn at random location?
 	[Boat destruction down the middle will need to cause fleeting in future?]
-	Investigate NaN when a line of tiles is detroyed?
+[R]	Investigate NaN when a line of tiles is detroyed?
+		tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
 (R)	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[Consider overhauling texture system]
 [R]	Make click system more accurate? Add graphics scaling

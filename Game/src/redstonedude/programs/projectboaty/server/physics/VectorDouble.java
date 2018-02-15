@@ -71,6 +71,10 @@ public class VectorDouble implements Serializable {
 	 * @return
 	 */
 	public VectorDouble setMagnitude(double mag) {
+		//handle 0 and error case
+		if (mag <= 0) {
+			return new VectorDouble(0,0);
+		}
 		VectorDouble ans = new VectorDouble(this);
 		double currentMag = Math.sqrt(getSquaredLength());
 		ans.x /= currentMag;

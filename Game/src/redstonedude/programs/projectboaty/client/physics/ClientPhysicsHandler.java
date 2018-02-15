@@ -148,6 +148,13 @@ public class ClientPhysicsHandler {
 			// allow it, it'll be created shortly
 			return;
 		}
+		System.out.println("Raft output:");
+		System.out.println("  TRG:" + raft.cos + "," + raft.sin);
+		System.out.println("  THE:" + raft.theta + "," + raft.dtheta);
+		System.out.println("  POS:" + raft.getPos().x + "," + raft.getPos().y);
+		System.out.println("  COM:" + raft.getCOMPos().x + "," + raft.getCOMPos().y);
+		System.out.println("  UNX:" + raft.getUnitX().x + "," + raft.getUnitX().y);
+		System.out.println("  UNY:" + raft.getUnitY().x + "," + raft.getUnitY().y);
 
 		ControlHandler.setControlDoubles();
 
@@ -183,6 +190,7 @@ public class ClientPhysicsHandler {
 		VectorDouble centreOfMass = new VectorDouble(massMoments);
 		centreOfMass = centreOfMass.divide(mass);
 		raft.setCOMPos(centreOfMass);
+		//System.out.println("COM at: " + centreOfMass.x + ":" + centreOfMass.y);
 
 		// calculate moments of inertia about this point
 		double forcemoments = 0;
@@ -210,6 +218,10 @@ public class ClientPhysicsHandler {
 		}
 		double masssquaremoments = squareradiusofgyration * mass;
 		double atheta = forcemoments / masssquaremoments;
+		if (masssquaremoments == 0) {
+			atheta = 0;//COM is massmoment - only 1 tile left. There should be no net rotational acceleration.
+			//technically there should be but its harder to model
+		}
 		raft.dtheta += atheta;
 		// rotation needs to be about the COM so translaton needs to occur, needs to
 		// rotate by dtheta about COM
@@ -230,6 +242,7 @@ public class ClientPhysicsHandler {
 		// double comy_after = raft.sin*centreofmassX+raft.cos*centreofmassY;
 		unitx = raft.getUnitX();
 		unity = raft.getUnitY();
+		//System.out.println("UNI at: " + unitx.x + "," + unitx.y + " : " + unity.x + "," + unity.y);
 		double comx_after = centreOfMass.x * unitx.x + centreOfMass.y * unity.x;
 		double comy_after = centreOfMass.x * unitx.y + centreOfMass.y * unity.y;
 		double dcomx = comx_after - comx_initial;

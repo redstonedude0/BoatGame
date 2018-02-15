@@ -69,7 +69,9 @@ public class Tile implements Serializable {
 		VectorDouble absRot = new VectorDouble();
 		absRot.x = rotationalVelocity.x * parent.getUnitX().x + rotationalVelocity.y * parent.getUnitY().x;
 		absRot.y = rotationalVelocity.x * parent.getUnitX().y + rotationalVelocity.y * parent.getUnitY().y;
-		return new VectorDouble(linearVelocity).add(absRot);
+		VectorDouble vr = new VectorDouble(linearVelocity).add(absRot);
+		
+		return vr;
 	}
 
 	public VectorDouble getAbsoluteFrictionVector(Raft parent) {
@@ -109,6 +111,7 @@ public class Tile implements Serializable {
 		VectorDouble unitY = new VectorDouble(-b, a).divide(determinant);
 		friction.x = absFriction.x * unitX.x + absFriction.y * unitY.x;
 		friction.y = absFriction.x * unitX.y + absFriction.y * unitY.y;
+		
 		return friction;
 	}
 
