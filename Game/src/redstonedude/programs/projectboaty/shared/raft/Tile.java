@@ -21,18 +21,6 @@ public class Tile implements Serializable {
 		//if damage is non-0 sent packet
 		if (dmg != 0) {
 			PacketRequestTileState prts = new PacketRequestTileState(this);
-			//prts.tile = this;
-			//prts.tile = new Tile();
-			//prts.tile.pos = new VectorDouble(pos);
-			//System.out.println("PRTSC DATA: (" + prts.uniqueTestingID + ")");
-			//System.out.println("  " + prts.tile.hp);
-			//System.out.println("  " + prts.tile.mass);
-			//System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
-			//prts.tile.hp = Float.parseFloat(""+hp);
-			//System.out.println("1.  " + prts.tile.hp);
-			//hp = hp+100;
-			//System.out.println("2.  " + prts.tile.hp);
-			//System.out.println("HP now set to " + prts.tile.hp);
 			ClientPacketHandler.sendPacket(prts);
 		}
 	}

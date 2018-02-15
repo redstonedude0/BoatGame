@@ -12,6 +12,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -107,12 +108,39 @@ public class ServerPhysicsHandler {
 					if (tt == TerrainType.Water) {
 						vel = vel.add(WorldHandler.getWind().divide(10/*mass*/));
 					}
+					//also see if barrel is inside a raft, if so it needs to be ejected immediately.
+					checkAllUsers: for (ServerUserData sud: ServerPacketHandler.userData) {
+						if (sud != null && sud.raft != null) {
+							//calculate relative position of the barrel
+							VectorDouble relPos = pos.add(new VectorDouble(0.5,0.5)).subtract(sud.raft.getPos()).getRelative(sud.raft.getUnitX(), sud.raft.getUnitY());
+							ArrayList<Tile> ts = sud.raft.getTiles();
+							for (Tile t: ts) {
+								VectorDouble tPos = t.getPos();
+								//-0.5 and +1 cos both coordinates are in the bottom left. Just go with it.
+								if (relPos.x > tPos.x && relPos.x < tPos.x+1) {
+									if (relPos.y > tPos.y && relPos.y < tPos.y+1) {
+										//inside this tile, add the relevant velocity and then return
+										VectorDouble velo = t.getAbsoluteMotion(sud.raft);
+										vel = velo.multiply(2);//ensure it goes away
+										
+										//also apply damage to this tile
+										/**
+										 * This is a really bad workaround and needs to be fixed properly for beta
+										 */
+										float dmg = (float) Math.sqrt(velo.getSquaredLength());
+										dmg *= 50;//some damage coefficient
+										t.hp -= dmg;
+										PacketTileState pts = new PacketTileState(t);
+										pts.uuid = sud.uuid;
+										ServerPacketHandler.broadcastPacket(pts);
+										break checkAllUsers;
+									}
+								}
+							}
+						}
+					}
+					
 					//add the velocity to position and send packet
-					//System.out.println(vel.x);
-					//System.out.println(WorldHandler.getWind().x);
-					//System.out.println(WorldHandler.getWind().divide(10).x);
-					//System.out.println(drag.x);
-					//System.out.println(vel.x);
 					eb.setVel(vel);
 					eb.setPos(pos.add(vel));
 					PacketEntityState pes = new PacketEntityState(eb);

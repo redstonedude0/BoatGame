@@ -66,14 +66,15 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
 [R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
 	Update GUI to be graphical based on buttons
-(R)	Update display to show the tile and orientation of construction tile
+(R)	Update display to show the tile and orientation of construction tile?
 [R]	Task selection is done randomly
 [R]	Boats collide with islands, somehow [drag and destruction?]
 	Boat complete destruction should cause new boat respawn at random location?
 	[Boat destruction down the middle will need to cause fleeting in future?]
 [R]	Investigate NaN when a line of tiles is detroyed?
 		tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
-(R)	Boats collide with barrels, also somehow, perhaps velocity setting?
+[R]	Boats collide with barrels, also somehow, perhaps velocity setting?
+		Need to improve collisions - take relative velocities and implement a coefficient of restitution?
 	[Consider overhauling texture system]
 [R]	Make click system more accurate? Add graphics scaling
 [R]	PCEs wander around the raft when they have nothing to do

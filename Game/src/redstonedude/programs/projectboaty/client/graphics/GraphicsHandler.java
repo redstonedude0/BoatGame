@@ -218,12 +218,13 @@ public class GraphicsHandler {
 			if (constructionTile != null) {
 				double x = constructionTile.getAbsoluteX(cud.raft);
 				double y = constructionTile.getAbsoluteY(cud.raft);
-				g2d.drawLine(0, 0, (int) (x*100),(int) (y*100));
+				//g2d.drawLine(0, 0, (int) (x*100),(int) (y*100));
 				// using graphics instead of colors
 				AffineTransform rotator = new AffineTransform();
 				rotator.translate(100 * x, 100 * y);
 				rotator.rotate(cud.raft.theta);
 				g2d.transform(rotator);
+				//g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				try {
 					g2d.transform(rotator.createInverse());
