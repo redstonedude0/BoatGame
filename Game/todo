@@ -93,21 +93,25 @@ Alpha 0.8 (The Entities Update): [TODO]
 Alpha 0.9 (The Intelligence Update): [TODO]
 	Implement server-side chat?
 	[decide how PCE stats should work, random? guaranteed for 1st person? etc]
-	Implement PCE stats system [walk speed, swim speed]
+	Implement PCE stats system [walk speed, swim speed] [discuss]
 	Add construction time (make construction a lasting task)
 	Make thrusters require 2 wood
 	Make intelligent task selection (take into account distance, swim/walk speeds)
 	If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-	Add character status effects (cold, wet) gained from swimming, lost over time
+	Add character status effects (cold, wet) gained from swimming, lost over time [discuss]
+	Add repair task? [automatically added? option in GUI?]
+	[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
 	Add paddelling task, must be placed adjacent to empty spot, can be rotated
 	Paddelling task is cancellable, make all other tasks cancellable
 	Implement paddelling, take it into account for control and physics calculations.
 		Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
+		Perhaps set as unreachable if speed difference is too great?
 	[Make GUI graphical if it isn't done already]
 	Add larger worldmap, openable in the GUI.
 	Add scrolling to world scale
 	Add GUI scale into a graphics settings page?
 	Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+	Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
 	
 Alpha 0.91 (The Sounds Update): [TODO]
 	Decide on sound design
