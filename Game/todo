@@ -196,6 +196,9 @@ List of discussion and decision points:
 			Task icon for repair?
 			Should repair have a layer of enforced transparency to cause holes in objects?
 		[Discuss assert and keep in mind strictfp if needed]
+		Consider pathfinding with dynamic targets - reach and recalculate? every second recalculate?
+			Use Trace pathfinding algorithm, possibly best-first-search if not
+			http://qiao.github.io/PathFinding.js/visual/
 			
 	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
