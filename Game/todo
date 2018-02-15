@@ -58,6 +58,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 [R]	Do barrel velocities and global wind
 [R]	Update collection task to chase barrels
 [R]	Update barrel spawning so they don't overlap? [discuss barrel-barrel collisions]
+	[add damage so barrels get destroyed?]
 [R]	Add player controlled entities, more can be spawned by a button press in debug menu
 [R]	Player controlled entities can walk around
 	Player controlled entities fall in water if they are no longer on a block
