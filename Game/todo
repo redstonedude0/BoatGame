@@ -8,166 +8,166 @@ D - Harry
 
 What is required to be updated for each release:
 Alpha 0.1 (The Physics Update):
-[R]	Basic physics engine sorted
+	[R]	Basic physics engine sorted
 Alpha 0.2 (The Looks Update):
-[R]	Fix physics engine so COM moves in straight line
-[R]	Add handling for textured tiles
+	[R]	Fix physics engine so COM moves in straight line
+	[R]	Add handling for textured tiles
 Alpha 0.3 (The Menu Update): [TODO]
-[R]	Add temporary main menu and loading screens, add splash screens
-[R]	Add escape menu to return to main menu and shutdown internal engine
-	[discuss how buttons should work]
-	[discuss how screen scalar should work]
-[R]	Make outboard motor graphical orientation be based on thrust angle
+	[R]	Add temporary main menu and loading screens, add splash screens
+	[R]	Add escape menu to return to main menu and shutdown internal engine
+		[discuss how buttons should work]
+		[discuss how screen scalar should work]
+	[R]	Make outboard motor graphical orientation be based on thrust angle
 Alpha 0.4 (The Vector Update): [TODO]
-[R]	Create VectorDouble and handlers to represent vectors and transformations
-[R]	Replace the physics engine with VectorDouble objects
-[R]	Implement friction being applied based on relative velocity
-	[consider adding static friction? Possibly add matrix objects?]
+	[R]	Create VectorDouble and handlers to represent vectors and transformations
+	[R]	Replace the physics engine with VectorDouble objects
+	[R]	Implement friction being applied based on relative velocity
+		[consider adding static friction? Possibly add matrix objects?]
 Alpha 0.5 (The Debug Update): [TODO]
-[R]	Add functions to allow for easy debug, add a debug menu, add debug options to show moments? (added vector display)
-[R] Add more vecor helper functions
+	[R]	Add functions to allow for easy debug, add a debug menu, add debug options to show moments? (added vector display)
+	[R] Add more vecor helper functions
 Alpha 0.6 (The Control Update): [TODO]
-[R]	Make controls be based on how they will affect motion
-		i.e. right will always make you turn right?
-		how to implement:
-			w alone will set up thrusts to thrust forward
-			d alone will set up thrusts to clockwise rotation
-			w and d will set up thrusts to forward and clockwise
-			e alone will set up thrusts for rightward translation
-[R]	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
-[R]	Check that block masses are working properly
+	[R]	Make controls be based on how they will affect motion
+			i.e. right will always make you turn right?
+			how to implement:
+				w alone will set up thrusts to thrust forward
+				d alone will set up thrusts to clockwise rotation
+				w and d will set up thrusts to forward and clockwise
+				e alone will set up thrusts for rightward translation
+	[R]	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?) [discussion]
+	[R]	Check that block masses are working properly
 Alpha 0.7 (The Worlds Update): [TODO]
-[R]	If it will be server-side, make the server [test server connection with other game + discuss hacking prevention]
-		when a client connects they can request 1,2,3,4 as a raft and use it as normal
-		central server? client-run servers? local play?
-[R]	Add world saving (save raft location etc)
-	[decide how barrel spawning should work]
-	[discuss disconnection whilst in a server - 'ghost' ship raidable?]
-	[discuss ship destruction, abandonment, and hacking reporting systems?]
-[R]	Add noisemap to represent small islands and land masses
-[R]	Display islands based on noisemap
-[R]	Save noisemap key to world when world saves
-[D] Add sounds
+	[R]	If it will be server-side, make the server [test server connection with other game + discuss hacking prevention]
+			when a client connects they can request 1,2,3,4 as a raft and use it as normal
+			central server? client-run servers? local play?
+	[R]	Add world saving (save raft location etc)
+		[decide how barrel spawning should work]
+		[discuss disconnection whilst in a server - 'ghost' ship raidable?]
+		[discuss ship destruction, abandonment, and hacking reporting systems?]
+	[R]	Add noisemap to represent small islands and land masses
+	[R]	Display islands based on noisemap
+	[R]	Save noisemap key to world when world saves
+	[D] Add sounds
 Alpha 0.8 (The Entities Update): [TODO]
-[R]	Add barrel entities [random spawn chance each tick?]
-	[discuss barrel physics, barrel despawning, etc, global currents/winds?]
-	[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
-		[possibly implement transparency?]
-[R]	Do barrel despawning
-	[consider overhauling despawn and spawn system to have global barrel count and increase efficiency?]
-[R]	Do barrel velocities and global wind
-[R]	Update collection task to chase barrels
-[R]	Update barrel spawning so they don't overlap? [discuss barrel-barrel collisions]
-	[add damage so barrels get destroyed?]
-[R]	Add player controlled entities, more can be spawned by a button press in debug menu
-[R]	Player controlled entities can walk around
-	Player controlled entities fall in water if they are no longer on a block
-[R]	Player controlled entities walk across water to fetch barrels
-[R]	Player controlled entities walk back to boat 0,0 plank when there are no tasks
-[R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
-[R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
-	Update GUI to be graphical based on buttons
-(R)	Update display to show the tile and orientation of construction tile?
-[R]	Task selection is done randomly
-[R]	Boats collide with islands, somehow [drag and destruction?]
-	Boat complete destruction should cause new boat respawn at random location?
-	[Boat destruction down the middle will need to cause fleeting in future?]
-[R]	Investigate NaN when a line of tiles is detroyed?
-		tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
-[R]	Boats collide with barrels, also somehow, perhaps velocity setting?
-		Need to improve collisions - take relative velocities and implement a coefficient of restitution?
-	[Consider overhauling texture system]
-[R]	Make click system more accurate? Add graphics scaling
-[R]	PCEs wander around the raft when they have nothing to do
-[R] fixed errors in new rafts not being sent
-[R]	Solve comod exceptions (packets, clicks), perhaps use queues?
-[R]	Fix comod for player join and disconnect
-[R]	Check task overlap on barrels and construction?
-[R]	Investigate barrel spawn mechanics?
-	Change everything to use floats instead of doubles
-	Wrap packet handlers in try catches to prevent thread crashes
-	Look into strictfp and trial asssert
-[R]	Investigate physics between clients being weird
-	Move createNewListener server-side to playerJoin to fix comod exceptions
-	[discuss VAC integration?]
+	[R]	Add barrel entities [random spawn chance each tick?]
+		[discuss barrel physics, barrel despawning, etc, global currents/winds?]
+		[discuss rejoin of players, and how overlapping will work, optional teleportation or waiting]
+			[possibly implement transparency?]
+	[R]	Do barrel despawning
+		[consider overhauling despawn and spawn system to have global barrel count and increase efficiency?]
+	[R]	Do barrel velocities and global wind
+	[R]	Update collection task to chase barrels
+	[R]	Update barrel spawning so they don't overlap? [discuss barrel-barrel collisions]
+		[add damage so barrels get destroyed?]
+	[R]	Add player controlled entities, more can be spawned by a button press in debug menu
+	[R]	Player controlled entities can walk around
+		Player controlled entities fall in water if they are no longer on a block
+	[R]	Player controlled entities walk across water to fetch barrels
+	[R]	Player controlled entities walk back to boat 0,0 plank when there are no tasks
+	[R]	Add GUI for building floors and thrusters, as well as assigning barrels to be collected
+	[R]	Allow floors and thrusters to be built instantly from 1 wood, which each barrel grants to each PCE
+		Update GUI to be graphical based on buttons
+	(R)	Update display to show the tile and orientation of construction tile?
+	[R]	Task selection is done randomly
+	[R]	Boats collide with islands, somehow [drag and destruction?]
+		Boat complete destruction should cause new boat respawn at random location?
+		[Boat destruction down the middle will need to cause fleeting in future?]
+	[R]	Investigate NaN when a line of tiles is detroyed?
+			tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
+	[R]	Boats collide with barrels, also somehow, perhaps velocity setting?
+			Need to improve collisions - take relative velocities and implement a coefficient of restitution?
+		[Consider overhauling texture system]
+	[R]	Make click system more accurate? Add graphics scaling
+	[R]	PCEs wander around the raft when they have nothing to do
+	[R] fixed errors in new rafts not being sent
+	[R]	Solve comod exceptions (packets, clicks), perhaps use queues?
+	[R]	Fix comod for player join and disconnect
+	[R]	Check task overlap on barrels and construction?
+	[R]	Investigate barrel spawn mechanics?
+		Change everything to use floats instead of doubles
+		Wrap packet handlers in try catches to prevent thread crashes
+		Look into strictfp and trial asssert
+	[R]	Investigate physics between clients being weird
+		Move createNewListener server-side to playerJoin to fix comod exceptions
+		[discuss VAC integration?]
 Alpha 0.9 (The Intelligence Update): [TODO]
-	Implement server-side chat?
-	[decide how PCE stats should work, random? guaranteed for 1st person? etc]
-	Implement PCE stats system [walk speed, swim speed] [discuss]
-	Add construction time (make construction a lasting task)
-	Make thrusters require 2 wood
-	Make intelligent task selection (take into account distance, swim/walk speeds)
-	If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-	Add character status effects (cold, wet) gained from swimming, lost over time [discuss]
-	Add repair task? [automatically added? option in GUI?]
-	[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
-	Add paddelling task, must be placed adjacent to empty spot, can be rotated
-	Paddelling task is cancellable, make all other tasks cancellable
-	Implement paddelling, take it into account for control and physics calculations.
-		Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
-		Perhaps set as unreachable if speed difference is too great?
-	[Make GUI graphical if it isn't done already]
-	Add larger worldmap, openable in the GUI.
-	Add scrolling to world scale
-	Add GUI scale into a graphics settings page?
-	Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
-	Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
+		Implement server-side chat?
+		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
+		Implement PCE stats system [walk speed, swim speed] [discuss]
+		Add construction time (make construction a lasting task)
+		Make thrusters require 2 wood
+		Make intelligent task selection (take into account distance, swim/walk speeds)
+		If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+		Add character status effects (cold, wet) gained from swimming, lost over time [discuss]
+		Add repair task? [automatically added? option in GUI?]
+		[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
+		Add paddelling task, must be placed adjacent to empty spot, can be rotated
+		Paddelling task is cancellable, make all other tasks cancellable
+		Implement paddelling, take it into account for control and physics calculations.
+			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
+			Perhaps set as unreachable if speed difference is too great?
+		[Make GUI graphical if it isn't done already]
+		Add larger worldmap, openable in the GUI.
+		Add scrolling to world scale
+		Add GUI scale into a graphics settings page?
+		Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+		Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
 	
 Alpha 0.91 (The Sounds Update): [TODO]
-	Decide on sound design
-	Make the music and sounds as necessary
-	Add a way to trigger sounds and music on events in the code
+		Decide on sound design
+		Make the music and sounds as necessary
+		Add a way to trigger sounds and music on events in the code
 Alpha 0.92 (Company Setup): [TODO]
-	Set up the company or whatever we need to do
-		I would like us to have a corporate meme because then we can be like a real company meme
-		Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.
-	Set up a bank that is in the company/corporate name
-	Create an automated banking system so that shares of the money are debitted as we earn?
-	Decide how much the game should be worth. I think that we should go around the £7-£13 bracket. Discuss this.
-	Marketing - do we want to use advertisements? Facebook Page, Twitter, etc. Get PC Gamer to do a piece on it if poss? Send review copies
-		to YouTubers?
-	[R]: Could do, corporate meme might be a little harder on the paperwork side, idk tho, and need £40 to register as a Private Limited Company.
-			Defo sounds like it'd be cooler tho, and yeah I dig HCH games, we just gotta argue over which H is which XD.
-			As for automated banking that could be a good meme, the only issue might be that we need to deduct some cut to pay
-			for dedis before the share split, so have to consider that. Also need to discuss which shares who is getting in this meme.
-			Yeah i definitely think free review copies to a load of youtubers is a good idea. I was thinking aim it for like 9.99 to start,
-				bear in mind we get 70% after tax so that'd be like £6 profit per sale maybe, which isn't too bad.
-			Need to consider the whole steam meme - it'd cost £100 just to put the game on steam, however Java isn't natively compatible
-			with the steam API. We'd have to use a JNI to interface with the Steamworks API, which considering we might use an external
-			launcher anyways there's gonna be alot of external library memes. The only other alternatives are to either rewrite the entire
-			thing in C. Which isn't happening. Or to use web APIs and OPENID to authenticate the users, however they will have to
-			enter their steam details into our game in order to do that.
-			
-			Ait just gone and done some testing, got launch4j packing the .jar into a .exe just fine but I think we need to get steamworks
-			before we can look at interfacing the steam API properly. However I did get it to compile fine with steamworks4j.
+		Set up the company or whatever we need to do
+			I would like us to have a corporate meme because then we can be like a real company meme
+			Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.
+		Set up a bank that is in the company/corporate name
+		Create an automated banking system so that shares of the money are debitted as we earn?
+		Decide how much the game should be worth. I think that we should go around the £7-£13 bracket. Discuss this.
+		Marketing - do we want to use advertisements? Facebook Page, Twitter, etc. Get PC Gamer to do a piece on it if poss? Send review copies
+			to YouTubers?
+		[R]: Could do, corporate meme might be a little harder on the paperwork side, idk tho, and need £40 to register as a Private Limited Company.
+				Defo sounds like it'd be cooler tho, and yeah I dig HCH games, we just gotta argue over which H is which XD.
+				As for automated banking that could be a good meme, the only issue might be that we need to deduct some cut to pay
+				for dedis before the share split, so have to consider that. Also need to discuss which shares who is getting in this meme.
+				Yeah i definitely think free review copies to a load of youtubers is a good idea. I was thinking aim it for like 9.99 to start,
+					bear in mind we get 70% after tax so that'd be like £6 profit per sale maybe, which isn't too bad.
+				Need to consider the whole steam meme - it'd cost £100 just to put the game on steam, however Java isn't natively compatible
+				with the steam API. We'd have to use a JNI to interface with the Steamworks API, which considering we might use an external
+				launcher anyways there's gonna be alot of external library memes. The only other alternatives are to either rewrite the entire
+				thing in C. Which isn't happening. Or to use web APIs and OPENID to authenticate the users, however they will have to
+				enter their steam details into our game in order to do that.
+				
+				Ait just gone and done some testing, got launch4j packing the .jar into a .exe just fine but I think we need to get steamworks
+				before we can look at interfacing the steam API properly. However I did get it to compile fine with steamworks4j.
 Alpha 1.0 (Initial Gameplay): [TODO]
-	Clean up menus and everything to make it somewhat playable
-	Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
-	Test the game works on other platforms (other windows, mac, etc)
-	Consider adding a launcher (detects java version, splashscreen built in, etc)
+		Clean up menus and everything to make it somewhat playable
+		Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
+		Test the game works on other platforms (other windows, mac, etc)
+		Consider adding a launcher (detects java version, splashscreen built in, etc)
 Alpha 1.1 (The Floating Update): [TODO]
-	Add buoyancy mechanics, possibly consider how capsizing will work?
-	Add mechanics for a player to restart from scratch if needed
-	[discuss and implement mechanics for how more PCEs can be obtained?]
-	Implement reefs
-	Add mechanics for flooding and hull leakage, add collisions with islands and reefs
+		Add buoyancy mechanics, possibly consider how capsizing will work?
+		Add mechanics for a player to restart from scratch if needed
+		[discuss and implement mechanics for how more PCEs can be obtained?]
+		Implement reefs
+		Add mechanics for flooding and hull leakage, add collisions with islands and reefs
 Alpha 1.2 (The Fleet Update): [TODO]
-	Add mechanics to have multiple ships, and assigning PCEs to different boats?
-	[discuss how boat assignment will work, color coded tasks for different boats?]
-	Add boarding plank to allow PCEs to transfer between rafts
-	Add Anchor to keep rafts in place
-	[begin discusson on how different resources will be obtained]
+		Add mechanics to have multiple ships, and assigning PCEs to different boats?
+		[discuss how boat assignment will work, color coded tasks for different boats?]
+		Add boarding plank to allow PCEs to transfer between rafts
+		Add Anchor to keep rafts in place
+		[begin discusson on how different resources will be obtained]
 Alpha 1.3 (The Boat Update): [TODO]
-	Add multilevelling so boats can be created.
-	Add stairs to transfer between levels
-	Discuss how water level can be displayed, consider adding a captains controller
-		which adds GUI nautical information
-	Consider how this will impact 2.5D
-	Ensure boarding planks have the correct physics for this, consider adding a GUI element to compare vertical levels?
-	Consider stability and how that will affect capsizing
-	[discussion of pre-generated structures such a strongholds, ports, and dry docks]
+		Add multilevelling so boats can be created.
+		Add stairs to transfer between levels
+		Discuss how water level can be displayed, consider adding a captains controller
+			which adds GUI nautical information
+		Consider how this will impact 2.5D
+		Ensure boarding planks have the correct physics for this, consider adding a GUI element to compare vertical levels?
+		Consider stability and how that will affect capsizing
+		[discussion of pre-generated structures such a strongholds, ports, and dry docks]
 Alpha 1.4 (The Fighting Update): [TODO]
-	Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
+		Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
 
 
 	
@@ -191,18 +191,18 @@ Ideas
 
 
 Beta 1.0 (Public Gameplay): [TODO]
-	Release the game on steam in a playable format
+		Release the game on steam in a playable format
 Beta 1.1 (Tidying up): [TODO]
-	Add Controller support
-	Use user feedback to debug
+		Add Controller support
+		Use user feedback to debug
 Beta 1.2 (The Modding Update): [TODO]
-	Decide on modding platform
-		Steam Workshop
-		Nexus Mods (Dusk preference on this platform - nexus is really nice and well-used by the modding community - especially for skyrim and
-			fallout)
-		Custom Platform?
-		Other...
-	Add ability to mod in a viable way
-	Create a mod forum?
+		Decide on modding platform
+			Steam Workshop
+			Nexus Mods (Dusk preference on this platform - nexus is really nice and well-used by the modding community - especially for skyrim and
+				fallout)
+			Custom Platform?
+			Other...
+		Add ability to mod in a viable way
+		Create a mod forum?
 
 
