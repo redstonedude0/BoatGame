@@ -33,8 +33,6 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static boolean debug_menu = false;
 	public static boolean debug_lockpos = false;
-	
-	public static boolean build_menu = false;
 
 	public static enum Mode {
 		MainMenu, Playing, Connecting
@@ -49,7 +47,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public void keyPressed(KeyEvent e) {
 		switch (mode) {
 		case MainMenu:
-			doMenuKeyPressed(e);
+			//do nothing for now
 			break;
 		case Playing:
 			doPlayingKeyPressed(e);
@@ -63,7 +61,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public void keyReleased(KeyEvent e) {
 		switch (mode) {
 		case MainMenu:
-			doMenuKeyReleased(e);
+			//do nothing for now
 			break;
 		case Playing:
 			doPlayingKeyReleased(e);
@@ -76,16 +74,6 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public void keyTyped(KeyEvent e) {
 	}
-
-	public static void doMenuKeyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			startPlaying();
-		}
-	}
-
-	public static void doMenuKeyReleased(KeyEvent e) {
-		
-	}
 	
 	public static void doDebugButton(int i) {
 		switch (i) {
@@ -97,31 +85,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			break;
 		}
 	}
-	
-	public static void doBuildMenuKeyPress(KeyEvent e) {
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_B:
-			build_menu = !build_menu;
-			break;
-		case KeyEvent.VK_W://shit system. replace it.
-			clickmode_collection = false;
-			clickmode_building_wood = true;
-			break;
-		case KeyEvent.VK_T:
-			clickmode_collection = false;
-			clickmode_building_wood = false;
-			break;
-		case KeyEvent.VK_C:
-			clickmode_collection = true;
-			break;
-		}
-	}
 
 	public static void doPlayingKeyPressed(KeyEvent e) {
-		if (build_menu) {
-			doBuildMenuKeyPress(e);
-			return;
-		}
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_A:
 			control_left_rotate = true;
@@ -161,9 +126,6 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			if (escape_menu) {
 				ClientPacketListener.disconnect();
 			}
-			break;
-		case KeyEvent.VK_B:
-			build_menu = !build_menu;
 			break;
 		}
 	}

@@ -71,9 +71,10 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Investigate barrel spawn mechanics?
 	[R]	Investigate physics between clients being weird
 Alpha 0.9 (The Intelligence Update): [TODO]
+-R-		Update Camera to be able to track other objects
 -PR-	Player controlled entities fall in water if they are no longer on a block
--P-		Update GUI to be graphical based on buttons
--P-		Boat complete destruction should cause new boat respawn at random location?
+-P-	[R]	Update GUI to be graphical based on buttons
+-PDR-	Boat complete destruction should cause new boat respawn at random location?
 -P-		Change everything to use floats instead of doubles
 -P-		Wrap packet handlers in try catches to prevent thread crashes [disconnect client?]
 -P-		Move createNewListener server-side to playerJoin to fix comod exceptions
@@ -93,12 +94,15 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -R-		Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
-		[Make GUI graphical if it isn't done already]
+	[R]	[Make GUI graphical if it isn't done already]
+	[R]	Make main menu GUI
 -R-		Add larger worldmap, openable in the GUI.
 -D-		Add scrolling to world scale?
 -R-		Add GUI scale into a graphics settings page?
 		Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
 -R-		Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
+		Investigate barrel 'worm' at t=0
+		Investigate black flash when resizing frame
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
@@ -158,6 +162,8 @@ Alpha 1.4 (The Fighting Update): [TODO]
 
 
 List of discussion and decision points:
+		[Decide how boat complete destruction will work]
+			Immediately new boat? Need to be able to show death, Camera settings?
 		[discuss PCE stats system]
 		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
 		[discuss PCE status effects - 'cold','wet']

@@ -1,14 +1,27 @@
 package redstonedude.programs.projectboaty.client.graphics;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Polygon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
@@ -28,7 +41,8 @@ import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 public class GraphicsHandler {
 
 	public static JFrame frame;
-	
+	public static JPanel graphicsPanel;
+	public static JPanel menuPanel;
 
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
@@ -50,7 +64,8 @@ public class GraphicsHandler {
 			break;
 		case Playing:
 			// scale for standard AR, crop for nonstandard
-			//System.out.println(ClientPhysicsHandler.cameraPosition.x + ":" + ClientPhysicsHandler.cameraPosition.y);
+			// System.out.println(ClientPhysicsHandler.cameraPosition.x + ":" +
+			// ClientPhysicsHandler.cameraPosition.y);
 			float screenHeight = frame.getHeight();
 			float screenWidth = frame.getWidth();
 			float gHeight = 1080;
@@ -77,6 +92,13 @@ public class GraphicsHandler {
 			translate.scale(scale / scaleForWidth, scale / scaleForHeight);
 			// translate.scale(1/scale, 1/scale);
 			translate.translate(offset.x, offset.y);
+			// UserData ud = ClientPacketHandler.getCurrentUserData();
+			// if (ud != null && ud.raft != null) {
+			// VectorDouble vd = new VectorDouble(midX, midY);
+			// translate.translate(vd.x,vd.y);
+			// translate.rotate(-ud.raft.theta);
+			// translate.translate(-vd.x,-vd.y);
+			// }
 			g2d.transform(translate);
 			graphicsUpdatePlaying();
 			try {
@@ -96,14 +118,6 @@ public class GraphicsHandler {
 			float transX = 0;
 			float transY = screenHeight - gHeight;
 			g2d.translate(transX, transY);
-			if (ControlHandler.build_menu) {
-				g2d.setColor(new Color(0, 0, 0, 127));
-				g2d.fillRect(0, 1000, 100, 60);
-				g2d.setColor(Color.WHITE);
-				g2d.drawString("[W]ooden floor", 10, 1010);
-				g2d.drawString("[T]hruster", 10, 1030);
-				g2d.drawString("[C]ollect Barrel", 10, 1050);
-			}
 			g2d.setColor(new Color(0, 0, 0, 127));
 			g2d.fillRect(0, 1060, 100, 20);
 			g2d.setColor(Color.WHITE);
@@ -120,13 +134,18 @@ public class GraphicsHandler {
 			graphicsUpdateConnecting();
 			break;
 		}
-		//gPan.getGraphics().drawImage(backbuffer, 0, 0, gPan.getWidth(), gPan.getHeight(), gPan);
-		frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(), frame.getHeight(), frame);
+		// g2d.drawImage(frame.getGlassPane().getGraphics(), 0,0,frame);
+		// graphicsPanel.getGraphics().drawImage(backbuffer, 0, 0,
+		// graphicsPanel.getWidth(), graphicsPanel.getHeight(), graphicsPanel);
+		// frame.getLayeredPane().moveToBack(graphicsPanel);
+		// frame.getLayeredPane().validate();
+		// frame.getGraphics().drawImage(backbuffer, 0, 0, frame.getWidth(),
+		// frame.getHeight(), frame);
+		frame.repaint();
 	}
 
 	public static void graphicsUpdateMenu() {
-		g2d.drawString("Main menu", 50, 50);
-		g2d.drawString("Press Enter to start", 50, 100);
+		//no need for menu graphics - perhaps do animated background here?
 	}
 
 	public static void graphicsUpdateConnecting() {
@@ -196,7 +215,7 @@ public class GraphicsHandler {
 							rotator.rotate(ud.raft.theta);
 						}
 						g2d.transform(rotator);
-						g2d.drawImage(TextureHandler.getTexture("TileDamage_"+damage), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+						g2d.drawImage(TextureHandler.getTexture("TileDamage_" + damage), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 						try {
 							g2d.transform(rotator.createInverse());
 						} catch (NoninvertibleTransformException e) {
@@ -220,13 +239,14 @@ public class GraphicsHandler {
 			if (constructionTile != null) {
 				double x = constructionTile.getAbsoluteX(cud.raft);
 				double y = constructionTile.getAbsoluteY(cud.raft);
-				//g2d.drawLine(0, 0, (int) (x*100),(int) (y*100));
+				// g2d.drawLine(0, 0, (int) (x*100),(int) (y*100));
 				// using graphics instead of colors
 				AffineTransform rotator = new AffineTransform();
 				rotator.translate(100 * x, 100 * y);
 				rotator.rotate(cud.raft.theta);
 				g2d.transform(rotator);
-				//g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+				// g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)),
+				// 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				try {
 					g2d.transform(rotator.createInverse());
@@ -331,12 +351,185 @@ public class GraphicsHandler {
 		backbuffer = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_RGB);
 		g2d = backbuffer.createGraphics();
 		frame = new JFrame("Raft Game");
+
+		/** GUI Building notes:
+		 * Note: Alot of sizes dynamically set when JFrame resizes
+		 * use .setLayout(new LayoutManagerStrictSizes()); to keep things in place and the right size
+		 * buttons need .setFocusable(false); otherwise they interfere with KeyListener
+		 * 
+		 * 
+		 */
 		
+		
+		// Obtain LayeredPane to draw layers onto
+		JLayeredPane jlp = frame.getLayeredPane();
+
+		// Setup Graphics panel, with paint method
+		graphicsPanel = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics g) {
+				g.drawImage(backbuffer, 0, 0, graphicsPanel.getWidth(), graphicsPanel.getHeight(), graphicsPanel);
+			}
+		};
+		graphicsPanel.setLocation(0, 0);
+
+		// Setup menuPanel
+		menuPanel = new JPanel();
+		menuPanel.setLocation(0, 0);
+		menuPanel.setBackground(new Color(0, 0, 0, 0)); // Transparent
+		menuPanel.setLayout(null); // Menupanel doesn't shuffle around its internal components here, it's done on
+									// frame resize.
+
+		Color menuGray = new Color(127,127,127);
+		// entire buildGUI container (bar+popups)
+		JPanel bottomBarContainer = new JPanel();
+		bottomBarContainer.setPreferredSize(new Dimension(400, 150));
+		bottomBarContainer.setBackground(new Color(0, 0, 0, 0));
+		bottomBarContainer.setLayout(new LayoutManagerStrictSizes());
+		JPanel bottomBarButtonContainer = new JPanel();
+		bottomBarButtonContainer.setPreferredSize(new Dimension(400, 20));
+		bottomBarButtonContainer.setLocation(0, 130);
+		bottomBarButtonContainer.setBackground(menuGray);
+		bottomBarButtonContainer.setLayout(new LayoutManagerStrictSizes());
+		bottomBarContainer.add(bottomBarButtonContainer);
+		bottomBarContainer.setVisible(false); //hidden by default
+		menuPanel.add(bottomBarContainer);
+		doBuildGUI: {
+			JButton buildGUIButton = new JButton("Build or Assign");
+			buildGUIButton.setLocation(0, 0);
+			buildGUIButton.setLayout(new LayoutManagerStrictSizes());
+			buildGUIButton.setHorizontalAlignment(SwingConstants.CENTER);// Text align center
+			buildGUIButton.setPreferredSize(new Dimension(100, 20));
+			buildGUIButton.setMargin(new Insets(0, 0, 0, 0));// No spacing around text
+			buildGUIButton.setFocusable(false);
+			bottomBarButtonContainer.add(buildGUIButton);
+			
+			JPanel buildGUIPopup = new JPanel();
+			buildGUIPopup.setLocation(0, 0);
+			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
+			buildGUIPopup.setPreferredSize(new Dimension(150,130));//height of container-barheight
+			buildGUIPopup.setBackground(menuGray);
+			buildGUIPopup.setVisible(false);
+			bottomBarContainer.add(buildGUIPopup);
+			
+			JButton buildGUIWood = new JButton("Build Wooden Floor");
+			buildGUIWood.setLocation(0, 0);
+			buildGUIWood.setLayout(new LayoutManagerStrictSizes());
+			buildGUIWood.setPreferredSize(new Dimension(150,40));
+			buildGUIWood.setFocusable(false);
+			buildGUIPopup.add(buildGUIWood);
+			JButton buildGUIThruster = new JButton("Build Thruster");
+			buildGUIThruster.setLocation(0, 40);
+			buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
+			buildGUIThruster.setPreferredSize(new Dimension(150,40));
+			buildGUIThruster.setFocusable(false);
+			buildGUIPopup.add(buildGUIThruster);
+			JButton buildGUIBarrel = new JButton("Collect Barrels");
+			buildGUIBarrel.setLocation(0, 80);
+			buildGUIBarrel.setLayout(new LayoutManagerStrictSizes());
+			buildGUIBarrel.setPreferredSize(new Dimension(150,40));
+			buildGUIBarrel.setFocusable(false);
+			buildGUIPopup.add(buildGUIBarrel);
+			
+			buildGUIButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					buildGUIPopup.setVisible(!buildGUIPopup.isVisible());
+					//make button depressed?
+				}
+			});
+			buildGUIWood.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ControlHandler.clickmode_building_wood = true;
+					ControlHandler.clickmode_collection = false;
+					//make button depressed?
+				}
+			});
+			buildGUIThruster.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ControlHandler.clickmode_building_wood = false;
+					ControlHandler.clickmode_collection = false;
+					//make button depressed?
+				}
+			});
+			buildGUIBarrel.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ControlHandler.clickmode_collection = true;
+					//make button depressed?
+				}
+			});
+			
+		}
+		//MainMenu
+		JPanel mainMenuContainer = new JPanel();
+		mainMenuContainer.setPreferredSize(new Dimension(300, 300));
+		mainMenuContainer.setBackground(new Color(0, 0, 0, 0));
+		mainMenuContainer.setLayout(new LayoutManagerStrictSizes());
+		JLabel mainMenuText = new JLabel("Main Menu");
+		mainMenuText.setPreferredSize(new Dimension(300, 100));
+		mainMenuText.setLayout(new LayoutManagerStrictSizes());
+		mainMenuText.setLocation(0, 0);
+		mainMenuText.setForeground(Color.WHITE);
+		mainMenuText.setHorizontalAlignment(SwingConstants.CENTER);
+		mainMenuText.setFont(mainMenuText.getFont().deriveFont(Font.BOLD, 30));//big, bold
+		mainMenuContainer.add(mainMenuText);
+		menuPanel.add(mainMenuContainer);
+		JButton mainMenuJoin = new JButton("Join Server");
+		mainMenuJoin.setPreferredSize(new Dimension(300,100));
+		mainMenuJoin.setLayout(new LayoutManagerStrictSizes());
+		mainMenuJoin.setLocation(0, 100);
+		mainMenuJoin.setFocusable(false);
+		mainMenuJoin.setHorizontalAlignment(SwingConstants.CENTER);
+		mainMenuJoin.setFont(mainMenuJoin.getFont().deriveFont(Font.BOLD, 30));//big, bold
+		mainMenuContainer.add(mainMenuJoin);
+		mainMenuJoin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				bottomBarContainer.setVisible(true);
+				mainMenuContainer.setVisible(false);
+				ControlHandler.startPlaying();
+			}
+		});
+		
+		// Add layers to pane, Add menuPanel first so menuPanel is on top
+		jlp.add(menuPanel);
+		jlp.add(graphicsPanel);
+		// Note: click and key listeners are attached to frame not layer, so no need to
+		// worry about that
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				System.out.println("exiting");
 				System.exit(0);
+			}
+		});
+		frame.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				// Set to layered pane size (frame size is actually larger
+				Dimension size = frame.getLayeredPane().getSize();
+				graphicsPanel.setSize(size);
+				menuPanel.setSize(size);
+				// set the location for components that hug the sides
+				bottomBarContainer.setLocation(0, size.height - bottomBarContainer.getHeight());
+				mainMenuContainer.setLocation((size.width-mainMenuContainer.getWidth())/2, (size.height-mainMenuContainer.getHeight())/2);
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
 			}
 		});
 		frame.setSize(960, 540);
