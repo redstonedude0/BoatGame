@@ -13,6 +13,7 @@ public class TaskHandler {
 	
 	public static Random rand = new Random();
 	
+	//change to 'assignTask?'
 	public static Task getTask(Raft raft, EntityCharacter ec) {
 		ArrayList<Task> tasks = raft.getTasks();
 		int size = tasks.size();

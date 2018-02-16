@@ -5,6 +5,9 @@ R - Harrison
 D - Harry
 	[we need to select letters for ourselves, any ideas? Perhaps R and D based on our usernames?]
 	[Note to self: look to see if fogbugz is free or if free similar program exists]
+-P- postponed from previous alpha
+-D- a discussion or decision must occur first
+-R- requires some other task to be completed first
 
 What is required to be updated for each release:
 Alpha 0.1 (The Physics Update):
@@ -68,34 +71,34 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Investigate barrel spawn mechanics?
 	[R]	Investigate physics between clients being weird
 Alpha 0.9 (The Intelligence Update): [TODO]
--P-		Player controlled entities fall in water if they are no longer on a block
+-PR-	Player controlled entities fall in water if they are no longer on a block
 -P-		Update GUI to be graphical based on buttons
 -P-		Boat complete destruction should cause new boat respawn at random location?
 -P-		Change everything to use floats instead of doubles
 -P-		Wrap packet handlers in try catches to prevent thread crashes [disconnect client?]
 -P-		Move createNewListener server-side to playerJoin to fix comod exceptions
 -P-		Rotation soft follow?
-		Implement server-side chat?
-		Implement PCE stats system [walk speed, swim speed]?
+-R-		Implement server-side chat?
+-D-		Implement PCE stats system [walk speed, swim speed]?
 		Add construction time (make construction a lasting task)
 		Make thrusters require 2 wood
-		Make intelligent task selection (take into account distance, swim/walk speeds)
-		Intelligent dismounting + pathfinding?
+-D-		Make intelligent task selection (take into account distance, swim/walk speeds)
+-D-		Intelligent dismounting + pathfinding?
 			Overhaul task system?
-		If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-		Add character status effects (cold, wet) gained from swimming, lost over time?
+-D-		If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+-D-		Add character status effects (cold, wet) gained from swimming, lost over time?
 		Add repair task? [automatically added? option in GUI?]
-		Add paddelling task, must be placed adjacent to empty spot, can be rotated
-		Paddelling task is cancellable, make all other tasks cancellable
-		Implement paddelling, take it into account for control and physics calculations.
+-R-		Add paddelling task, must be placed adjacent to empty spot, can be rotated
+-R-		Paddelling task is cancellable, make all other tasks cancellable
+-R-		Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
 		[Make GUI graphical if it isn't done already]
-		Add larger worldmap, openable in the GUI.
-		Add scrolling to world scale?
-		Add GUI scale into a graphics settings page?
+-R-		Add larger worldmap, openable in the GUI.
+-D-		Add scrolling to world scale?
+-R-		Add GUI scale into a graphics settings page?
 		Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
-		Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
+-R-		Add GUIs to show number of characters, their status and world coordinates?, list of tasks, etc
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
@@ -199,6 +202,54 @@ List of discussion and decision points:
 		Consider pathfinding with dynamic targets - reach and recalculate? every second recalculate?
 			Use Trace pathfinding algorithm, possibly best-first-search if not
 			http://qiao.github.io/PathFinding.js/visual/
+
+List of in-depth notes for decision points:
+		Pathfinding [+Task overhaul]:
+			http://jabelarminecraft.blogspot.co.uk/p/minecraft-forge-1721710-custom-entity-ai.html
+			{Consider Mutex bits to prevent similar tasks from executing}
+			execute() method called each tick on the AI
+			[decide exactly how dynamic targetting will work]
+			Store dynamic targets by UUID only - then they can be drawn by UUID only?
+			have passiveUpdate() method to update an AI when its not being run -
+				used to change location for dynamic targets, check if a target still exists?
+			have slowPassiveUpdate() method to update an AI on more resource-intensive things;
+				used to check if target still exists and is allowed?
+				Used to update path for dynamic target? [check if reachable]
+			have update() method to update an AI when its being run -
+				also changes location for dynamic targets, called before execute()? any point?
+			have slowUpdate() method to update an AI when its being run -
+				used to update target and path?
+			have isCompleted boolean
+				can be set by any method (passiveUpdate, execute, slowUpdate), if true the task will
+				immediately be removed from the list or removed from the tasked entity.
+			have isEligible(Entity e) method to see if an entity is eligible for this task
+				false and the task won't be taken up, true and Entity e will be tasked with this task
+			have init() method
+				Called as soon as the task is assigned to an entity, used to setup any variables required
+				before execution.
+			have TaskHandler.assignTask() method, assigns a random? task to an entity.
+			note: ec.sendState() will sync client and server side, and is only called on init of the task.
+				If a task variable changes, ec.sendState() should be called to sync with the server.
+				Perhaps consider adding an annotation listener here?
+			have targetReached() method when a target is reached,
+				prompts retargetting or task cancellation.
+			notes:
+			
+			pathfinding tasks wil use the slowPassiveUpdate() and slowUpdate() methods to reset the path each
+				second. execute() will simply follow the path. (list is a queue of locations, execute() targets the
+				head of this list, targetReached() pulls the next head to the target location and procedes as normal. If
+				targetReached() pulls nothing it is assumed that the target is the next target, and targetReached() will point directly
+				to the target. If the entity is within 0.1 of the targets position it is assumed that it is reached and finalTargetReached()
+				is called????
+			entityCharacter has moveToward(Location loc) method. It will move toward the location specified as far as collisions will allow
+				it, if it would fall in water then it will fall in water.
+			Location loc:
+				VectorDouble pos;
+				boolean isAbsolute;
+				String raft_uuid; //if not absolute
+			
+			
+			
 			
 	
 #Leave room here for future alpha iterations, testing and implementing minor features until it is ready for release
