@@ -2,6 +2,8 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
@@ -10,6 +12,7 @@ import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskHandler;
+import redstonedude.programs.projectboaty.shared.task.TaskWander;
 
 public class Raft implements Serializable {
 	
@@ -101,6 +104,25 @@ public class Raft implements Serializable {
 				}
 			}
 		}
+		return ts;
+	}
+	
+	/**
+	 * Returns all tasks, including both the list of unstarted tasks from getTasks() and the tasks currently in progress
+	 * CLIENTSIDE
+	 * @return
+	 */
+	public synchronized ArrayList<Task> getAllTasksNotWander() {
+		ArrayList<Task> ts = getAllTasks();
+		ts.removeIf(new Predicate<Task>() {
+			@Override
+			public boolean test(Task t) {
+				if (t instanceof TaskWander) {
+					return true;
+				}
+				return false;
+			}
+		});
 		return ts;
 	}
 	

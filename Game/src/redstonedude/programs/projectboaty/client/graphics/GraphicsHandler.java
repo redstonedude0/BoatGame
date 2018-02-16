@@ -1,14 +1,19 @@
 package redstonedude.programs.projectboaty.client.graphics;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.AffineTransform;
@@ -16,11 +21,18 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.ScrollPaneLayout;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
@@ -28,6 +40,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
@@ -46,6 +59,7 @@ public class GraphicsHandler {
 
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
+	public static BufferedImage worldMap = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
 
 	public static void graphicsUpdate() {
 		/*
@@ -145,7 +159,7 @@ public class GraphicsHandler {
 	}
 
 	public static void graphicsUpdateMenu() {
-		//no need for menu graphics - perhaps do animated background here?
+		// no need for menu graphics - perhaps do animated background here?
 	}
 
 	public static void graphicsUpdateConnecting() {
@@ -334,6 +348,40 @@ public class GraphicsHandler {
 		}
 	}
 
+	public static void updateWorldMap() {
+		int w = worldMap.getWidth();
+		int h = worldMap.getHeight();
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		int Ox = 0;
+		int Oy = 0;
+		if (ud != null && ud.raft != null) {
+			VectorDouble pos = ud.raft.getPos();
+			Ox = (int) Math.floor(pos.x);
+			Oy = (int) Math.floor(pos.y);
+		}
+		int x = Ox - w / 2;
+		int y = Oy - h / 2;
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				TerrainType tt = WorldHandler.getTerrainType(x + i, y + j);
+				int rgb = Color.BLACK.getRGB();
+				switch (tt) {
+				case Land:
+					rgb = Color.YELLOW.getRGB();
+					break;
+				case Water:
+					rgb = Color.BLUE.getRGB();
+					break;
+				}
+				// use solid circle radius 5 to show player
+				if (Math.pow(x + i - Ox, 2) + Math.pow(y + j - Oy, 2) <= 25) {
+					rgb = Color.RED.getRGB();
+				}
+				worldMap.setRGB(i, j, rgb);
+			}
+		}
+	}
+
 	public static void drawSlantedRect(double absx, double absy, VectorDouble unitx, VectorDouble unity) {
 		Polygon p = new Polygon();
 		p.addPoint((int) (100 * absx), (int) (100 * absy));
@@ -352,15 +400,15 @@ public class GraphicsHandler {
 		g2d = backbuffer.createGraphics();
 		frame = new JFrame("Raft Game");
 
-		/** GUI Building notes:
-		 * Note: Alot of sizes dynamically set when JFrame resizes
-		 * use .setLayout(new LayoutManagerStrictSizes()); to keep things in place and the right size
-		 * buttons need .setFocusable(false); otherwise they interfere with KeyListener
+		/**
+		 * GUI Building notes: Note: Alot of sizes dynamically set when JFrame resizes
+		 * use .setLayout(new LayoutManagerStrictSizes()); to keep things in place and
+		 * the right size buttons need .setFocusable(false); otherwise they interfere
+		 * with KeyListener
 		 * 
 		 * 
 		 */
-		
-		
+
 		// Obtain LayeredPane to draw layers onto
 		JLayeredPane jlp = frame.getLayeredPane();
 
@@ -382,7 +430,7 @@ public class GraphicsHandler {
 		menuPanel.setLayout(null); // Menupanel doesn't shuffle around its internal components here, it's done on
 									// frame resize.
 
-		Color menuGray = new Color(127,127,127);
+		Color menuGray = new Color(127, 127, 127);
 		// entire buildGUI container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
 		bottomBarContainer.setPreferredSize(new Dimension(400, 150));
@@ -394,8 +442,20 @@ public class GraphicsHandler {
 		bottomBarButtonContainer.setBackground(menuGray);
 		bottomBarButtonContainer.setLayout(new LayoutManagerStrictSizes());
 		bottomBarContainer.add(bottomBarButtonContainer);
-		bottomBarContainer.setVisible(false); //hidden by default
+		bottomBarContainer.setVisible(false); // hidden by default
 		menuPanel.add(bottomBarContainer);
+		
+		ArrayList<Component> popups = new ArrayList<Component>();
+		
+		final Runnable closePopups = new Runnable() {
+			@Override
+			public void run() {
+				for (Component c: popups) {
+					c.setVisible(false);
+				}
+			}
+		};
+		
 		doBuildGUI: {
 			JButton buildGUIButton = new JButton("Build or Assign");
 			buildGUIButton.setLocation(0, 0);
@@ -405,39 +465,45 @@ public class GraphicsHandler {
 			buildGUIButton.setMargin(new Insets(0, 0, 0, 0));// No spacing around text
 			buildGUIButton.setFocusable(false);
 			bottomBarButtonContainer.add(buildGUIButton);
-			
+
 			JPanel buildGUIPopup = new JPanel();
 			buildGUIPopup.setLocation(0, 0);
 			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
-			buildGUIPopup.setPreferredSize(new Dimension(150,130));//height of container-barheight
+			buildGUIPopup.setPreferredSize(new Dimension(150, 130));// height of container-barheight
 			buildGUIPopup.setBackground(menuGray);
 			buildGUIPopup.setVisible(false);
 			bottomBarContainer.add(buildGUIPopup);
-			
+
 			JButton buildGUIWood = new JButton("Build Wooden Floor");
 			buildGUIWood.setLocation(0, 0);
 			buildGUIWood.setLayout(new LayoutManagerStrictSizes());
-			buildGUIWood.setPreferredSize(new Dimension(150,40));
+			buildGUIWood.setPreferredSize(new Dimension(150, 40));
 			buildGUIWood.setFocusable(false);
 			buildGUIPopup.add(buildGUIWood);
 			JButton buildGUIThruster = new JButton("Build Thruster");
 			buildGUIThruster.setLocation(0, 40);
 			buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
-			buildGUIThruster.setPreferredSize(new Dimension(150,40));
+			buildGUIThruster.setPreferredSize(new Dimension(150, 40));
 			buildGUIThruster.setFocusable(false);
 			buildGUIPopup.add(buildGUIThruster);
 			JButton buildGUIBarrel = new JButton("Collect Barrels");
 			buildGUIBarrel.setLocation(0, 80);
 			buildGUIBarrel.setLayout(new LayoutManagerStrictSizes());
-			buildGUIBarrel.setPreferredSize(new Dimension(150,40));
+			buildGUIBarrel.setPreferredSize(new Dimension(150, 40));
 			buildGUIBarrel.setFocusable(false);
 			buildGUIPopup.add(buildGUIBarrel);
-			
+			popups.add(buildGUIPopup);
+
 			buildGUIButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					buildGUIPopup.setVisible(!buildGUIPopup.isVisible());
-					//make button depressed?
+					if (buildGUIPopup.isVisible()) {
+						buildGUIPopup.setVisible(false);
+					} else {
+						closePopups.run();
+						buildGUIPopup.setVisible(true);
+					}
+					// make button depressed?
 				}
 			});
 			buildGUIWood.addActionListener(new ActionListener() {
@@ -445,7 +511,7 @@ public class GraphicsHandler {
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_building_wood = true;
 					ControlHandler.clickmode_collection = false;
-					//make button depressed?
+					// make button depressed?
 				}
 			});
 			buildGUIThruster.addActionListener(new ActionListener() {
@@ -453,19 +519,319 @@ public class GraphicsHandler {
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_building_wood = false;
 					ControlHandler.clickmode_collection = false;
-					//make button depressed?
+					// make button depressed?
 				}
 			});
 			buildGUIBarrel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_collection = true;
-					//make button depressed?
+					// make button depressed?
 				}
 			});
-			
 		}
-		//MainMenu
+		final JPanel mapGUIPopin = new JPanel();
+		doMapGUI: {
+			JButton mapGUIButton = new JButton("World Map");
+			mapGUIButton.setLocation(100, 0);
+			mapGUIButton.setLayout(new LayoutManagerStrictSizes());
+			mapGUIButton.setHorizontalAlignment(SwingConstants.CENTER);// Text align center
+			mapGUIButton.setPreferredSize(new Dimension(100, 20));
+			mapGUIButton.setMargin(new Insets(0, 0, 0, 0));// No spacing around text
+			mapGUIButton.setFocusable(false);
+			bottomBarButtonContainer.add(mapGUIButton);
+
+			mapGUIPopin.setLocation(150, 0);
+			mapGUIPopin.setLayout(new LayoutManagerStrictSizes());
+			mapGUIPopin.setPreferredSize(new Dimension(400, 400));
+			mapGUIPopin.setBackground(menuGray);
+			mapGUIPopin.setVisible(false);
+			menuPanel.add(mapGUIPopin);
+			popups.add(mapGUIPopin);
+
+			JLabel mapGUImap = new JLabel(new Icon() {
+				@Override
+				public void paintIcon(Component c, Graphics g, int x, int y) {
+					g.drawImage(worldMap, x, y, frame);
+				}
+
+				@Override
+				public int getIconWidth() {
+					return worldMap.getWidth();
+				}
+
+				@Override
+				public int getIconHeight() {
+					return worldMap.getHeight();
+				}
+			});
+			mapGUImap.setLocation(50, 50);
+			mapGUImap.setLayout(new LayoutManagerStrictSizes());
+			mapGUImap.setPreferredSize(new Dimension(300, 300));
+			mapGUIPopin.add(mapGUImap);
+
+			mapGUIButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (mapGUIPopin.isVisible()) {
+						mapGUIPopin.setVisible(false);
+					} else {
+						closePopups.run();
+						updateWorldMap();
+						mapGUIPopin.setVisible(true);
+					}
+					// make button depressed?
+				}
+			});
+		}
+		doCharacterGUI: {
+			JButton characterGUIButton = new JButton("Characters");
+			characterGUIButton.setLocation(200, 0);
+			characterGUIButton.setLayout(new LayoutManagerStrictSizes());
+			characterGUIButton.setHorizontalAlignment(SwingConstants.CENTER);// Text align center
+			characterGUIButton.setPreferredSize(new Dimension(100, 20));
+			characterGUIButton.setMargin(new Insets(0, 0, 0, 0));// No spacing around text
+			characterGUIButton.setFocusable(false);
+			bottomBarButtonContainer.add(characterGUIButton);
+
+			JPanel characterGUIPopup = new JPanel();
+			characterGUIPopup.setLocation(0, 0);
+			characterGUIPopup.setLayout(new LayoutManagerStrictSizes());
+			characterGUIPopup.setPreferredSize(new Dimension(400, 130));// height of container-barheight
+			characterGUIPopup.setBackground(menuGray);
+			characterGUIPopup.setVisible(false);
+			bottomBarContainer.add(characterGUIPopup);
+			popups.add(characterGUIPopup);
+			
+			JLabel characterGUITitle = new JLabel("Characters:");
+			characterGUITitle.setLocation(10, 0);
+			characterGUITitle.setLayout(new LayoutManagerStrictSizes());
+			characterGUITitle.setPreferredSize(new Dimension(390, 20));// height of container-barheight
+			characterGUITitle.setBackground(menuGray);
+			characterGUIPopup.add(characterGUITitle);
+			
+			CustomScrollablePane characterGUIList = new CustomScrollablePane();
+			characterGUIList.setPreferredSize(new Dimension(380, 100));
+			characterGUIList.setLayout(new LayoutManagerStrictSizes());// must be called after size
+			characterGUIList.setLocation(10, 20);// must be called after size
+			//characterGUIList.setVisible(false);
+			characterGUIPopup.add(characterGUIList.scrollbar);
+			characterGUIPopup.add(characterGUIList.viewport);
+
+			characterGUIList.update = new Runnable() {
+				@Override
+				public void run() {
+					int y = 0;
+					int index = 1;
+					int maxComponentIndex = characterGUIList.getComponents().length-1;
+					UserData ud = ClientPacketHandler.getCurrentUserData();
+					if (ud != null && ud.raft != null) {
+						for (Entity ent : ClientPhysicsHandler.getEntities()) {
+							if (ent instanceof EntityCharacter) {
+								EntityCharacter ec = (EntityCharacter) ent;
+								if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
+									// do this EC
+									String ecstring = "";
+									if (ec.currentTask.taskTypeID.equals("TaskWander")) {
+										ecstring += "Idle-";
+									} else {
+										ecstring += "Busy-";
+									}
+									if (ec.absolutePosition) {
+										int distance = (int) Math.sqrt(ec.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+										ecstring += distance + "m from raft";
+									} else {
+										VectorDouble pos = ec.getPos();
+										ecstring += "Aboard raft("+((int)Math.floor(pos.x))+"," + ((int)Math.floor(pos.y)) + ")";
+									}
+									if (index-1 <= maxComponentIndex) {
+										JLabel lab = (JLabel)characterGUIList.getComponent(index-1);
+										lab.setText("Character " + index + ": " + ecstring);
+									} else {
+										JLabel lab = new JLabel("Task " + index + ": " + ecstring);
+										lab.setLocation(0, y - characterGUIList.getValue());
+										lab.setLayout(new LayoutManagerStrictSizes());
+										lab.setPreferredSize(new Dimension(400, 20));
+										lab.setBackground(menuGray);
+										characterGUIList.add(lab);
+									}
+									y += 20;
+									index++;
+								}
+							}
+						}
+						while (index-1 <= maxComponentIndex) {
+							characterGUIList.remove(index-1);//remove this component
+							index++;
+						}
+						characterGUIList.setMaximum(y - 80);
+					}
+				}
+			};
+			characterGUIButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (characterGUIPopup.isVisible()) {
+						characterGUIPopup.setVisible(false);
+					} else {
+						closePopups.run();
+						int y = 0;
+						int index = 1;
+						characterGUIList.removeAll();
+						UserData ud = ClientPacketHandler.getCurrentUserData();
+						if (ud != null && ud.raft != null) {
+							for (Entity ent : ClientPhysicsHandler.getEntities()) {
+								if (ent instanceof EntityCharacter) {
+									EntityCharacter ec = (EntityCharacter) ent;
+									if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
+										// do this EC
+										String ecstring = "";
+										if (ec.currentTask.taskTypeID.equals("TaskWander")) {
+											ecstring += "Idle-";
+										} else {
+											ecstring += "Busy-";
+										}
+										if (ec.absolutePosition) {
+											int distance = (int) Math.sqrt(ec.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+											ecstring += distance + "m from raft";
+										} else {
+											VectorDouble pos = ec.getPos();
+											ecstring += "Aboard raft("+((int)Math.floor(pos.x))+"," + ((int)Math.floor(pos.y)) + ")";
+										}
+										JLabel lab = new JLabel("Character " + index + ": " + ecstring);
+										lab.setLocation(0, y - characterGUIList.getValue());
+										lab.setLayout(new LayoutManagerStrictSizes());
+										lab.setPreferredSize(new Dimension(400, 20));
+										lab.setBackground(menuGray);
+										characterGUIList.add(lab);
+										y += 20;
+										index++;
+									}
+								}
+							}
+						}
+						characterGUIList.setMaximum(y - 80);// heightofVP-heightoftextline?
+						characterGUIPopup.setVisible(true);
+						//visibility changed, reset scrollbar
+						characterGUIList.scrollbar.setValue(0);
+						characterGUIList.scrollbar.setMinimum(0);
+					}
+				}
+			});
+		}
+		
+		doTaskGUI: {
+			JButton taskGUIButton = new JButton("Tasks");
+			taskGUIButton.setLocation(300, 0);
+			taskGUIButton.setLayout(new LayoutManagerStrictSizes());
+			taskGUIButton.setHorizontalAlignment(SwingConstants.CENTER);// Text align center
+			taskGUIButton.setPreferredSize(new Dimension(100, 20));
+			taskGUIButton.setMargin(new Insets(0, 0, 0, 0));// No spacing around text
+			taskGUIButton.setFocusable(false);
+			bottomBarButtonContainer.add(taskGUIButton);
+
+			JPanel taskGUIPopup = new JPanel();
+			taskGUIPopup.setLocation(0, 0);
+			taskGUIPopup.setLayout(new LayoutManagerStrictSizes());
+			taskGUIPopup.setPreferredSize(new Dimension(400, 130));// height of container-barheight
+			taskGUIPopup.setBackground(menuGray);
+			taskGUIPopup.setVisible(false);
+			bottomBarContainer.add(taskGUIPopup);
+			popups.add(taskGUIPopup);
+			
+			JLabel taskGUITitle = new JLabel("Tasks:");
+			taskGUITitle.setLocation(10, 0);
+			taskGUITitle.setLayout(new LayoutManagerStrictSizes());
+			taskGUITitle.setPreferredSize(new Dimension(390, 20));// height of container-barheight
+			taskGUITitle.setBackground(menuGray);
+			taskGUIPopup.add(taskGUITitle);
+			
+			CustomScrollablePane taskGUIList = new CustomScrollablePane();
+			taskGUIList.setPreferredSize(new Dimension(380, 100));
+			taskGUIList.setLayout(new LayoutManagerStrictSizes());// must be called after size
+			taskGUIList.setLocation(10, 20);// must be called after size
+			//characterGUIList.setVisible(false);
+			taskGUIPopup.add(taskGUIList.scrollbar);
+			taskGUIPopup.add(taskGUIList.viewport);
+
+			taskGUIList.update = new Runnable() {
+				@Override
+				public void run() {
+					int y = 0;
+					int index = 1;
+					int maxComponentIndex = taskGUIList.getComponents().length-1;
+					UserData ud = ClientPacketHandler.getCurrentUserData();
+					if (ud != null && ud.raft != null) {
+						for (Task t: ud.raft.getAllTasksNotWander()) {
+							// do this Task
+							String ecstring = t.taskTypeID + " - ";
+							if (t.assignedEntityID.equals("")) {
+								ecstring += "Queued";
+							} else {
+								ecstring += "In progress";
+							}
+							if (index-1 <= maxComponentIndex) {
+								JLabel lab = (JLabel)taskGUIList.getComponent(index-1);
+								lab.setText("Task " + index + ": " + ecstring);
+							} else {
+								JLabel lab = new JLabel("Task " + index + ": " + ecstring);
+								lab.setLocation(0, y - taskGUIList.getValue());
+								lab.setLayout(new LayoutManagerStrictSizes());
+								lab.setPreferredSize(new Dimension(400, 20));
+								lab.setBackground(menuGray);
+								taskGUIList.add(lab);
+							}
+							index++;
+							y += 20;
+						}
+						while (index-1 <= maxComponentIndex) {
+							taskGUIList.remove(index-1);//remove this component
+							index++;
+						}
+						taskGUIList.setMaximum(y - 80);
+					}
+				}
+			};
+			taskGUIButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (taskGUIPopup.isVisible()) {
+						taskGUIPopup.setVisible(false);
+					} else {
+						closePopups.run();
+						int y = 0;
+						int index = 1;
+						taskGUIList.removeAll();
+						UserData ud = ClientPacketHandler.getCurrentUserData();
+						if (ud != null && ud.raft != null) {
+							for (Task t: ud.raft.getAllTasksNotWander()) {
+								// do this Task
+								String ecstring = t.taskTypeID + " - ";
+								if (t.assignedEntityID.equals("")) {
+									ecstring += "Queued";
+								} else {
+									ecstring += "In progress";
+								}
+								JLabel lab = new JLabel("Task " + index + ": " + ecstring);
+								lab.setLocation(0, y - taskGUIList.getValue());
+								lab.setLayout(new LayoutManagerStrictSizes());
+								lab.setPreferredSize(new Dimension(400, 20));
+								lab.setBackground(menuGray);
+								taskGUIList.add(lab);
+								y += 20;
+								index++;
+							}
+						}
+						taskGUIList.setMaximum(y - 80);// heightofVP-heightoftextline?
+						taskGUIPopup.setVisible(true);
+						//visibility changed, reset scrollbar
+						taskGUIList.scrollbar.setValue(0);
+						taskGUIList.scrollbar.setMinimum(0);
+					}
+				}
+			});
+		}
+		// MainMenu
 		JPanel mainMenuContainer = new JPanel();
 		mainMenuContainer.setPreferredSize(new Dimension(300, 300));
 		mainMenuContainer.setBackground(new Color(0, 0, 0, 0));
@@ -476,16 +842,16 @@ public class GraphicsHandler {
 		mainMenuText.setLocation(0, 0);
 		mainMenuText.setForeground(Color.WHITE);
 		mainMenuText.setHorizontalAlignment(SwingConstants.CENTER);
-		mainMenuText.setFont(mainMenuText.getFont().deriveFont(Font.BOLD, 30));//big, bold
+		mainMenuText.setFont(mainMenuText.getFont().deriveFont(Font.BOLD, 30));// big, bold
 		mainMenuContainer.add(mainMenuText);
 		menuPanel.add(mainMenuContainer);
 		JButton mainMenuJoin = new JButton("Join Server");
-		mainMenuJoin.setPreferredSize(new Dimension(300,100));
+		mainMenuJoin.setPreferredSize(new Dimension(300, 100));
 		mainMenuJoin.setLayout(new LayoutManagerStrictSizes());
 		mainMenuJoin.setLocation(0, 100);
 		mainMenuJoin.setFocusable(false);
 		mainMenuJoin.setHorizontalAlignment(SwingConstants.CENTER);
-		mainMenuJoin.setFont(mainMenuJoin.getFont().deriveFont(Font.BOLD, 30));//big, bold
+		mainMenuJoin.setFont(mainMenuJoin.getFont().deriveFont(Font.BOLD, 30));// big, bold
 		mainMenuContainer.add(mainMenuJoin);
 		mainMenuJoin.addActionListener(new ActionListener() {
 			@Override
@@ -495,7 +861,7 @@ public class GraphicsHandler {
 				ControlHandler.startPlaying();
 			}
 		});
-		
+
 		// Add layers to pane, Add menuPanel first so menuPanel is on top
 		jlp.add(menuPanel);
 		jlp.add(graphicsPanel);
@@ -521,7 +887,8 @@ public class GraphicsHandler {
 				menuPanel.setSize(size);
 				// set the location for components that hug the sides
 				bottomBarContainer.setLocation(0, size.height - bottomBarContainer.getHeight());
-				mainMenuContainer.setLocation((size.width-mainMenuContainer.getWidth())/2, (size.height-mainMenuContainer.getHeight())/2);
+				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
+				mapGUIPopin.setLocation((size.width - mapGUIPopin.getWidth()) / 2, (size.height - mapGUIPopin.getHeight()) / 2);
 			}
 
 			@Override
