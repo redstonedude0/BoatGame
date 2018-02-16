@@ -15,13 +15,15 @@ public class ServerPacketListener implements Runnable {
 	private ObjectOutputStream oos;
 	public String listener_uuid = "";
 	public InetAddress IP;
+	private Socket sock;
 	
 	public void start(int portNumber) {
 		try (Socket clientSocket = ServerPacketHandler.serverSocket.accept(); ObjectOutputStream out2 = new ObjectOutputStream(clientSocket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());) {
 			// Start a new listener to handle the next client
-			ServerPacketHandler.startNewListener();
+			//ServerPacketHandler.startNewListener(); - MOVED TO playerJoin in ServerPacketHandler
 			IP = clientSocket.getInetAddress();
 			oos = out2;
+			sock = clientSocket;
 			Object inputObject;
 			ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player join with null packet for now
 			//ServerPacketHandler.playerJoin(this);
@@ -65,6 +67,14 @@ public class ServerPacketListener implements Runnable {
 		// Start the listener on the correct port
 		Logger.log("Starting server listener on port " + ServerPacketHandler.portNumber);
 		start(ServerPacketHandler.portNumber);
+	}
+	
+	public void killConnection() {
+		try {
+			sock.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

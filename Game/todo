@@ -71,18 +71,22 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Investigate barrel spawn mechanics?
 	[R]	Investigate physics between clients being weird
 Alpha 0.9 (The Intelligence Update): [TODO]
--PR-	Player controlled entities fall in water if they are no longer on a block
--PDR-	Boat complete destruction should cause new boat respawn at random location?
--P-		Change everything to use floats instead of doubles
--P-		Wrap packet handlers in try catches to prevent thread crashes [disconnect client?]
--P-		Move createNewListener server-side to playerJoin to fix comod exceptions
--R-		Implement server-side chat?
--D-		Implement PCE stats system [walk speed, swim speed]?
--D-		Add character status effects (cold, wet) gained from swimming, lost over time?
+		Minor fixes:
+-PR-	  Player controlled entities fall in water if they are no longer on a block
+-PD-	  Boat complete destruction should cause new boat respawn at random location?
+		Efficiency enhancements:
+-P-		  Change everything to use floats instead of doubles
+		Error handling:
+-P-	[R]	  Wrap packet handlers in try catches to prevent thread crashes [disconnect client]
+-P-	[R]	  Move createNewListener server-side to playerJoin to fix comod exceptions
+		PCE Stats sytem:
+-D-		  Implement PCE stats system [walk speed, swim speed]?
+-D-		  Add character status effects (cold, wet) gained from swimming, lost over time?
 		Task System Updates:
-		  Add construction time (make construction a lasting task)
-		  Make thrusters require 2 wood
-		  Add repair task? [automatically added? option in GUI?]
+-D-		  Overhaul task system?
+-D-		  Add construction time (make construction a lasting task)
+-D-		  Make thrusters require 2 wood
+-D-		  Add repair task? [automatically added? option in GUI?]
 -R-		  Add paddelling task, must be placed adjacent to empty spot, can be rotated
 -R-		  Paddelling task is cancellable, make all other tasks cancellable
 -R-		  Implement paddelling, take it into account for control and physics calculations.
@@ -90,15 +94,16 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Perhaps set as unreachable if speed difference is too great?
 -D-		  Make intelligent task selection (take into account distance, swim/walk speeds)
 -D-		  Intelligent dismounting + pathfinding?
-		  	Overhaul task system?
 -D-		  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
 	[R]	  Add larger worldmap, openable in the GUI.
-		  Add GUI scale into a graphics settings page?
+-D-		  Add GUI scale into a graphics settings page?
 	[R]	  Add GUI to show number of characters, their status and world coordinates?, 
 	[R]	  Add GUI to show list of tasks, etc
+-D-		  Implement server-side chat?
+			Need to decide how to handle focus
 		Camera Updates:
 -D-		  Add scrolling to world scale?
 		  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)

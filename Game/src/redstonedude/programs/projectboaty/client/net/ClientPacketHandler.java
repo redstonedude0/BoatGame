@@ -42,7 +42,17 @@ public class ClientPacketHandler {
 	public static void handlePackets() {
 		while (!queuedPackets.isEmpty()) {
 			Packet p = queuedPackets.remove();
-			handlePacket(p);
+			try {
+				handlePacket(p);
+			} catch (Exception e) {
+				// error occured in that packet, be very careful now.
+				// kill the connection with the server
+				try {
+					ClientPacketListener.disconnect(); // disconnect
+				} catch (Exception e2) {
+					Logger.log("FATAL?: Error disconnecting from server");
+				}
+			}
 		}
 	}
 
@@ -147,7 +157,7 @@ public class ClientPacketHandler {
 			PacketTileState pts = (PacketTileState) packet;
 			ud = getUserData(pts.uuid);
 			if (ud != null && ud.raft != null) {
-				//System.out.println("pts c " + pts.tile.hp);
+				// System.out.println("pts c " + pts.tile.hp);
 				// Tile t = sud.raft.set
 				ud.raft.setTileAt(pts.tile);
 			}

@@ -41,7 +41,6 @@ public class ClientPacketListener implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 			disconnect();
-			System.exit(1);
 		}
 	}
 	
@@ -55,6 +54,8 @@ public class ClientPacketListener implements Runnable {
 		// disconnect properly
 		ControlHandler.reset();
 		ControlHandler.mode = Mode.MainMenu;
+		//this is not all the resets, shutdown for now
+		System.exit(1);
 	}
 	
 	@Override

@@ -47,15 +47,30 @@ public class ServerPacketHandler {
 	public static void handlePackets() {
 		while (!queuedPackets.isEmpty()) {
 			ServerQueuedPacket sqp = queuedPackets.remove();
-			if (sqp.packet != null) {
-				handlePacket(sqp.spl, sqp.packet);
-			} else {
-				//player join
-				playerJoinOrDisconnect(sqp.spl);
+			try {
+				if (sqp.packet != null) {
+					handlePacket(sqp.spl, sqp.packet);
+				} else {
+					// player join
+					playerJoinOrDisconnect(sqp.spl);
+				}
+			} catch (Exception e) {
+				//error occured in that packet, be very careful now.
+				//kill the connection with the player
+				if (sqp.spl != null) {
+					sqp.spl.killConnection();
+					try {
+						playerDisconnect(sqp.spl); //disconnect the player
+					} catch (Exception e2) {
+						Logger.log("FATAL?: Error disconnecting player");
+					}
+				} else {
+					Logger.log("FATAL?: Null packet listener");
+				}
 			}
 		}
 	}
-	
+
 	public static ServerUserData getUserData(String uuid) {
 		for (ServerUserData sud : userData) {
 			if (sud.uuid.equalsIgnoreCase(uuid)) {
@@ -155,7 +170,7 @@ public class ServerPacketHandler {
 			break;
 		case "PacketRequestMoveCharacter":
 			PacketRequestMoveCharacter prmc = (PacketRequestMoveCharacter) packet;
-			for (Entity e: ServerPhysicsHandler.getEntities()) {
+			for (Entity e : ServerPhysicsHandler.getEntities()) {
 				if (e.uuid.equals(prmc.uuid)) {
 					e.setPos(prmc.pos);
 					e.absolutePosition = prmc.absolutePos;
@@ -185,14 +200,14 @@ public class ServerPacketHandler {
 			Entity e = ServerPhysicsHandler.getEntity(prcs.characterUUID);
 			if (e instanceof EntityCharacter) {
 				EntityCharacter ec = (EntityCharacter) e;
-				//System.out.println("  PRCSU:" + prcs.currentTask.assignedEntityID);
-				//System.out.println("  PRCST:" + prcs.currentTask.taskTypeID);
-				//System.out.println("  PRCSC:" + prcs.currentTask.completed);
-				//System.out.println("  PRCSB:" + prcs.carryingBarrel);
-				//System.out.println("  PRCSU:" + prcs.characterUUID);
+				// System.out.println(" PRCSU:" + prcs.currentTask.assignedEntityID);
+				// System.out.println(" PRCST:" + prcs.currentTask.taskTypeID);
+				// System.out.println(" PRCSC:" + prcs.currentTask.completed);
+				// System.out.println(" PRCSB:" + prcs.carryingBarrel);
+				// System.out.println(" PRCSU:" + prcs.characterUUID);
 				ec.carryingBarrel = prcs.carryingBarrel;
 				ec.currentTask = prcs.currentTask;
-				ec.currentTask.assignedEntityID = prcs.characterUUID;//idk why it breaks in transport but it does
+				ec.currentTask.assignedEntityID = prcs.characterUUID;// idk why it breaks in transport but it does
 				PacketCharacterState pcs = new PacketCharacterState();
 				pcs.characterUUID = prcs.characterUUID;
 				pcs.carryingBarrel = prcs.carryingBarrel;
@@ -211,15 +226,15 @@ public class ServerPacketHandler {
 			PacketRequestTileState prts = (PacketRequestTileState) packet;
 			sud = getUserData(connection.listener_uuid);
 			if (sud != null && sud.raft != null) {
-				//System.out.println("PRTSS DATA: (" + prts.uniqueTestingID + ")");
-				//System.out.println("  " + prts.tile.hp);
-				//System.out.println("  " + prts.tile.mass);
-				//System.out.println("  " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
-				//Tile t = sud.raft.set
+				// System.out.println("PRTSS DATA: (" + prts.uniqueTestingID + ")");
+				// System.out.println(" " + prts.tile.hp);
+				// System.out.println(" " + prts.tile.mass);
+				// System.out.println(" " + prts.tile.getPos().x + ":" + prts.tile.getPos().y);
+				// Tile t = sud.raft.set
 				sud.raft.setTileAt(prts.tile);
 				PacketTileState pts = new PacketTileState(prts.tile);
 				pts.uuid = connection.listener_uuid;
-				//pts.tile = prts.tile;
+				// pts.tile = prts.tile;
 				broadcastPacketExcept(connection, pts);
 			}
 			break;
@@ -254,15 +269,19 @@ public class ServerPacketHandler {
 	}
 
 	public static void playerJoin(ServerPacketListener spl) {
-		//synchronized so should no throw comod exceptions?
+		// synchronized so should no throw comod exceptions?
+		// add new listener since another player might be joining soon
+		startNewListener();
 		// let the client know they have connected
 		ServerUserData ud = new ServerUserData();
 		ud.IP = spl.IP;
 		for (ServerUserData sud : ServerDataHandler.savedUsers) {
 			if (sud.IP.equals(spl.IP)) {
-				//REMOVE THE FOLLOWING 2 LINES TO TEST MULTIPLAYER FROM THE SAME IP, REMEMBER TO ADD THEM BACK THOUGH
-				//ud = sud;
-				//spl.listener_uuid = ud.uuid; //last chance to change the UUID, so change it to what it was before
+				// REMOVE THE FOLLOWING 2 LINES TO TEST MULTIPLAYER FROM THE SAME IP, REMEMBER
+				// TO ADD THEM BACK THOUGH
+				// ud = sud;
+				// spl.listener_uuid = ud.uuid; //last chance to change the UUID, so change it
+				// to what it was before
 			}
 		}
 		ud.uuid = spl.listener_uuid;
@@ -270,24 +289,23 @@ public class ServerPacketHandler {
 		if (ud.raft == null) {
 			ServerPhysicsHandler.createRaft(1, ud);
 		}
-		//tell all users about this new user, including their raft
+		// tell all users about this new user, including their raft
 		broadcastPacket(new PacketNewUser(spl.listener_uuid));
 		broadcastPacketExcept(spl, new PacketNewRaft(ud.uuid, ud.raft));
 		spl.send(new PacketConnect(ud.uuid, WorldHandler.key, WorldHandler.getWind()));
 		for (ServerUserData sud : userData) {
 			if (!sud.uuid.equalsIgnoreCase(spl.listener_uuid)) {
-				//tell the new user about all other new users
+				// tell the new user about all other new users
 				spl.send(new PacketNewUser(sud.uuid));
-			}//the connecting player needs to know about everyones raft
+			} // the connecting player needs to know about everyones raft
 			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 		}
-		for (Entity e: ServerPhysicsHandler.getEntities()) {
+		for (Entity e : ServerPhysicsHandler.getEntities()) {
 			spl.send(new PacketNewEntity(e));
 		}
-		
-		
+
 	}
-	
+
 	public static void playerJoinOrDisconnect(ServerPacketListener spl) {
 		if (getUserData(spl.listener_uuid) == null) {
 			playerJoin(spl);
@@ -302,9 +320,9 @@ public class ServerPacketHandler {
 			userData.remove(sud);
 			listeners.remove(spl);
 			broadcastPacket(new PacketDelUser(spl.listener_uuid));
-			//clear away old profile
+			// clear away old profile
 			ServerUserData toRemove = null;
-			for (ServerUserData d: ServerDataHandler.savedUsers) {
+			for (ServerUserData d : ServerDataHandler.savedUsers) {
 				if (d.IP.equals(sud.IP)) {
 					toRemove = d;
 				}

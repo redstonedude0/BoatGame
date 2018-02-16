@@ -29,6 +29,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ScrollPaneLayout;
@@ -431,7 +432,7 @@ public class GraphicsHandler {
 									// frame resize.
 
 		Color menuGray = new Color(127, 127, 127);
-		// entire buildGUI container (bar+popups)
+		// entire bottomBar container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
 		bottomBarContainer.setPreferredSize(new Dimension(400, 150));
 		bottomBarContainer.setBackground(new Color(0, 0, 0, 0));
@@ -444,18 +445,18 @@ public class GraphicsHandler {
 		bottomBarContainer.add(bottomBarButtonContainer);
 		bottomBarContainer.setVisible(false); // hidden by default
 		menuPanel.add(bottomBarContainer);
-		
+
 		ArrayList<Component> popups = new ArrayList<Component>();
-		
+
 		final Runnable closePopups = new Runnable() {
 			@Override
 			public void run() {
-				for (Component c: popups) {
+				for (Component c : popups) {
 					c.setVisible(false);
 				}
 			}
 		};
-		
+
 		doBuildGUI: {
 			JButton buildGUIButton = new JButton("Build or Assign");
 			buildGUIButton.setLocation(0, 0);
@@ -602,19 +603,19 @@ public class GraphicsHandler {
 			characterGUIPopup.setVisible(false);
 			bottomBarContainer.add(characterGUIPopup);
 			popups.add(characterGUIPopup);
-			
+
 			JLabel characterGUITitle = new JLabel("Characters:");
 			characterGUITitle.setLocation(10, 0);
 			characterGUITitle.setLayout(new LayoutManagerStrictSizes());
 			characterGUITitle.setPreferredSize(new Dimension(390, 20));// height of container-barheight
 			characterGUITitle.setBackground(menuGray);
 			characterGUIPopup.add(characterGUITitle);
-			
+
 			CustomScrollablePane characterGUIList = new CustomScrollablePane();
 			characterGUIList.setPreferredSize(new Dimension(380, 100));
 			characterGUIList.setLayout(new LayoutManagerStrictSizes());// must be called after size
 			characterGUIList.setLocation(10, 20);// must be called after size
-			//characterGUIList.setVisible(false);
+			// characterGUIList.setVisible(false);
 			characterGUIPopup.add(characterGUIList.scrollbar);
 			characterGUIPopup.add(characterGUIList.viewport);
 
@@ -623,7 +624,7 @@ public class GraphicsHandler {
 				public void run() {
 					int y = 0;
 					int index = 1;
-					int maxComponentIndex = characterGUIList.getComponents().length-1;
+					int maxComponentIndex = characterGUIList.getComponents().length - 1;
 					UserData ud = ClientPacketHandler.getCurrentUserData();
 					if (ud != null && ud.raft != null) {
 						for (Entity ent : ClientPhysicsHandler.getEntities()) {
@@ -642,10 +643,10 @@ public class GraphicsHandler {
 										ecstring += distance + "m from raft";
 									} else {
 										VectorDouble pos = ec.getPos();
-										ecstring += "Aboard raft("+((int)Math.floor(pos.x))+"," + ((int)Math.floor(pos.y)) + ")";
+										ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 									}
-									if (index-1 <= maxComponentIndex) {
-										JLabel lab = (JLabel)characterGUIList.getComponent(index-1);
+									if (index - 1 <= maxComponentIndex) {
+										JLabel lab = (JLabel) characterGUIList.getComponent(index - 1);
 										lab.setText("Character " + index + ": " + ecstring);
 									} else {
 										JLabel lab = new JLabel("Task " + index + ": " + ecstring);
@@ -660,8 +661,8 @@ public class GraphicsHandler {
 								}
 							}
 						}
-						while (index-1 <= maxComponentIndex) {
-							characterGUIList.remove(index-1);//remove this component
+						while (index - 1 <= maxComponentIndex) {
+							characterGUIList.remove(index - 1);// remove this component
 							index++;
 						}
 						characterGUIList.setMaximum(y - 80);
@@ -696,7 +697,7 @@ public class GraphicsHandler {
 											ecstring += distance + "m from raft";
 										} else {
 											VectorDouble pos = ec.getPos();
-											ecstring += "Aboard raft("+((int)Math.floor(pos.x))+"," + ((int)Math.floor(pos.y)) + ")";
+											ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 										}
 										JLabel lab = new JLabel("Character " + index + ": " + ecstring);
 										lab.setLocation(0, y - characterGUIList.getValue());
@@ -712,14 +713,14 @@ public class GraphicsHandler {
 						}
 						characterGUIList.setMaximum(y - 80);// heightofVP-heightoftextline?
 						characterGUIPopup.setVisible(true);
-						//visibility changed, reset scrollbar
+						// visibility changed, reset scrollbar
 						characterGUIList.scrollbar.setValue(0);
 						characterGUIList.scrollbar.setMinimum(0);
 					}
 				}
 			});
 		}
-		
+
 		doTaskGUI: {
 			JButton taskGUIButton = new JButton("Tasks");
 			taskGUIButton.setLocation(300, 0);
@@ -738,19 +739,19 @@ public class GraphicsHandler {
 			taskGUIPopup.setVisible(false);
 			bottomBarContainer.add(taskGUIPopup);
 			popups.add(taskGUIPopup);
-			
+
 			JLabel taskGUITitle = new JLabel("Tasks:");
 			taskGUITitle.setLocation(10, 0);
 			taskGUITitle.setLayout(new LayoutManagerStrictSizes());
 			taskGUITitle.setPreferredSize(new Dimension(390, 20));// height of container-barheight
 			taskGUITitle.setBackground(menuGray);
 			taskGUIPopup.add(taskGUITitle);
-			
+
 			CustomScrollablePane taskGUIList = new CustomScrollablePane();
 			taskGUIList.setPreferredSize(new Dimension(380, 100));
 			taskGUIList.setLayout(new LayoutManagerStrictSizes());// must be called after size
 			taskGUIList.setLocation(10, 20);// must be called after size
-			//characterGUIList.setVisible(false);
+			// characterGUIList.setVisible(false);
 			taskGUIPopup.add(taskGUIList.scrollbar);
 			taskGUIPopup.add(taskGUIList.viewport);
 
@@ -759,10 +760,10 @@ public class GraphicsHandler {
 				public void run() {
 					int y = 0;
 					int index = 1;
-					int maxComponentIndex = taskGUIList.getComponents().length-1;
+					int maxComponentIndex = taskGUIList.getComponents().length - 1;
 					UserData ud = ClientPacketHandler.getCurrentUserData();
 					if (ud != null && ud.raft != null) {
-						for (Task t: ud.raft.getAllTasksNotWander()) {
+						for (Task t : ud.raft.getAllTasksNotWander()) {
 							// do this Task
 							String ecstring = t.taskTypeID + " - ";
 							if (t.assignedEntityID.equals("")) {
@@ -770,8 +771,8 @@ public class GraphicsHandler {
 							} else {
 								ecstring += "In progress";
 							}
-							if (index-1 <= maxComponentIndex) {
-								JLabel lab = (JLabel)taskGUIList.getComponent(index-1);
+							if (index - 1 <= maxComponentIndex) {
+								JLabel lab = (JLabel) taskGUIList.getComponent(index - 1);
 								lab.setText("Task " + index + ": " + ecstring);
 							} else {
 								JLabel lab = new JLabel("Task " + index + ": " + ecstring);
@@ -784,8 +785,8 @@ public class GraphicsHandler {
 							index++;
 							y += 20;
 						}
-						while (index-1 <= maxComponentIndex) {
-							taskGUIList.remove(index-1);//remove this component
+						while (index - 1 <= maxComponentIndex) {
+							taskGUIList.remove(index - 1);// remove this component
 							index++;
 						}
 						taskGUIList.setMaximum(y - 80);
@@ -804,7 +805,7 @@ public class GraphicsHandler {
 						taskGUIList.removeAll();
 						UserData ud = ClientPacketHandler.getCurrentUserData();
 						if (ud != null && ud.raft != null) {
-							for (Task t: ud.raft.getAllTasksNotWander()) {
+							for (Task t : ud.raft.getAllTasksNotWander()) {
 								// do this Task
 								String ecstring = t.taskTypeID + " - ";
 								if (t.assignedEntityID.equals("")) {
@@ -824,13 +825,39 @@ public class GraphicsHandler {
 						}
 						taskGUIList.setMaximum(y - 80);// heightofVP-heightoftextline?
 						taskGUIPopup.setVisible(true);
-						//visibility changed, reset scrollbar
+						// visibility changed, reset scrollbar
 						taskGUIList.scrollbar.setValue(0);
 						taskGUIList.scrollbar.setMinimum(0);
 					}
 				}
 			});
 		}
+
+		//JPanel chatContainer = new JPanel();
+		/*doChat: {
+			// entire chat container (typing+fields)
+			chatContainer.setPreferredSize(new Dimension(400, 500));
+			chatContainer.setBackground(new Color(0, 0, 0, 0));
+			chatContainer.setLayout(new LayoutManagerStrictSizes());
+			
+			JPanel chatMessagesContainer = new JPanel();
+			chatMessagesContainer.setPreferredSize(new Dimension(380, 450));
+			chatMessagesContainer.setLocation(10, 10);
+			chatMessagesContainer.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127));
+			chatMessagesContainer.setLayout(new LayoutManagerStrictSizes());
+			chatContainer.add(chatMessagesContainer);
+			chatContainer.setVisible(false); // hidden by default
+			menuPanel.add(chatContainer);
+			
+			JTextField chatLine = new JTextField();
+			chatLine.setPreferredSize(new Dimension(380, 20));
+			chatLine.setLocation(10, 470);
+			chatLine.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127));
+			chatLine.setLayout(new LayoutManagerStrictSizes());
+			chatLine.setFocusable(false);
+			chatContainer.add(chatLine);
+		}*/
+
 		// MainMenu
 		JPanel mainMenuContainer = new JPanel();
 		mainMenuContainer.setPreferredSize(new Dimension(300, 300));
@@ -857,6 +884,7 @@ public class GraphicsHandler {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bottomBarContainer.setVisible(true);
+				//chatContainer.setVisible(true);
 				mainMenuContainer.setVisible(false);
 				ControlHandler.startPlaying();
 			}
@@ -887,6 +915,7 @@ public class GraphicsHandler {
 				menuPanel.setSize(size);
 				// set the location for components that hug the sides
 				bottomBarContainer.setLocation(0, size.height - bottomBarContainer.getHeight());
+				//chatContainer.setLocation(size.width-chatContainer.getWidth(), size.height - chatContainer.getHeight());
 				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
 				mapGUIPopin.setLocation((size.width - mapGUIPopin.getWidth()) / 2, (size.height - mapGUIPopin.getHeight()) / 2);
 			}

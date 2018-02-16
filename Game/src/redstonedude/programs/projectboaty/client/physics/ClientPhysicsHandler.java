@@ -310,7 +310,12 @@ public class ClientPhysicsHandler {
 			prrt.tiles = raft.getTiles();
 			ClientPacketHandler.sendPacket(prrt); //update the server on this
 		}
-		
+	}
+	
+	public void reset() {
+		entities.clear();
+		c = 0;
+		cameraPosition = new VectorDouble(0,0);
 	}
 
 }
