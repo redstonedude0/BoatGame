@@ -28,12 +28,6 @@ public class TaskCollect extends TaskReachEntity implements Serializable {
 			PacketRequestDelEntity prde = new PacketRequestDelEntity(entityUUID);
 			ClientPacketHandler.sendPacket(prde);
 		}
-		// now relocate the target to the ships current origin
-		UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
-		target = new Location();
-		target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
-		target.isAbsolute = false;
-		target.raftUUID = ud.uuid;
 		isCompleted = true;//let wander bring us back
 	}
 

@@ -86,7 +86,9 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	  Overhaul task system
 	[R]	  Add construction time (make construction a lasting task)
 	(R)	  Make thrusters require 2 wood
-	(R)	  Add repair task? [automatically added? option in GUI?]
+	[R]	  Add repair task? [automatically added? option in GUI?]
+			Automatically adds repair task, no option currently. Consider if block doesn't exist, consider removing if block is
+			destroyed. Consider adding better listeners and possibly a wrapper for Tiles
 	[R]  Update Wander task to account for characters being in water.
 			Allows them to reside on a fake square at 0,0 however.
 	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated

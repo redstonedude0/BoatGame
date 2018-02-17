@@ -216,8 +216,8 @@ public class ClientPhysicsHandler {
 		}
 	}
 
-	public static void exactPhysicsUpdate(UserData sud) {
-		Raft raft = sud.raft;
+	public static void exactPhysicsUpdate(UserData ud) {
+		Raft raft = ud.raft;
 		if (raft == null) {
 			// allow it, it'll be created shortly
 			return;

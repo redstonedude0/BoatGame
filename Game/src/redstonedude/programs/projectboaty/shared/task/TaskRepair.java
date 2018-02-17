@@ -6,18 +6,17 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
-public class TaskConstruct extends TaskReachLocationAndWork implements Serializable {
+public class TaskRepair extends TaskReachLocationAndWork implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	public Tile resultantTile;
-
-	public TaskConstruct() {
-		super(100);//2 seconds build time at best
+	
+	public TaskRepair() {
+		super(50);//1 second build time at best
 		taskTypeID = "TaskConstruct";
 	}
 
@@ -36,14 +35,16 @@ public class TaskConstruct extends TaskReachLocationAndWork implements Serializa
 
 	@Override
 	public void workComplete() {
-		// great, for now just actually build the thing
+		// great, for now just actually repair the thing
 		UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
-		ud.raft.addTile(resultantTile);
-		PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
-		prrt.tiles = ud.raft.getTiles();
-		ClientPacketHandler.sendPacket(prrt); // update the server on this
-		assignedEntity.carryingBarrel = false;
-		assignedEntity.sendState();
+		Tile t = ud.raft.getTileAt((int) target.getPos().x,(int) target.getPos().y);
+		if (t != null) {
+			t.hp = 100;//maximise HP
+			PacketRequestTileState prts = new PacketRequestTileState(t);
+			ClientPacketHandler.sendPacket(prts); // update the server on this
+			assignedEntity.carryingBarrel = false;
+			assignedEntity.sendState();
+		}
 		isCompleted = true; // let wander bring us back or take us around the boat
 	}
 

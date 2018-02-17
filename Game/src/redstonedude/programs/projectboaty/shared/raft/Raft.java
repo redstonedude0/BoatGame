@@ -49,6 +49,7 @@ public class Raft implements Serializable {
 	
 	public synchronized void addTile(Tile t) {
 		tiles.add(t);
+		t.checkState();
 	}
 	
 	public synchronized void removeAllTiles(ArrayList<Tile> t) {
@@ -78,6 +79,7 @@ public class Raft implements Serializable {
 		if (target != null) {
 			tiles.remove(target);
 			tiles.add(tile);
+			tile.checkState();
 		}
 	}
 	

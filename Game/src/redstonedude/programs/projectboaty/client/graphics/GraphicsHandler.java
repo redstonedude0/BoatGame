@@ -39,6 +39,7 @@ import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
@@ -273,7 +274,27 @@ public class GraphicsHandler {
 					double x = tc.resultantTile.getAbsoluteX(cud.raft);
 					double y = tc.resultantTile.getAbsoluteY(cud.raft);
 					double workDone = (tc.maximumWork-tc.workRemaining);
-					System.out.println(tc.maximumWork + ":" + tc.workRemaining);
+					double proportionDone = workDone/((double) tc.maximumWork);
+					double angleDone = proportionDone*360;
+					// using graphics instead of colors
+					AffineTransform rotator = new AffineTransform();
+					rotator.translate(100 * x, 100 * y);
+					rotator.rotate(cud.raft.theta);
+					g2d.transform(rotator);
+					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
+					try {
+						g2d.transform(rotator.createInverse());
+					} catch (NoninvertibleTransformException e) {
+						e.printStackTrace();
+					}
+				} else if (t instanceof TaskRepair) {
+					TaskRepair tc = (TaskRepair) t;
+					VectorDouble pos =  tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos());
+					double x = pos.x;
+					double y = pos.y;
+					double workDone = (tc.maximumWork-tc.workRemaining);
 					double proportionDone = workDone/((double) tc.maximumWork);
 					double angleDone = proportionDone*360;
 					// using graphics instead of colors

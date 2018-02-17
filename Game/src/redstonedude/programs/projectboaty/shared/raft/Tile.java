@@ -3,8 +3,12 @@ package redstonedude.programs.projectboaty.shared.raft;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.task.Task;
+import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
@@ -18,10 +22,36 @@ public class Tile implements Serializable {
 
 	public void damage(float dmg) {
 		hp -= dmg;
-		//if damage is non-0 sent packet
+		// if damage is non-0 sent packet
 		if (dmg != 0) {
 			PacketRequestTileState prts = new PacketRequestTileState(this);
 			ClientPacketHandler.sendPacket(prts);
+		}
+		checkState();
+	}
+
+	public void checkState() {
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		if (ud != null && ud.raft != null && ud.raft.getTiles().contains(this)) {
+			Raft raft = ud.raft;
+			if (hp < 75) {
+				// if its dropped below 75, needs repair
+				for (Task t : raft.getAllTasks()) {
+					if (t instanceof TaskRepair) {
+						TaskRepair tr = (TaskRepair) t;
+						if (tr.target.getPos().equals(getPos())) {
+							// repairing us
+							return;
+						}
+					}
+				} // not being repaired
+				TaskRepair tr = new TaskRepair();
+				tr.target = new Location();
+				tr.target.setPos(this.getPos());
+				tr.target.isAbsolute = false;
+				tr.target.raftUUID = ud.uuid;
+				ud.raft.addTask(tr);
+			}
 		}
 	}
 
@@ -58,7 +88,7 @@ public class Tile implements Serializable {
 		absRot.x = rotationalVelocity.x * parent.getUnitX().x + rotationalVelocity.y * parent.getUnitY().x;
 		absRot.y = rotationalVelocity.x * parent.getUnitX().y + rotationalVelocity.y * parent.getUnitY().y;
 		VectorDouble vr = new VectorDouble(linearVelocity).add(absRot);
-		
+
 		return vr;
 	}
 
@@ -67,7 +97,7 @@ public class Tile implements Serializable {
 		// this is total motion, now multiply by friction coefficients (negative since
 		// friction acts against motion)
 		// see if tile is over land or water (use COM of tile)
-		//System.out.println(getTerrain(parent).frictionCoefficient);
+		// System.out.println(getTerrain(parent).frictionCoefficient);
 		motion = motion.multiply(-getTerrain(parent).frictionCoefficient);
 		return motion;
 	}
@@ -99,7 +129,7 @@ public class Tile implements Serializable {
 		VectorDouble unitY = new VectorDouble(-b, a).divide(determinant);
 		friction.x = absFriction.x * unitX.x + absFriction.y * unitY.x;
 		friction.y = absFriction.x * unitX.y + absFriction.y * unitY.y;
-		
+
 		return friction;
 	}
 
