@@ -11,6 +11,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaft;
@@ -263,7 +264,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	}
 	
 	public static void doBarrelPress(VectorDouble clicked) {
-		entityLoop: for (Entity ent: ClientPhysicsHandler.getEntities()) {
+		entityLoop: for (WrappedEntity we: ClientPhysicsHandler.getWrappedEntities()) {
+			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.loc.isAbsolute) {
 					VectorDouble vd = ent.loc.getPos();
@@ -274,14 +276,11 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 							UserData ud = ClientPacketHandler.getCurrentUserData();
 							if (ud != null && ud.raft != null) {
 								TaskCollect t = new TaskCollect();
-								t.collectionUUID = ent.uuid;
-								t.targetLoc = ent.loc.getPos();
-								t.targetLoc_absolute = true;
-								t.targetLoc_raftuuid = "";
+								t.targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
 								for (Task t2: ud.raft.getAllTasks()) {
 									if (t2 instanceof TaskCollect) {
 										TaskCollect tc = (TaskCollect) t2;
-										if (tc.collectionUUID.equals(t.collectionUUID)) {
+										if (tc.targetEntity.entity.uuid.equals(t.targetEntity.entity.uuid)) {
 											continue entityLoop; //this barrel is already being collected,
 											//try the next entity however
 										}
@@ -309,9 +308,10 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		tile.setPos(blockPos);
 		TaskConstruct t = new TaskConstruct();
 		t.resultantTile = tile;
-		t.targetLoc = blockPos;
-		t.targetLoc_absolute = false;
-		t.targetLoc_raftuuid = ud.uuid;
+		t.target = new Location();
+		t.target.setPos(blockPos);
+		t.target.isAbsolute = false;
+		t.target.raftUUID = ud.uuid;
 		for (Task t2: ud.raft.getAllTasks()) {
 			if (t2 instanceof TaskConstruct) {
 				TaskConstruct tc = (TaskConstruct) t2;

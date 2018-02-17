@@ -28,8 +28,8 @@ public class TaskHandler {
 			}
 		}//else
 		TaskWander tw = new TaskWander(ec);
-		tw.targetLoc = new VectorDouble(0,1);
-		tw.targetLoc_absolute = false;
+		//tw.targetLoc = new VectorDouble(0,1);
+		//tw.targetLoc_absolute = false;
 		ec.currentTask = tw;
 	}
 	

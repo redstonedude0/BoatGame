@@ -31,7 +31,16 @@ public class EntityCharacter extends Entity implements Serializable {
 		ClientPacketHandler.sendPacket(prcs);
 	}
 
-	public void moveToward(Location target, UserData ud) {
+	/**
+	 * Move toward a target at maximum speed
+	 * @param target
+	 * @return true if target reached, false if not
+	 */
+	public boolean moveToward(Location target) {
+		//System.out.println("Iteration: #####################");
+		//System.out.println("  Initial loc: " + loc.getPos().x + ",");
+		//System.out.println("  Target  loc: " + target.getPos().x + ",");
+		
 		// first of all we need to remain in our current reference frame until we encounter an edge, so cast target to our frame
 		// then move directly toward target at our maximum speed (use set magnitude), then update our current frame - if we have left the
 		// raft or if we have walked onto another raft then set it as such. For now don't account for raft-jumping, simply into and out of
@@ -41,39 +50,43 @@ public class EntityCharacter extends Entity implements Serializable {
 		 */
 
 		// Transform the target location on the characters reference frame
-		VectorDouble transformedTarget = target.getPos();
+		VectorDouble transformedTargetCOM = target.getPos().add(new VectorDouble(0.5,0.5));
 		if (target.isAbsolute) {
 			if (!loc.isAbsolute) {// target is absolute, player on raft, transform
 				UserData locUD = ClientPacketHandler.getUserData(loc.raftUUID);
-				transformedTarget = transformedTarget.subtract(locUD.raft.getPos()).getRelative(locUD.raft.getUnitX(), locUD.raft.getUnitY());
+				transformedTargetCOM = transformedTargetCOM.subtract(locUD.raft.getPos()).getRelative(locUD.raft.getUnitX(), locUD.raft.getUnitY());
 			} // both absolute, don't transform
 		} else {
 			if (loc.isAbsolute) {// target is on raft, player is absolute, transform
 				UserData targetUD = ClientPacketHandler.getUserData(target.raftUUID);
-				transformedTarget = transformedTarget.getAbsolute(targetUD.raft.getUnitX(), targetUD.raft.getUnitY()).add(targetUD.raft.getPos());
+				transformedTargetCOM = transformedTargetCOM.getAbsolute(targetUD.raft.getUnitX(), targetUD.raft.getUnitY()).add(targetUD.raft.getPos());
 			} else {
 				// both relative, same raft?
 				if (!target.raftUUID.equals(loc.raftUUID)) {// different rafts
 					// Map target to absolute, then map to this raft
 					UserData locUD = ClientPacketHandler.getUserData(loc.raftUUID);
 					UserData targetUD = ClientPacketHandler.getUserData(target.raftUUID);
-					transformedTarget = transformedTarget.getAbsolute(targetUD.raft.getUnitX(), targetUD.raft.getUnitY()).add(targetUD.raft.getPos());
-					transformedTarget = transformedTarget.subtract(locUD.raft.getPos()).getRelative(locUD.raft.getUnitX(), locUD.raft.getUnitY());
+					transformedTargetCOM = transformedTargetCOM.getAbsolute(targetUD.raft.getUnitX(), targetUD.raft.getUnitY()).add(targetUD.raft.getPos());
+					transformedTargetCOM = transformedTargetCOM.subtract(locUD.raft.getPos()).getRelative(locUD.raft.getUnitX(), locUD.raft.getUnitY());
 				} // same raft, no transform needed
 			}
 		}
 		// If the maximum speed would exceed the distance then move the target to the raw location and return
-		VectorDouble change = loc.getPos().subtract(transformedTarget);
+		VectorDouble bodyCOM = loc.getPos().add(new VectorDouble(0.5, 0.5));
+		VectorDouble change = transformedTargetCOM.subtract(bodyCOM);
 		float speed = 0.1F;
 		if (change.getSquaredLength() <= Math.pow(speed, 2)) {
 			loc = target;// Move to target.
-			return;
+			//System.out.println("Curr loc3: " + loc.getPos().x + ",");
+			return true;
 		}
 		// Move the character directly towards the transformed location at maximum speed
-		change.setMagnitude(speed);
+		change = change.setMagnitude(speed);
+		//System.out.println("  Change     : " + change.x + ",");
 		loc.setPos(loc.getPos().add(change));
+		//System.out.println("  New     loc: " + loc.getPos().x + ",");
 		// Test if the characters reference frame has changed and update accordingly
-		VectorDouble bodyCOM = loc.getPos().add(new VectorDouble(0.5, 0.5));
+		bodyCOM = loc.getPos().add(new VectorDouble(0.5, 0.5));
 		if (loc.isAbsolute) {
 			// currently offboard, see if boarded a raft
 			for (UserData udPotential: ClientPacketHandler.userData) {
@@ -81,7 +94,7 @@ public class EntityCharacter extends Entity implements Serializable {
 					//transform and see if it fits
 					VectorDouble transformedCOM = bodyCOM.subtract(udPotential.raft.getPos()).getRelative(udPotential.raft.getUnitX(), udPotential.raft.getUnitY());
 					Tile t = udPotential.raft.getTileAt((int) Math.floor(transformedCOM.x), (int) Math.floor(transformedCOM.y));
-					if (t != null) { //mount
+					if (t != null) { //mount about COM
 						loc.setPos(transformedCOM.subtract(new VectorDouble(0.5,0.5)));
 						loc.isAbsolute = false;
 						loc.raftUUID = udPotential.uuid;
@@ -93,13 +106,14 @@ public class EntityCharacter extends Entity implements Serializable {
 			// currently onboard, see if dismounted
 			UserData locUD = ClientPacketHandler.getUserData(loc.raftUUID);
 			Tile t = locUD.raft.getTileAt((int) Math.floor(bodyCOM.x), (int) Math.floor(bodyCOM.y));
-			if (t == null) { //dismount
-				loc.setPos(loc.getPos().subtract(locUD.raft.getPos()).getAbsolute(locUD.raft.getUnitX(), locUD.raft.getUnitY()));
+			if (t == null) { //dismount about COM
+				loc.setPos(bodyCOM.getAbsolute(locUD.raft.getUnitX(), locUD.raft.getUnitY()).add(locUD.raft.getPos()).subtract(new VectorDouble(0.5,0.5)) );
 				loc.isAbsolute = true;
 				loc.raftUUID = "";
 			}
 		}
-
+		//System.out.println("  Final   loc: " + loc.getPos().x + ",");
+		return false;
 	}
 
 }

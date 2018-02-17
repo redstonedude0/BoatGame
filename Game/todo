@@ -83,22 +83,21 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-		  Implement PCE stats system [walk speed, swim speed]?
 -D-		  Add character status effects (cold, wet) gained from swimming, lost over time?
 		Task System Updates:
--D-	(R)	  Overhaul task system - 
-			Store dynamic targets as an Entity pointer, create EntityWrapper to hold entities properly
-			have targetReached() method when a target is reached
--D-	(R)	  Add construction time (make construction a lasting task)
--D-	(R)	  Make thrusters require 2 wood
--D-	(R)	  Add repair task? [automatically added? option in GUI?]
--R-		  Add paddelling task, must be placed adjacent to empty spot, can be rotated
--R-		  Paddelling task is cancellable, make all other tasks cancellable
--R-		  Implement paddelling, take it into account for control and physics calculations.
+	[R]	  Overhaul task system
+	(R)	  Add construction time (make construction a lasting task)
+	(R)	  Make thrusters require 2 wood
+	(R)	  Add repair task? [automatically added? option in GUI?]
+	(R)	  Update Wander task to account for characters being in water.
+	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
+	(R)	  Paddelling task is cancellable, make all other tasks cancellable
+	(R)	  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
--D-	(R)	  Make intelligent task selection (take into account distance, swim/walk speeds)
--D-	(R)	  Intelligent dismounting + pathfinding?
--D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-		  Overhaul rest of packet and physics system to work with Location better.
--D-		  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?
+	(R)	  Make intelligent task selection (take into account distance, swim/walk speeds)
+	[R]	  Intelligent dismounting (pathfinding not currently necessary)
+	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+	(R)	  Overhaul rest of packet and physics system to work with Location better.
+	(R)	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
@@ -122,6 +121,9 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
 		Investigate Socket write errors on disconnect?
+		Investigate barrel clicking not being 100% accurate on small view
+		Investigate latency issues. Consider measuring packets, consider writeUnshared testing.
+		Investigate Task delay - takes a second to take up a task?
 -D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]

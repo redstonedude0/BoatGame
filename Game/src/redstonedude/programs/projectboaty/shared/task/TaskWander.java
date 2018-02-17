@@ -7,6 +7,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskWander extends TaskReachLocation implements Serializable {
@@ -28,7 +29,10 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 		// select new random tile to wander to
 		if (assignedEntity.loc.isAbsolute) {
 			// currently off boat
-			targetLoc = new VectorDouble(0, 0);// walk to unit square
+			target = new Location();
+			target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
+			target.isAbsolute = false;
+			target.raftUUID = assignedEntity.ownerUUID;
 		} else {
 			// wander
 			// targetLoc = new VectorDouble(1, 1);
@@ -57,10 +61,11 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 			validSquares.add(new VectorDouble(ex, ey));// stay here
 			int size = validSquares.size();
 			int index = TaskHandler.rand.nextInt(size);
-			targetLoc = validSquares.get(index);
+			target = new Location();
+			target.setPos(validSquares.get(index));// nagivate to the origin of the ship
+			target.isAbsolute = false;
+			target.raftUUID = assignedEntity.ownerUUID;
 		}
-		targetLoc_absolute = false;// on raft
-		targetLoc_raftuuid = assignedEntity.ownerUUID;
 	}
 
 	@Override

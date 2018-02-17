@@ -1,12 +1,14 @@
 package redstonedude.programs.projectboaty.client.physics;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
@@ -23,58 +25,92 @@ public class ClientPhysicsHandler {
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
 	public static int tickCount = 0;
-	private static ArrayList<Entity> entities = new ArrayList<Entity>();
+	private static ArrayList<WrappedEntity> entities = new ArrayList<WrappedEntity>();
 
 	public synchronized static void addEntity(Entity e) {
-		entities.add(e);
+		entities.add(new WrappedEntity(e));
 	}
 
-	public synchronized static ArrayList<Entity> getEntities() {
-		return (ArrayList<Entity>) entities.clone();
+	public synchronized static ArrayList<WrappedEntity> getWrappedEntities() {
+		return (ArrayList<WrappedEntity>) entities.clone();
+	}
+	
+	public synchronized static void setEntities(ArrayList<WrappedEntity> e) {
+		entities = e; 
+	}
+	
+	public synchronized static void setEntity(Entity ent) {
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(ent.uuid)) {
+				e.entity = ent;
+				return;
+			}
+		}
 	}
 
 	public synchronized static Entity getEntity(String uuid) {
-		for (Entity e : entities) {
-			if (e.uuid.equals(uuid)) {
+		WrappedEntity ew = getEntityWrapper(uuid);
+		if (ew != null) {
+			return ew.entity;
+		}
+		return null;
+	}
+	
+	public synchronized static WrappedEntity getEntityWrapper(String uuid) {
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(uuid)) {
 				return e;
 			}
 		}
 		return null;
 	}
-	
-	public synchronized static void setEntity(Entity ent) {
-		Entity replace = null;
-		for (Entity e : entities) {
-			if (e.uuid.equals(ent.uuid)) {
-				replace = e;
-			}
-		}
-		if (replace != null) {
-			entities.remove(replace);
-			entities.add(ent);
-		}
-	}
-	
+
 	/**
 	 * return true if an entity was removed
 	 * @param uuid
 	 * @return
 	 */
 	public synchronized static boolean removeEntity(String uuid) {
-		Entity del = null;
-		for (Entity e : entities) {
-			if (e.uuid.equals(uuid)) {
+		WrappedEntity del = null;
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(uuid)) {
 				del = e;
 				break;
 			}
 		}
 		if (del != null) {
 			entities.remove(del);
+			del.entity = null;//nullify the entity so it isn't used anywhere else???
+			//System.out.println("Removed we");
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
+	
+	public synchronized static void removeAllEntities(ArrayList<Entity> ents) {
+		ents.forEach(new Consumer<Entity>() {
+			@Override
+			public void accept(Entity e) {
+				removeEntity(e.uuid);
+			}
+		});
+	}
+	
+//	public synchronized static boolean removeEntity(String uuid) {
+//		Entity del = null;
+//		for (Entity e : entities) {
+//			if (e.uuid.equals(uuid)) {
+//				del = e;
+//				break;
+//			}
+//		}
+//		if (del != null) {
+//			entities.remove(del);
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 
 	public static void physicsUpdate() {
 		//before we do anything handle all packets from this last tick
@@ -89,10 +125,13 @@ public class ClientPhysicsHandler {
 					approxPhysicsUpdate(ud);
 				}
 			}
-			//update tasks
-			for (Entity e : getEntities()) {
-				physicsUpdate(e);
+			//update entities
+			for (WrappedEntity we : getWrappedEntities()) {
+				if (we != null && we.entity != null) { //one entity update can make an entity null :/
+					physicsUpdate(we.entity);
+				}
 			}
+			//update tasks
 			if (currentUser != null && currentUser.raft != null) {
 				for (Task t: currentUser.raft.getTasks()) {
 					t.passiveUpdate();

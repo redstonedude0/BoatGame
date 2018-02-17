@@ -7,6 +7,7 @@ import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
@@ -32,10 +33,10 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 			ClientPacketHandler.sendPacket(prrt); //update the server on this
 			assignedEntity.carryingBarrel = false;
 			assignedEntity.sendState();
-			// now relocate the target to the ships current origin
-			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship
-			targetLoc_absolute = false;
-			targetLoc_raftuuid = ud.uuid;
+			target = new Location();
+			target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
+			target.isAbsolute = false;
+			target.raftUUID = ud.uuid;
 			constructed = true;
 		} else {
 			//reached boat origin

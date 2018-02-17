@@ -7,13 +7,14 @@ import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskCollect extends TaskReachEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public String collectionUUID = "";
+	//public String collectionUUID = "";
 	public boolean collected = false;
 
 	public TaskCollect() {
@@ -24,15 +25,16 @@ public class TaskCollect extends TaskReachEntity implements Serializable {
 	public void targetReached() {
 		if (!collected) {
 			// great, for now just delete the barrel and give the character the item
-			if (ClientPhysicsHandler.removeEntity(collectionUUID)){
+			if (ClientPhysicsHandler.removeEntity(targetEntity.entity.uuid)){
 				assignedEntity.carryingBarrel = true;
 				assignedEntity.sendState();
 			}
 			// now relocate the target to the ships current origin
 			UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
-			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship
-			targetLoc_absolute = false;
-			targetLoc_raftuuid = ud.uuid;
+			target = new Location();
+			target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
+			target.isAbsolute = false;
+			target.raftUUID = ud.uuid;
 			collected = true;
 		} else {
 			//reached boat origin
@@ -58,10 +60,9 @@ public class TaskCollect extends TaskReachEntity implements Serializable {
 
 	@Override
 	public void updateLocation() {
-		Entity target = ClientPhysicsHandler.getEntity(collectionUUID);
-		if (target != null) {
-			targetLoc = target.loc.getPos();
-		}
+		if (!collected) {//not collected, point to entity
+			super.updateLocation();
+		}//else don't change target
 	}
 
 }

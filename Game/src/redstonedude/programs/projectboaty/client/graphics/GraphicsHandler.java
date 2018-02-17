@@ -30,6 +30,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
@@ -263,8 +264,8 @@ public class GraphicsHandler {
 			for (Task t : tasks) {
 				if (t instanceof TaskCollect) {
 					TaskCollect tc = (TaskCollect) t;
-					if (!tc.collected) {
-						VectorDouble pos = tc.targetLoc;
+					if (!tc.collected && tc.target != null) {
+						VectorDouble pos = tc.target.getPos();
 						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
 					}
 				} else if (t instanceof TaskConstruct) {
@@ -288,7 +289,8 @@ public class GraphicsHandler {
 			}
 		}
 
-		for (Entity e : ClientPhysicsHandler.getEntities()) {
+		for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
+			Entity e = we.entity;
 			// System.out.println("entity");
 			VectorDouble pos = e.loc.getPos();
 			if (e.loc.isAbsolute) {
@@ -616,7 +618,8 @@ public class GraphicsHandler {
 					int maxComponentIndex = characterGUIList.getComponents().length - 1;
 					UserData ud = ClientPacketHandler.getCurrentUserData();
 					if (ud != null && ud.raft != null) {
-						for (Entity ent : ClientPhysicsHandler.getEntities()) {
+						for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
+							Entity ent = we.entity;
 							if (ent instanceof EntityCharacter) {
 								EntityCharacter ec = (EntityCharacter) ent;
 								if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
@@ -670,7 +673,8 @@ public class GraphicsHandler {
 						characterGUIList.removeAll();
 						UserData ud = ClientPacketHandler.getCurrentUserData();
 						if (ud != null && ud.raft != null) {
-							for (Entity ent : ClientPhysicsHandler.getEntities()) {
+							for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
+								Entity ent = we.entity;
 								if (ent instanceof EntityCharacter) {
 									EntityCharacter ec = (EntityCharacter) ent;
 									if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {

@@ -2,13 +2,13 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskHandler;
@@ -96,7 +96,8 @@ public class Raft implements Serializable {
 	 */
 	public synchronized ArrayList<Task> getAllTasks() {
 		ArrayList<Task> ts = getTasks();
-		for (Entity e: ClientPhysicsHandler.getEntities()) {
+		for (WrappedEntity we: ClientPhysicsHandler.getWrappedEntities()) {
+			Entity e = we.entity;
 			if (e instanceof EntityCharacter) {
 				EntityCharacter ec = (EntityCharacter) e;
 				if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID) && ec.currentTask != null) {
