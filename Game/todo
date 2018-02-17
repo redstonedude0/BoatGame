@@ -104,10 +104,10 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	  Add GUI to show list of tasks, etc
 -D-		  Add debug GUI
 -D-		  Implement server-side chat?
-			Need to decide how to handle focus
+			Need to decide how to handle focus & modification of chatqueue
 		Camera Updates:
 -D-		  Add scrolling to world scale?
-		  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+-R-		  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
 		  Update Camera to be able to track other objects
 -P-	      Rotation soft follow?
 		Investigate barrel 'worm' at t=0
@@ -224,34 +224,34 @@ List of in-depth notes for decision points:
 		Pathfinding [+Task overhaul]:
 			http://jabelarminecraft.blogspot.co.uk/p/minecraft-forge-1721710-custom-entity-ai.html
 			{Consider Mutex bits to prevent similar tasks from executing}
-			execute() method called each tick on the AI
+		#	execute() method called each tick on the AI while it is being executed
 			[decide exactly how dynamic targetting will work]
-			Store dynamic targets by UUID only - then they can be drawn by UUID only?
-			have passiveUpdate() method to update an AI when its not being run -
-				used to change location for dynamic targets, check if a target still exists?
-			have slowPassiveUpdate() method to update an AI on more resource-intensive things;
+		#	Store dynamic targets as an Entity pointer, create EntityWrapper to hold entities properly
+		#	have passiveUpdate() method to update an AI when its not being run -
+				used to ????
+		#	have slowPassiveUpdate() method to update an AI on more resource-intensive things;
 				used to check if target still exists and is allowed?
-				Used to update path for dynamic target? [check if reachable]
-			have update() method to update an AI when its being run -
-				also changes location for dynamic targets, called before execute()? any point?
-			have slowUpdate() method to update an AI when its being run -
+				Used to update path for target? [check if reachable]
+		#	have slowUpdate() method to update an AI when its being run -
 				used to update target and path?
-			have isCompleted boolean
+		#	have isCompleted boolean
 				can be set by any method (passiveUpdate, execute, slowUpdate), if true the task will
 				immediately be removed from the list or removed from the tasked entity.
-			have isEligible(Entity e) method to see if an entity is eligible for this task
+		#	have isEligible(Entity e) method to see if an entity is eligible for this task
 				false and the task won't be taken up, true and Entity e will be tasked with this task
-			have init() method
+		#	have init() method
 				Called as soon as the task is assigned to an entity, used to setup any variables required
 				before execution.
-			have TaskHandler.assignTask() method, assigns a random? task to an entity.
-			note: ec.sendState() will sync client and server side, and is only called on init of the task.
+		#	have TaskHandler.assignTask() method, assigns a random? task to an entity.
+				#will be replaced with TaskHandler.assignTasks() and Task.getEligibility() for smart task selection (once per second though?)
+		?	note: ec.sendState() will sync client and server side, and is only called on init of the task.
 				If a task variable changes, ec.sendState() should be called to sync with the server.
 				Perhaps consider adding an annotation listener here?
-			have targetReached() method when a target is reached,
+		#	have targetReached() method when a target is reached,
 				prompts retargetting or task cancellation.
+		?	have isInterrupted boolean
+				can be set by any method, if true the task will be unassigned and added back to the task queue.?
 			notes:
-			
 			pathfinding tasks wil use the slowPassiveUpdate() and slowUpdate() methods to reset the path each
 				second. execute() will simply follow the path. (list is a queue of locations, execute() targets the
 				head of this list, targetReached() pulls the next head to the target location and procedes as normal. If

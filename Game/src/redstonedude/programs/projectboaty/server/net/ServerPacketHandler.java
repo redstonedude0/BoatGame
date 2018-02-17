@@ -11,6 +11,7 @@ import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
@@ -170,7 +171,8 @@ public class ServerPacketHandler {
 			break;
 		case "PacketRequestMoveCharacter":
 			PacketRequestMoveCharacter prmc = (PacketRequestMoveCharacter) packet;
-			for (Entity e : ServerPhysicsHandler.getEntities()) {
+			for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
+				Entity e = we.entity;
 				if (e.uuid.equals(prmc.uuid)) {
 					e.setPos(prmc.pos);
 					e.absolutePosition = prmc.absolutePos;
@@ -300,7 +302,8 @@ public class ServerPacketHandler {
 			} // the connecting player needs to know about everyones raft
 			spl.send(new PacketNewRaft(sud.uuid, sud.raft));
 		}
-		for (Entity e : ServerPhysicsHandler.getEntities()) {
+		for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
+			Entity e = we.entity;
 			spl.send(new PacketNewEntity(e));
 		}
 

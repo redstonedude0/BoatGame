@@ -16,6 +16,7 @@ import redstonedude.programs.projectboaty.server.physics.ServerUserData;
 import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.server.world.ServerWorldHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.src.Logger;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
@@ -33,7 +34,7 @@ public class ServerDataHandler {
 					Logger.log("saved user data");
 					oos.writeObject(sud);
 				}
-				oos.writeObject(ServerPhysicsHandler.getEntities());
+				oos.writeObject(ServerPhysicsHandler.getWrappedEntities());
 				Logger.log("saved entities");
 				oos.writeObject(new Long(WorldHandler.key));
 				Logger.log("saved world key");
@@ -65,7 +66,7 @@ public class ServerDataHandler {
 						ServerWorldHandler.key = (Long) inputObject;
 						Logger.log("loaded key");
 					} else if (inputObject instanceof ArrayList<?>) {
-						ServerPhysicsHandler.setEntities((ArrayList<Entity>) inputObject);
+						ServerPhysicsHandler.setEntities((ArrayList<WrappedEntity>) inputObject);
 						Logger.log("loaded entities");
 					} else if (inputObject instanceof VectorDouble) {
 						ServerWorldHandler.setWind((VectorDouble) inputObject);

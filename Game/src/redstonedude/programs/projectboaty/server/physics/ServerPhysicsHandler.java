@@ -3,12 +3,14 @@ package redstonedude.programs.projectboaty.server.physics;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
@@ -23,36 +25,40 @@ public class ServerPhysicsHandler {
 
 	public static int c = 0;
 	
-	private static ArrayList<Entity> entities = new ArrayList<Entity>();
+	private static ArrayList<WrappedEntity> entities = new ArrayList<WrappedEntity>();
 	
 	public synchronized static void addEntity(Entity e) {
-		entities.add(e);
+		entities.add(new WrappedEntity(e));
 	}
 
-	public synchronized static ArrayList<Entity> getEntities() {
-		return (ArrayList<Entity>) entities.clone();
+	public synchronized static ArrayList<WrappedEntity> getWrappedEntities() {
+		return (ArrayList<WrappedEntity>) entities.clone();
 	}
 	
-	public synchronized static void setEntities(ArrayList<Entity> e) {
+	public synchronized static void setEntities(ArrayList<WrappedEntity> e) {
 		entities = e; 
 	}
 	
 	public synchronized static void setEntity(Entity ent) {
-		Entity replace = null;
-		for (Entity e : entities) {
-			if (e.uuid.equals(ent.uuid)) {
-				replace = e;
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(ent.uuid)) {
+				e.entity = ent;
+				return;
 			}
-		}
-		if (replace != null) {
-			entities.remove(replace);
-			entities.add(ent);
 		}
 	}
 
 	public synchronized static Entity getEntity(String uuid) {
-		for (Entity e : entities) {
-			if (e.uuid.equals(uuid)) {
+		WrappedEntity ew = getEntityWrapper(uuid);
+		if (ew != null) {
+			return ew.entity;
+		}
+		return null;
+	}
+	
+	public synchronized static WrappedEntity getEntityWrapper(String uuid) {
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(uuid)) {
 				return e;
 			}
 		}
@@ -60,16 +66,26 @@ public class ServerPhysicsHandler {
 	}
 
 	public synchronized static void removeEntity(String uuid) {
-		Entity del = null;
-		for (Entity e : entities) {
-			if (e.uuid.equals(uuid)) {
+		WrappedEntity del = null;
+		for (WrappedEntity e : entities) {
+			if (e.entity.uuid.equals(uuid)) {
 				del = e;
 				break;
 			}
 		}
 		if (del != null) {
+			del.entity = null;//nullify the entity so it isn't used anywhere else???
 			entities.remove(del);
 		}
+	}
+	
+	public synchronized static void removeAllEntities(ArrayList<Entity> ents) {
+		ents.forEach(new Consumer<Entity>() {
+			@Override
+			public void accept(Entity e) {
+				removeEntity(e.uuid);
+			}
+		});
 	}
 	
 	public static void physicsUpdate() {
@@ -79,7 +95,8 @@ public class ServerPhysicsHandler {
 		c++;
 		//do  barrel despawning
 		ArrayList<Entity> toDespawn = new ArrayList<Entity>();
-		for (Entity e: entities) {
+		for (WrappedEntity we: entities) {
+			Entity e = we.entity;
 			if (e instanceof EntityBarrel) {
 				//it's a barrel boiks, see if its near any raft
 				float shortestSquareDistance = -1;
@@ -148,7 +165,7 @@ public class ServerPhysicsHandler {
 				}
 			}
 		}
-		entities.removeAll(toDespawn);
+		removeAllEntities(toDespawn);
 		for (Entity e: toDespawn) {
 			PacketDelEntity pde = new PacketDelEntity();
 			pde.uuid = e.uuid;
@@ -174,7 +191,8 @@ public class ServerPhysicsHandler {
 			double yFar2 = pos.y+16;
 			double yClose2 = pos.y+8;
 			double count = 0;
-			for (Entity e: getEntities()) {
+			for (WrappedEntity we: getWrappedEntities()) {
+				Entity e = we.entity;
 				if (e instanceof EntityBarrel) {
 					VectorDouble epos = e.getPos();
 					if (epos.x > xFar1 && epos.x < xFar2) {
@@ -207,7 +225,8 @@ public class ServerPhysicsHandler {
 		eb.setPos(new VectorDouble(x, y));
 		eb.uuid = UUID.randomUUID().toString();
 		eb.absolutePosition = true;
-		for (Entity ent: ServerPhysicsHandler.getEntities()) {
+		for (WrappedEntity we: ServerPhysicsHandler.getWrappedEntities()) {
+			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.absolutePosition) {
 					VectorDouble entPos = ent.getPos();
