@@ -3,14 +3,15 @@ package redstonedude.programs.projectboaty.shared.task;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 
 public abstract class Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	public String taskTypeID = "Null";
-	public String assignedEntityID = "";
-	public boolean completed = false;
+	public EntityCharacter assignedEntity;
+	public boolean isCompleted = false;
 	
 	public abstract void execute();
 	
@@ -20,6 +21,14 @@ public abstract class Task implements Serializable {
 	
 	public void passiveUpdate() {
 		//do nothing passively
+	}
+	
+	public void slowPassiveUpdate() {
+		//do nothing passively
+	}
+	
+	public void slowUpdate() {
+		
 	}
 	
 }

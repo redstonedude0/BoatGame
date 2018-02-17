@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
 public class TaskConstruct extends TaskLocationTarget implements Serializable {
@@ -26,14 +26,13 @@ public class TaskConstruct extends TaskLocationTarget implements Serializable {
 	public void targetReached() {
 		if (!constructed) {
 			// great, for now just build the thing
-			EntityCharacter ce = (EntityCharacter) ClientPhysicsHandler.getEntity(assignedEntityID);
-			UserData ud = ClientPacketHandler.getUserData(ce.ownerUUID);
+			UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
 			ud.raft.addTile(resultantTile);
 			PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
 			prrt.tiles = ud.raft.getTiles();
 			ClientPacketHandler.sendPacket(prrt); //update the server on this
-			ce.carryingBarrel = false;
-			ce.sendState();
+			assignedEntity.carryingBarrel = false;
+			assignedEntity.sendState();
 			// now relocate the target to the ships current origin
 			targetLoc = new VectorDouble(0, 0);// nagivate to the origin of the ship
 			targetLoc_absolute = false;
@@ -41,7 +40,7 @@ public class TaskConstruct extends TaskLocationTarget implements Serializable {
 			constructed = true;
 		} else {
 			//reached boat origin
-			completed = true;
+			isCompleted = true;
 		}
 	}
 

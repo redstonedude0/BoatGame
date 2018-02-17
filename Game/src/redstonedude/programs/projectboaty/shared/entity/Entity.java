@@ -3,7 +3,7 @@ package redstonedude.programs.projectboaty.shared.entity;
 import java.io.Serializable;
 import java.util.UUID;
 
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class Entity implements Serializable {
 	

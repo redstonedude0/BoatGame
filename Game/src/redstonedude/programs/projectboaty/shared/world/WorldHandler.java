@@ -2,7 +2,7 @@ package redstonedude.programs.projectboaty.shared.world;
 
 import java.util.Random;
 
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class WorldHandler {
 	

@@ -83,18 +83,21 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-		  Implement PCE stats system [walk speed, swim speed]?
 -D-		  Add character status effects (cold, wet) gained from swimming, lost over time?
 		Task System Updates:
--D-		  Overhaul task system?
--D-		  Add construction time (make construction a lasting task)
--D-		  Make thrusters require 2 wood
--D-		  Add repair task? [automatically added? option in GUI?]
+-D-	(R)	  Overhaul task system - 
+			Store dynamic targets as an Entity pointer, create EntityWrapper to hold entities properly
+			have targetReached() method when a target is reached
+			entityCharacter has moveToward(Location loc)
+-D-	(R)	  Add construction time (make construction a lasting task)
+-D-	(R)	  Make thrusters require 2 wood
+-D-	(R)	  Add repair task? [automatically added? option in GUI?]
 -R-		  Add paddelling task, must be placed adjacent to empty spot, can be rotated
 -R-		  Paddelling task is cancellable, make all other tasks cancellable
 -R-		  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
--D-		  Make intelligent task selection (take into account distance, swim/walk speeds)
--D-		  Intelligent dismounting + pathfinding?
--D-		  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+-D-	(R)	  Make intelligent task selection (take into account distance, swim/walk speeds)
+-D-	(R)	  Intelligent dismounting + pathfinding?
+-D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
@@ -114,6 +117,11 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Investigate black flash when resizing frame
 		Investigate 1 frame flash when clicking GUI buttons
 		Investigate ghost damage from barrels
+			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
+	[R]	Investigate raft reset to 0,0 on disconnect?
+			Caused by non-synchronous methods, fixed.
+-D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
+			"socket closed" error on server shutdown
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary

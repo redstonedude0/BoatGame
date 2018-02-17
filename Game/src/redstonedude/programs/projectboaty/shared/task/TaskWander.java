@@ -5,37 +5,36 @@ import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskWander extends TaskLocationTarget implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public TaskWander(String assignedEntity) {
+	public TaskWander(EntityCharacter ent) {
 		taskTypeID = "TaskWander";
-		assignedEntityID = assignedEntity;
+		assignedEntity = ent;
 	}
 
 	@Override
 	public void targetReached() {
-		completed = true;
+		isCompleted = true;
 	}
 
 	@Override
 	public void init() {
 		// select new random tile to wander to
-		EntityCharacter e = (EntityCharacter) ClientPhysicsHandler.getEntity(assignedEntityID);
-		if (e.absolutePosition) {
+		if (assignedEntity.absolutePosition) {
 			// currently off boat
 			targetLoc = new VectorDouble(0, 0);// walk to unit square
 		} else {
 			// wander
 			// targetLoc = new VectorDouble(1, 1);
 			// get its square
-			VectorDouble ePos = e.getPos();
+			VectorDouble ePos = assignedEntity.getPos();
 			int ex = (int) ePos.x;
 			int ey = (int) ePos.y;
 			ArrayList<VectorDouble> validSquares = new ArrayList<VectorDouble>();
@@ -45,7 +44,7 @@ public class TaskWander extends TaskLocationTarget implements Serializable {
 			validSquares.add(new VectorDouble(ex, ey - 1));
 			ArrayList<VectorDouble> invalidSquares = new ArrayList<VectorDouble>();
 			for (VectorDouble vd : validSquares) {
-				UserData ud = ClientPacketHandler.getUserData(e.ownerUUID);
+				UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
 				if (ud != null && ud.raft != null) {
 					if (ud.raft.getTileAt((int) vd.x, (int) vd.y) != null) {
 						continue;// keep this one in
@@ -62,7 +61,7 @@ public class TaskWander extends TaskLocationTarget implements Serializable {
 			targetLoc = validSquares.get(index);
 		}
 		targetLoc_absolute = false;// on raft
-		targetLoc_raftuuid = e.ownerUUID;
+		targetLoc_raftuuid = assignedEntity.ownerUUID;
 	}
 
 	@Override

@@ -20,12 +20,13 @@ public class ServerPacketListener implements Runnable {
 	public void start(int portNumber) {
 		try (Socket clientSocket = ServerPacketHandler.serverSocket.accept(); ObjectOutputStream out2 = new ObjectOutputStream(clientSocket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());) {
 			// Start a new listener to handle the next client
-			//ServerPacketHandler.startNewListener(); - MOVED TO playerJoin in ServerPacketHandler
+			ServerPacketHandler.startNewListener();// - MOVED TO playerJoin in ServerPacketHandler
 			IP = clientSocket.getInetAddress();
 			oos = out2;
 			sock = clientSocket;
 			Object inputObject;
-			ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player join with null packet for now
+			ServerPacketHandler.playerJoin(this);
+			//ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player join with null packet for now
 			//ServerPacketHandler.playerJoin(this);
 			while ((inputObject = in.readObject()) != null) {
 				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket((Packet)inputObject,this));
@@ -37,6 +38,7 @@ public class ServerPacketListener implements Runnable {
 				e.printStackTrace();
 			}
 			Logger.log("Disconnection: " + e.getMessage());
+			//disconnect
 			ServerPacketHandler.playerDisconnect(this);
 		}
 	}
@@ -55,7 +57,8 @@ public class ServerPacketListener implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 				Logger.log("Disconnection: " + e.getMessage());
-				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now
+				ServerPacketHandler.playerDisconnect(this);
+				//ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now
 				//ServerPacketHandler.playerDisconnect(this);
 				oos = null;//close this connection
 			}

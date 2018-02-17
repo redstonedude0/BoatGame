@@ -1,4 +1,4 @@
-package redstonedude.programs.projectboaty.server.physics;
+package redstonedude.programs.projectboaty.shared.physics;
 
 import java.io.Serializable;
 

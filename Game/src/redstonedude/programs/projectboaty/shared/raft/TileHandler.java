@@ -34,7 +34,7 @@ public class TileHandler {
 		if (t instanceof TileThruster) {
 			TileThruster thruster = (TileThruster) t;
 			if (thruster.thrustStrength != 0) {
-				int index = ClientPhysicsHandler.c%3;
+				int index = ClientPhysicsHandler.tickCount%3;
 				return "TileThruster_" + index;
 			}
 			return "TileThruster_0";

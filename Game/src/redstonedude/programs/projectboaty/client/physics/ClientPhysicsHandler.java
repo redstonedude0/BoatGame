@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -22,7 +22,7 @@ public class ClientPhysicsHandler {
 	// consider making this do all the physics for local boats perhaps?
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
-	public static int c = 0;
+	public static int tickCount = 0;
 	private static ArrayList<Entity> entities = new ArrayList<Entity>();
 
 	public synchronized static void addEntity(Entity e) {
@@ -80,7 +80,7 @@ public class ClientPhysicsHandler {
 		//before we do anything handle all packets from this last tick
 		ClientPacketHandler.handlePackets();
 		if (ControlHandler.mode == Mode.Playing) {
-			c++;
+			tickCount++;
 			UserData currentUser = ClientPacketHandler.getCurrentUserData();
 			for (UserData ud : ClientPacketHandler.userData) {
 				if (ud.uuid.equalsIgnoreCase(currentUser.uuid)) {
@@ -96,6 +96,9 @@ public class ClientPhysicsHandler {
 			if (currentUser != null && currentUser.raft != null) {
 				for (Task t: currentUser.raft.getTasks()) {
 					t.passiveUpdate();
+					if (tickCount%50 == 0) { //every 50 ticks (1 second)
+						t.slowPassiveUpdate();
+					}
 				}
 			}
 			// move camera accordingly
@@ -115,16 +118,18 @@ public class ClientPhysicsHandler {
 			if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
 				UserData ud = ClientPacketHandler.getUserData(ec.ownerUUID);
 				if (ud != null && ud.raft != null) {
-					if (ec.currentTask == null || ec.currentTask.completed) {
+					if (ec.currentTask == null || ec.currentTask.isCompleted) {
 						if (ec.currentTask != null) {
 							//compeleted, should've already been removed when it was taken up
 							//ud.raft.tasks.remove(ec.currentTask);
 							//System.out.println("removed " + ec.currentTask.taskTypeID);
 						}
-						Task t = TaskHandler.getTask(ud.raft,ec);
-						ec.currentTask = t;
+						TaskHandler.assignTask(ud.raft,ec);
 						ec.currentTask.init();
 						ec.sendState();
+					}
+					if (tickCount%50 == 0) { //every 50 ticks (1 second)
+						ec.currentTask.slowUpdate();
 					}
 					ec.currentTask.execute();
 				} else {
@@ -314,7 +319,7 @@ public class ClientPhysicsHandler {
 	
 	public void reset() {
 		entities.clear();
-		c = 0;
+		tickCount = 0;
 		cameraPosition = new VectorDouble(0,0);
 	}
 

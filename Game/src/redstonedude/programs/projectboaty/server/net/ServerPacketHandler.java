@@ -49,19 +49,14 @@ public class ServerPacketHandler {
 		while (!queuedPackets.isEmpty()) {
 			ServerQueuedPacket sqp = queuedPackets.remove();
 			try {
-				if (sqp.packet != null) {
-					handlePacket(sqp.spl, sqp.packet);
-				} else {
-					// player join
-					playerJoinOrDisconnect(sqp.spl);
-				}
+				handlePacket(sqp.spl, sqp.packet);
 			} catch (Exception e) {
-				//error occured in that packet, be very careful now.
-				//kill the connection with the player
+				// error occured in that packet, be very careful now.
+				// kill the connection with the player
 				if (sqp.spl != null) {
 					sqp.spl.killConnection();
 					try {
-						playerDisconnect(sqp.spl); //disconnect the player
+						playerDisconnect(sqp.spl); // disconnect the player
 					} catch (Exception e2) {
 						Logger.log("FATAL?: Error disconnecting player");
 					}
@@ -208,8 +203,10 @@ public class ServerPacketHandler {
 				// System.out.println(" PRCSB:" + prcs.carryingBarrel);
 				// System.out.println(" PRCSU:" + prcs.characterUUID);
 				ec.carryingBarrel = prcs.carryingBarrel;
-				ec.currentTask = prcs.currentTask;
-				ec.currentTask.assignedEntityID = prcs.characterUUID;// idk why it breaks in transport but it does
+				ec.currentTask = prcs.currentTask; // does it still break in transport? who knows
+				// ec.currentTask.assignedEntity = (EntityCharacter)
+				// ServerPhysicsHandler.getEntity(prcs.characterUUID);// idk if it still breaks
+				// in transport
 				PacketCharacterState pcs = new PacketCharacterState();
 				pcs.characterUUID = prcs.characterUUID;
 				pcs.carryingBarrel = prcs.carryingBarrel;
@@ -252,11 +249,15 @@ public class ServerPacketHandler {
 	}
 
 	public static synchronized void startNewListener() {
-		ServerPacketListener spl = new ServerPacketListener();
-		spl.listener_uuid = UUID.randomUUID().toString();
-		listeners.add(spl);
-		Thread newListenerThread = new Thread(spl);
-		newListenerThread.start();
+		if (serverSocket.isClosed()) {
+			Logger.log("Socket closed. Not listening for clients.");
+		} else {
+			ServerPacketListener spl = new ServerPacketListener();
+			spl.listener_uuid = UUID.randomUUID().toString();
+			listeners.add(spl);
+			Thread newListenerThread = new Thread(spl);
+			newListenerThread.start();
+		}
 	}
 
 	public static ServerSocket serverSocket;
@@ -270,10 +271,10 @@ public class ServerPacketHandler {
 		}
 	}
 
-	public static void playerJoin(ServerPacketListener spl) {
+	public static synchronized void playerJoin(ServerPacketListener spl) {
 		// synchronized so should no throw comod exceptions?
 		// add new listener since another player might be joining soon
-		startNewListener();
+		//startNewListener();
 		// let the client know they have connected
 		ServerUserData ud = new ServerUserData();
 		ud.IP = spl.IP;
@@ -309,15 +310,15 @@ public class ServerPacketHandler {
 
 	}
 
-	public static void playerJoinOrDisconnect(ServerPacketListener spl) {
-		if (getUserData(spl.listener_uuid) == null) {
-			playerJoin(spl);
-		} else {
-			playerDisconnect(spl);
-		}
-	}
+//	public static void playerJoinOrDisconnect(ServerPacketListener spl) {
+//		if (getUserData(spl.listener_uuid) == null) {
+//			playerJoin(spl);
+//		} else {
+//			playerDisconnect(spl);
+//		}
+//	}
 
-	public static void playerDisconnect(ServerPacketListener spl) {
+	public static synchronized void playerDisconnect(ServerPacketListener spl) {
 		ServerUserData sud = getUserData(spl.listener_uuid);
 		if (sud != null) {
 			userData.remove(sud);

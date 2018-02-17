@@ -15,6 +15,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;

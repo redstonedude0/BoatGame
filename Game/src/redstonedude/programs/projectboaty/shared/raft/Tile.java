@@ -3,8 +3,8 @@ package redstonedude.programs.projectboaty.shared.raft;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 

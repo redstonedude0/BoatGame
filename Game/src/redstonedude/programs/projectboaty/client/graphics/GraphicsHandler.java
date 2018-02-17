@@ -28,10 +28,10 @@ import javax.swing.SwingConstants;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -160,7 +160,7 @@ public class GraphicsHandler {
 	public static void graphicsUpdatePlaying() {
 		// tesselate with water
 		g2d.setColor(Color.BLUE);
-		int index = ClientPhysicsHandler.c % 8;
+		int index = ClientPhysicsHandler.tickCount % 8;
 		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
 		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
 		for (int i = approxX - 11; i < approxX + 11; i++) {
@@ -180,7 +180,7 @@ public class GraphicsHandler {
 			}
 		}
 		g2d.setColor(Color.WHITE);
-		g2d.drawString("local phys tick " + ClientPhysicsHandler.c, 50, 50);
+		g2d.drawString("local phys tick " + ClientPhysicsHandler.tickCount, 50, 50);
 		for (UserData ud : ClientPacketHandler.userData) {
 			if (ud.raft != null) {
 				VectorDouble unitx = ud.raft.getUnitX();
@@ -755,7 +755,7 @@ public class GraphicsHandler {
 						for (Task t : ud.raft.getAllTasksNotWander()) {
 							// do this Task
 							String ecstring = t.taskTypeID + " - ";
-							if (t.assignedEntityID.equals("")) {
+							if (t.assignedEntity == null) {
 								ecstring += "Queued";
 							} else {
 								ecstring += "In progress";
@@ -797,7 +797,7 @@ public class GraphicsHandler {
 							for (Task t : ud.raft.getAllTasksNotWander()) {
 								// do this Task
 								String ecstring = t.taskTypeID + " - ";
-								if (t.assignedEntityID.equals("")) {
+								if (t.assignedEntity == null) {
 									ecstring += "Queued";
 								} else {
 									ecstring += "In progress";

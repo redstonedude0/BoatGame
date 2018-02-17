@@ -2,8 +2,8 @@ package redstonedude.programs.projectboaty.shared.net.serverbound;
 
 import java.io.Serializable;
 
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.net.Packet;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class PacketRequestMoveCharacter extends Packet implements Serializable {
 	

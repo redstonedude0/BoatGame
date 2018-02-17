@@ -1,7 +1,7 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TileThruster extends Tile {
 

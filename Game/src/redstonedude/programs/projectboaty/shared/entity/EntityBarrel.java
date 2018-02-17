@@ -2,7 +2,7 @@ package redstonedude.programs.projectboaty.shared.entity;
 
 import java.io.Serializable;
 
-import redstonedude.programs.projectboaty.server.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class EntityBarrel extends Entity implements Serializable{
 	
