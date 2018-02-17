@@ -2,35 +2,58 @@ package redstonedude.programs.projectboaty.shared.task;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetTaskList;
-import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 
 public class TaskHandler {
 	
 	public static Random rand = new Random();
 	
-	//change to 'assignTask?'
+//	public static void assignTask(Raft raft, EntityCharacter ec) {
+//		ArrayList<Task> tasks = raft.getTasks();
+//		int size = tasks.size();
+//		if (size != 0) {
+//			int index = rand.nextInt(size);
+//			Task t = tasks.get(index);
+//			if (t.getPriority(ec) >= 0) {
+//				t.assignedEntity = ec;
+//				raft.removeTask(t);
+//				ec.currentTask = t;
+//				return;
+//			}
+//		}//else
+//		TaskWander tw = new TaskWander(ec);
+//		//tw.targetLoc = new VectorDouble(0,1);
+//		//tw.targetLoc_absolute = false;
+//		ec.currentTask = tw;
+//	}
+	
 	public static void assignTask(Raft raft, EntityCharacter ec) {
 		ArrayList<Task> tasks = raft.getTasks();
-		int size = tasks.size();
-		if (size != 0) {
-			int index = rand.nextInt(size);
-			Task t = tasks.get(index);
-			if (t.isEligible(ec)) {
-				t.assignedEntity = ec;
-				raft.removeTask(t);
-				ec.currentTask = t;
-				return;
+		Task lowestPriorityTask = null;
+		int lowestPriority = Task.INELIGIBLE;
+		for (Task t: tasks) {
+			int priority = t.getPriority(ec);
+			//lowest priority but not ineligible.
+			if ((priority < lowestPriority || lowestPriority == Task.INELIGIBLE) && priority != Task.INELIGIBLE) {
+				lowestPriority = priority;
+				lowestPriorityTask = t;
 			}
-		}//else
-		TaskWander tw = new TaskWander(ec);
-		//tw.targetLoc = new VectorDouble(0,1);
-		//tw.targetLoc_absolute = false;
-		ec.currentTask = tw;
+		}
+		if (lowestPriority != Task.INELIGIBLE) {
+			//there's an actual task we can do, do it.
+			lowestPriorityTask.assignedEntity = ec;
+			raft.removeTask(lowestPriorityTask);
+			ec.currentTask = lowestPriorityTask;
+		} else {
+			TaskWander tw = new TaskWander(ec);
+			tw.assignedEntity = ec;
+			ec.currentTask = tw;
+		}
 	}
 	
 	public static void sendList(Raft raft) {

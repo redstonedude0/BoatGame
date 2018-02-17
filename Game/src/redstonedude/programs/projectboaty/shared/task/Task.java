@@ -9,6 +9,8 @@ public abstract class Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final int INELIGIBLE = -1;
+	
 	public String taskTypeID = "Null";
 	public EntityCharacter assignedEntity;
 	public boolean isCompleted = false;
@@ -17,7 +19,7 @@ public abstract class Task implements Serializable {
 	
 	public abstract void init();
 	
-	public abstract boolean isEligible(EntityCharacter e);
+	public abstract int getPriority(EntityCharacter e);
 	
 	public void passiveUpdate() {
 		//do nothing passively

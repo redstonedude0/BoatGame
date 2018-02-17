@@ -75,8 +75,8 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 	}
 
 	@Override
-	public boolean isEligible(EntityCharacter e) {
-		return true; // anyone can wander
+	public int getPriority(EntityCharacter e) {
+		return 0; // anyone can wander, this value is never even checked.
 	}
 
 }

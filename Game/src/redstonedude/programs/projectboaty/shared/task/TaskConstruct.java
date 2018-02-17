@@ -50,11 +50,11 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 	}
 
 	@Override
-	public boolean isEligible(EntityCharacter ec) {
+	public int getPriority(EntityCharacter ec) {
 		if (ec.carryingBarrel) {
-			return true;
+			return getDistanceToTarget(ec);
 		}
-		return false;
+		return INELIGIBLE;
 	}
 
 }

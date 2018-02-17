@@ -94,7 +94,8 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	(R)	  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
-	(R)	  Make intelligent task selection (take into account distance, swim/walk speeds)
+	[R]	  Make intelligent task selection? (take into account distance, swim/walk speeds)
+			Priority for each task from getPriority() method, lowest priority is done first. (must be >=0)
 	[R]	  Intelligent dismounting (pathfinding not currently necessary)
 	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
 	(R)	  Overhaul rest of packet and physics system to work with Location better.
@@ -117,7 +118,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Investigate barrel 'worm' at t=0
 		Investigate black flash when resizing frame
 		Investigate 1 frame flash when clicking GUI buttons
-	(R)	Investigate ghost damage from barrels
+	[R]	Investigate ghost damage from barrels
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
