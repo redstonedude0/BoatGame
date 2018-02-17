@@ -86,7 +86,6 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-	(R)	  Overhaul task system - 
 			Store dynamic targets as an Entity pointer, create EntityWrapper to hold entities properly
 			have targetReached() method when a target is reached
-			entityCharacter has moveToward(Location loc)
 -D-	(R)	  Add construction time (make construction a lasting task)
 -D-	(R)	  Make thrusters require 2 wood
 -D-	(R)	  Add repair task? [automatically added? option in GUI?]
@@ -99,6 +98,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-	(R)	  Intelligent dismounting + pathfinding?
 -D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
 		  Overhaul rest of packet and physics system to work with Location better.
+-D-		  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI

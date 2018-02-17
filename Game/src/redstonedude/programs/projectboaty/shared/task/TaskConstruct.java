@@ -3,7 +3,6 @@ package redstonedude.programs.projectboaty.shared.task;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -11,7 +10,7 @@ import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRa
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
-public class TaskConstruct extends TaskLocationTarget implements Serializable {
+public class TaskConstruct extends TaskReachLocation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

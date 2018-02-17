@@ -2,7 +2,7 @@ package redstonedude.programs.projectboaty.shared.task;
 
 import java.io.Serializable;
 
-public abstract class TaskLocationMovingTarget extends TaskLocationTarget implements Serializable {
+public abstract class TaskReachEntity extends TaskReachLocation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

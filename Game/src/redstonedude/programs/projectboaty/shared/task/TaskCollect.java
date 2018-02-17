@@ -9,7 +9,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
-public class TaskCollect extends TaskLocationMovingTarget implements Serializable {
+public class TaskCollect extends TaskReachEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -6,12 +6,14 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
-public abstract class TaskLocationTarget extends Task implements Serializable {
+public abstract class TaskReachLocation extends Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public Location target;
 	public VectorDouble targetLoc;
 	public boolean targetLoc_absolute;
 	public String targetLoc_raftuuid;
