@@ -15,7 +15,6 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public boolean constructed = false;
 	public Tile resultantTile;
 
 	public TaskConstruct() {
@@ -24,24 +23,19 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 
 	@Override
 	public void targetReached() {
-		if (!constructed) {
-			// great, for now just build the thing
-			UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
-			ud.raft.addTile(resultantTile);
-			PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
-			prrt.tiles = ud.raft.getTiles();
-			ClientPacketHandler.sendPacket(prrt); // update the server on this
-			assignedEntity.carryingBarrel = false;
-			assignedEntity.sendState();
-			target = new Location();
-			target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
-			target.isAbsolute = false;
-			target.raftUUID = ud.uuid;
-			constructed = true;
-		} else {
-			// reached boat origin
-			isCompleted = true;
-		}
+		// great, for now just build the thing
+		UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
+		ud.raft.addTile(resultantTile);
+		PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
+		prrt.tiles = ud.raft.getTiles();
+		ClientPacketHandler.sendPacket(prrt); // update the server on this
+		assignedEntity.carryingBarrel = false;
+		assignedEntity.sendState();
+		target = new Location();
+		target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
+		target.isAbsolute = false;
+		target.raftUUID = ud.uuid;
+		isCompleted = true; // let wander bring us back or take us around the boat
 	}
 
 	@Override

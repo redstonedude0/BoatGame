@@ -264,26 +264,24 @@ public class GraphicsHandler {
 			for (Task t : tasks) {
 				if (t instanceof TaskCollect) {
 					TaskCollect tc = (TaskCollect) t;
-					if (!tc.collected && tc.target != null) {
+					if (tc.target != null) {
 						VectorDouble pos = tc.target.getPos();
 						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
 					}
 				} else if (t instanceof TaskConstruct) {
 					TaskConstruct tc = (TaskConstruct) t;
-					if (!tc.constructed) {
-						double x = tc.resultantTile.getAbsoluteX(cud.raft);
-						double y = tc.resultantTile.getAbsoluteY(cud.raft);
-						// using graphics instead of colors
-						AffineTransform rotator = new AffineTransform();
-						rotator.translate(100 * x, 100 * y);
-						rotator.rotate(cud.raft.theta);
-						g2d.transform(rotator);
-						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-						try {
-							g2d.transform(rotator.createInverse());
-						} catch (NoninvertibleTransformException e) {
-							e.printStackTrace();
-						}
+					double x = tc.resultantTile.getAbsoluteX(cud.raft);
+					double y = tc.resultantTile.getAbsoluteY(cud.raft);
+					// using graphics instead of colors
+					AffineTransform rotator = new AffineTransform();
+					rotator.translate(100 * x, 100 * y);
+					rotator.rotate(cud.raft.theta);
+					g2d.transform(rotator);
+					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					try {
+						g2d.transform(rotator.createInverse());
+					} catch (NoninvertibleTransformException e) {
+						e.printStackTrace();
 					}
 				}
 			}
