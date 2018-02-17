@@ -11,7 +11,11 @@ public abstract class TaskReachEntity extends TaskReachLocation implements Seria
 	public WrappedEntity targetEntity;
 	
 	public void updateLocation() {
-		target = targetEntity.entity.loc;
+		if (targetEntity != null && targetEntity.entity != null) {
+			target = targetEntity.entity.loc;
+		} else {
+			isCompleted = true; //target must have been despawned or destroyed, oh well, what a shame :(
+		}
 	}
 	
 	@Override
