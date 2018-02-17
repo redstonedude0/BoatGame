@@ -2,18 +2,14 @@ package redstonedude.programs.projectboaty.client.graphics;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.AffineTransform;
@@ -27,13 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.ScrollPaneLayout;
-import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
@@ -94,7 +83,6 @@ public class GraphicsHandler {
 			// needs to correspond with the midpoint of the screen.
 
 			// graphics are stretched to fill 0,0 to width,height
-
 			// scale to ensure that midpoint of g lines up to camera
 			float midX = screenWidth / 2;
 			float midY = screenHeight / 2;
@@ -106,14 +94,15 @@ public class GraphicsHandler {
 			// translate.scale(scaleForHeight/scale, scaleForWidth/scale);
 			translate.scale(scale / scaleForWidth, scale / scaleForHeight);
 			// translate.scale(1/scale, 1/scale);
+			//translate.scale(0.5, 0.5);
 			translate.translate(offset.x, offset.y);
-			// UserData ud = ClientPacketHandler.getCurrentUserData();
-			// if (ud != null && ud.raft != null) {
-			// VectorDouble vd = new VectorDouble(midX, midY);
-			// translate.translate(vd.x,vd.y);
-			// translate.rotate(-ud.raft.theta);
-			// translate.translate(-vd.x,-vd.y);
-			// }
+			//UserData ud = ClientPacketHandler.getCurrentUserData();
+			//if (ud != null && ud.raft != null) {
+			//  VectorDouble vd = new VectorDouble(midX, midY);
+			//  translate.translate(-vd.x,-vd.y);
+			//  translate.rotate(-ud.raft.theta);
+			//  translate.translate(vd.x,vd.y);
+			//}
 			g2d.transform(translate);
 			graphicsUpdatePlaying();
 			try {

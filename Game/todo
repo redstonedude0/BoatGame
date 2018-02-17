@@ -102,6 +102,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-		  Add GUI scale into a graphics settings page?
 	[R]	  Add GUI to show number of characters, their status and world coordinates?, 
 	[R]	  Add GUI to show list of tasks, etc
+-D-		  Add debug GUI
 -D-		  Implement server-side chat?
 			Need to decide how to handle focus
 		Camera Updates:
