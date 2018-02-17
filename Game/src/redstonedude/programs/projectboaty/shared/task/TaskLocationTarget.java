@@ -22,32 +22,32 @@ public abstract class TaskLocationTarget extends Task implements Serializable {
 	@Override
 	public void execute() {
 		if (assignedEntity != null) {
-			if (targetLoc_absolute && !assignedEntity.absolutePosition) {
+			if (targetLoc_absolute && !assignedEntity.loc.isAbsolute) {
 				//need to jump in water, need COM to be in same pos so adjust by 0.5
-				UserData ud = ClientPacketHandler.getUserData(assignedEntity.raftUUID);
-				assignedEntity.absolutePosition = true;
-				assignedEntity.setPos(assignedEntity.getPos().add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5)));
-				assignedEntity.raftUUID="";
+				UserData ud = ClientPacketHandler.getUserData(assignedEntity.loc.raftUUID);
+				assignedEntity.loc.isAbsolute = true;
+				assignedEntity.loc.setPos(assignedEntity.loc.getPos().add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5)));
+				assignedEntity.loc.raftUUID="";
 			}
 			VectorDouble target = targetLoc;
-			if (!targetLoc_absolute && assignedEntity.absolutePosition) {
+			if (!targetLoc_absolute && assignedEntity.loc.isAbsolute) {
 				//System.out.println("using different target");
 				//need to navigate to ship and then climb aboard
 				//overwrite target to point to absolute
 				UserData ud = ClientPacketHandler.getUserData(targetLoc_raftuuid);
 				target = target.add(new VectorDouble(0.5, 0.5)).getAbsolute(ud.raft.getUnitX(),ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5));
 			}
-			VectorDouble pos = assignedEntity.getPos();
+			VectorDouble pos = assignedEntity.loc.getPos();
 			VectorDouble diff = target.subtract(pos);
 			if (diff.getSquaredLength() <= 0.01) {
 				//less than 0.1 away
-				assignedEntity.setPos(targetLoc);
-				assignedEntity.absolutePosition = targetLoc_absolute;
-				assignedEntity.raftUUID = targetLoc_raftuuid;
+				assignedEntity.loc.setPos(targetLoc);
+				assignedEntity.loc.isAbsolute = targetLoc_absolute;
+				assignedEntity.loc.raftUUID = targetLoc_raftuuid;
 				targetReached();
 			} else {
 				diff = diff.setMagnitude(0.1);
-				assignedEntity.setPos(pos.add(diff));
+				assignedEntity.loc.setPos(pos.add(diff));
 			}
 		}
 	}

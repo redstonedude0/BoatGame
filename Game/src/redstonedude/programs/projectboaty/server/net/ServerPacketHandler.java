@@ -169,9 +169,9 @@ public class ServerPacketHandler {
 			for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
 				Entity e = we.entity;
 				if (e.uuid.equals(prmc.uuid)) {
-					e.setPos(prmc.pos);
-					e.absolutePosition = prmc.absolutePos;
-					e.raftUUID = prmc.raftPosID;
+					e.loc.setPos(prmc.pos);
+					e.loc.isAbsolute = prmc.absolutePos;
+					e.loc.raftUUID = prmc.raftPosID;
 				}
 			}
 			PacketMoveCharacter pmc = new PacketMoveCharacter();

@@ -98,6 +98,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-	(R)	  Make intelligent task selection (take into account distance, swim/walk speeds)
 -D-	(R)	  Intelligent dismounting + pathfinding?
 -D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+		  Overhaul rest of packet and physics system to work with Location better.
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
@@ -120,6 +121,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
+		Investigate Socket write errors on disconnect?
 -D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]

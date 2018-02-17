@@ -103,7 +103,7 @@ public class ServerPhysicsHandler {
 				float shortestSquareDistance = -1;
 				for (ServerUserData sud: ServerPacketHandler.userData) {
 					if (sud.raft != null) {
-						float squareDistance = (float) sud.raft.getPos().subtract(e.getPos()).getSquaredLength();
+						float squareDistance = (float) sud.raft.getPos().subtract(e.loc.getPos()).getSquaredLength();
 						if (squareDistance < shortestSquareDistance || shortestSquareDistance == -1) {
 							shortestSquareDistance = squareDistance;
 						}
@@ -115,7 +115,7 @@ public class ServerPhysicsHandler {
 				} else {
 					//not despawning, do physics
 					EntityBarrel eb = (EntityBarrel) e;
-					VectorDouble pos = eb.getPos();
+					VectorDouble pos = eb.loc.getPos();
 					VectorDouble vel = eb.getVel();
 					TerrainType tt = WorldHandler.getTerrainType(pos.x+0.5, pos.y+0.5);
 					//it will have some intial velocity, apply drag 
@@ -160,7 +160,7 @@ public class ServerPhysicsHandler {
 					
 					//add the velocity to position and send packet
 					eb.setVel(vel);
-					eb.setPos(pos.add(vel));
+					eb.loc.setPos(pos.add(vel));
 					PacketEntityState pes = new PacketEntityState(eb);
 					ServerPacketHandler.broadcastPacket(pes);
 				}
@@ -195,7 +195,7 @@ public class ServerPhysicsHandler {
 			for (WrappedEntity we: getWrappedEntities()) {
 				Entity e = we.entity;
 				if (e instanceof EntityBarrel) {
-					VectorDouble epos = e.getPos();
+					VectorDouble epos = e.loc.getPos();
 					if (epos.x > xFar1 && epos.x < xFar2) {
 						if (epos.y > yFar1 && epos.y < yFar2) {
 							count++;
@@ -223,15 +223,15 @@ public class ServerPhysicsHandler {
 	
 	public static void spawnBarrel(int x, int y) {
 		EntityBarrel eb = new EntityBarrel();
-		eb.setPos(new VectorDouble(x, y));
+		eb.loc.setPos(new VectorDouble(x, y));
 		eb.uuid = UUID.randomUUID().toString();
-		eb.absolutePosition = true;
+		eb.loc.isAbsolute = true;
 		for (WrappedEntity we: ServerPhysicsHandler.getWrappedEntities()) {
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
-				if (ent.absolutePosition) {
-					VectorDouble entPos = ent.getPos();
-					VectorDouble ebPos = eb.getPos();
+				if (ent.loc.isAbsolute) {
+					VectorDouble entPos = ent.loc.getPos();
+					VectorDouble ebPos = eb.loc.getPos();
 					if (ebPos.x > entPos.x && ebPos.x < entPos.x+1) {
 						if (ebPos.y > entPos.y && ebPos.y < entPos.y+1) {
 							return;//already a barrel here
@@ -248,11 +248,11 @@ public class ServerPhysicsHandler {
 		ServerUserData sud = ServerPacketHandler.getUserData(clientuuid);
 		if (sud != null && sud.raft != null) {
 			EntityCharacter ec = new EntityCharacter();
-			ec.setPos(new VectorDouble(0,0));
+			ec.loc.setPos(new VectorDouble(0,0));
 			ec.uuid = UUID.randomUUID().toString();
 			ec.ownerUUID = clientuuid;
-			ec.raftUUID = clientuuid;
-			ec.absolutePosition = false;
+			ec.loc.raftUUID = clientuuid;
+			ec.loc.isAbsolute = false;
 			addEntity(ec);
 			ServerPacketHandler.broadcastPacket(new PacketNewEntity(ec));
 		}

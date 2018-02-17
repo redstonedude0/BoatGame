@@ -133,9 +133,9 @@ public class ClientPacketHandler {
 		case "PacketMoveCharacter":
 			PacketMoveCharacter pmc = (PacketMoveCharacter) packet;
 			Entity e = ClientPhysicsHandler.getEntity(pmc.uuid);
-			e.absolutePosition = pmc.absolutePos;
-			e.setPos(pmc.pos);
-			e.raftUUID = pmc.raftPosID;
+			e.loc.isAbsolute = pmc.absolutePos;
+			e.loc.setPos(pmc.pos);
+			e.loc.raftUUID = pmc.raftPosID;
 			break;
 		case "PacketRaftTiles":
 			PacketRaftTiles prt = (PacketRaftTiles) packet;

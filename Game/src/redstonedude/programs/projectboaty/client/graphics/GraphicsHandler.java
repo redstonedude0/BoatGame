@@ -290,11 +290,11 @@ public class GraphicsHandler {
 
 		for (Entity e : ClientPhysicsHandler.getEntities()) {
 			// System.out.println("entity");
-			VectorDouble pos = e.getPos();
-			if (e.absolutePosition) {
+			VectorDouble pos = e.loc.getPos();
+			if (e.loc.isAbsolute) {
 				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID, e)), (int) (pos.x * 100), (int) (pos.y * 100), (int) (pos.x * 100 + 100), (int) (pos.y * 100 + 100), 0, 0, 32, 32, frame);
 			} else {
-				UserData ud = ClientPacketHandler.getUserData(e.raftUUID);
+				UserData ud = ClientPacketHandler.getUserData(e.loc.raftUUID);
 				if (ud != null && ud.raft != null) {
 					pos = pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY());
 					pos = pos.add(ud.raft.getPos());
@@ -627,11 +627,11 @@ public class GraphicsHandler {
 									} else {
 										ecstring += "Busy-";
 									}
-									if (ec.absolutePosition) {
-										int distance = (int) Math.sqrt(ec.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+									if (ec.loc.isAbsolute) {
+										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos()).getSquaredLength());
 										ecstring += distance + "m from raft";
 									} else {
-										VectorDouble pos = ec.getPos();
+										VectorDouble pos = ec.loc.getPos();
 										ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 									}
 									if (index - 1 <= maxComponentIndex) {
@@ -681,11 +681,11 @@ public class GraphicsHandler {
 										} else {
 											ecstring += "Busy-";
 										}
-										if (ec.absolutePosition) {
-											int distance = (int) Math.sqrt(ec.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+										if (ec.loc.isAbsolute) {
+											int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos()).getSquaredLength());
 											ecstring += distance + "m from raft";
 										} else {
-											VectorDouble pos = ec.getPos();
+											VectorDouble pos = ec.loc.getPos();
 											ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 										}
 										JLabel lab = new JLabel("Character " + index + ": " + ecstring);

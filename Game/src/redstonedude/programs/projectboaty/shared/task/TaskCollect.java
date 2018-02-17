@@ -60,7 +60,7 @@ public class TaskCollect extends TaskLocationMovingTarget implements Serializabl
 	public void updateLocation() {
 		Entity target = ClientPhysicsHandler.getEntity(collectionUUID);
 		if (target != null) {
-			targetLoc = target.getPos();
+			targetLoc = target.loc.getPos();
 		}
 	}
 

@@ -6,7 +6,22 @@ public class Location implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	VectorDouble pos;
-	boolean isAbsolute;
-	String raft_uuid; // if not absolute
+	private VectorDouble pos = new VectorDouble();
+	public boolean isAbsolute = true;
+	public String raftUUID = ""; // if not absolute
+	
+	public Location() {
+	}
+	
+	public Location(Location l) {
+		pos = new VectorDouble(l.pos);
+	}
+	
+	public VectorDouble getPos() {
+		return new VectorDouble(pos);
+	}
+	
+	public void setPos(VectorDouble v) {
+		pos = v;
+	}
 }

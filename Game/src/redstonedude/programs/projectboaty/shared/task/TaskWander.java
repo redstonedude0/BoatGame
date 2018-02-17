@@ -27,14 +27,14 @@ public class TaskWander extends TaskLocationTarget implements Serializable {
 	@Override
 	public void init() {
 		// select new random tile to wander to
-		if (assignedEntity.absolutePosition) {
+		if (assignedEntity.loc.isAbsolute) {
 			// currently off boat
 			targetLoc = new VectorDouble(0, 0);// walk to unit square
 		} else {
 			// wander
 			// targetLoc = new VectorDouble(1, 1);
 			// get its square
-			VectorDouble ePos = assignedEntity.getPos();
+			VectorDouble ePos = assignedEntity.loc.getPos();
 			int ex = (int) ePos.x;
 			int ey = (int) ePos.y;
 			ArrayList<VectorDouble> validSquares = new ArrayList<VectorDouble>();

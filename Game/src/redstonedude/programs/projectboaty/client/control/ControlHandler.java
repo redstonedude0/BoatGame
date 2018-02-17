@@ -15,6 +15,7 @@ import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestNewCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaft;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetControl;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
@@ -264,8 +265,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static void doBarrelPress(VectorDouble clicked) {
 		entityLoop: for (Entity ent: ClientPhysicsHandler.getEntities()) {
 			if (ent.entityTypeID.equals("EntityBarrel")) {
-				if (ent.absolutePosition) {
-					VectorDouble vd = ent.getPos();
+				if (ent.loc.isAbsolute) {
+					VectorDouble vd = ent.loc.getPos();
 					VectorDouble diff = clicked.subtract(vd);
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
@@ -274,7 +275,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 							if (ud != null && ud.raft != null) {
 								TaskCollect t = new TaskCollect();
 								t.collectionUUID = ent.uuid;
-								t.targetLoc = ent.getPos();
+								t.targetLoc = ent.loc.getPos();
 								t.targetLoc_absolute = true;
 								t.targetLoc_raftuuid = "";
 								for (Task t2: ud.raft.getAllTasks()) {

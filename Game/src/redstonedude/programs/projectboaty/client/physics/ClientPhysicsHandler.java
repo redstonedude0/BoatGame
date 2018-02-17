@@ -137,9 +137,9 @@ public class ClientPhysicsHandler {
 				}
 				PacketRequestMoveCharacter prmc = new PacketRequestMoveCharacter();
 				prmc.uuid = ec.uuid;
-				prmc.pos = ec.getPos();
-				prmc.absolutePos = ec.absolutePosition;
-				prmc.raftPosID = ec.raftUUID;
+				prmc.pos = ec.loc.getPos();
+				prmc.absolutePos = ec.loc.isAbsolute;
+				prmc.raftPosID = ec.loc.raftUUID;
 				ClientPacketHandler.sendPacket(prmc);
 			} else {
 				//System.out.println("other player");
