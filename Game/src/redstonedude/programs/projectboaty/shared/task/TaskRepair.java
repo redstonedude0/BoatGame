@@ -5,10 +5,7 @@ import java.io.Serializable;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
-import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
-import redstonedude.programs.projectboaty.shared.physics.Location;
-import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
 public class TaskRepair extends TaskReachLocationAndWork implements Serializable {

@@ -24,6 +24,7 @@ public class ClientPhysicsHandler {
 	// consider making this do all the physics for local boats perhaps?
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
+	public static float cameraTheta = 0;
 	public static int tickCount = 0;
 	private static ArrayList<WrappedEntity> entities = new ArrayList<WrappedEntity>();
 
@@ -144,7 +145,10 @@ public class ClientPhysicsHandler {
 			if (currentUser != null && currentUser.raft != null) {
 				VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
 				posDiff = posDiff.divide(10);// do it slower
-				ClientPhysicsHandler.cameraPosition = ClientPhysicsHandler.cameraPosition.add(posDiff);
+				cameraPosition = cameraPosition.add(posDiff);
+				double thetaDiff = currentUser.raft.theta-cameraTheta;
+				thetaDiff /= 10;
+				cameraTheta += thetaDiff;
 			}
 		}
 	}

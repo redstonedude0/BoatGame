@@ -55,8 +55,7 @@ public class GraphicsHandler {
 
 	public static void graphicsUpdate() {
 		/*
-		 * drawing occurs in a 1920*1080 virtual screen, now it needs to be scaled to
-		 * the actual screen
+		 * drawing occurs in a 1920*1080 virtual screen, now it needs to be scaled to the actual screen
 		 */
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, 1920, 1080);
@@ -90,21 +89,29 @@ public class GraphicsHandler {
 			float midY = screenHeight / 2;
 			midX /= scale;
 			midY /= scale;
-			VectorDouble offset = new VectorDouble(midX, midY).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 			AffineTransform translate = new AffineTransform();
 			// need to scale here to overcome the stretching effects of the window
-			// translate.scale(scaleForHeight/scale, scaleForWidth/scale);
 			translate.scale(scale / scaleForWidth, scale / scaleForHeight);
-			// translate.scale(1/scale, 1/scale);
-			//translate.scale(0.5, 0.5);
-			translate.translate(offset.x, offset.y);
-			//UserData ud = ClientPacketHandler.getCurrentUserData();
-			//if (ud != null && ud.raft != null) {
-			//  VectorDouble vd = new VectorDouble(midX, midY);
-			//  translate.translate(-vd.x,-vd.y);
-			//  translate.rotate(-ud.raft.theta);
-			//  translate.translate(vd.x,vd.y);
-			//}
+			// check for nulls
+			UserData ud = ClientPacketHandler.getCurrentUserData();
+			if (ud != null && ud.raft != null) {
+				// Get the vector to get to the middle of the screen (Y is negative because the rafts reference frame has negative Y in relation to screen)
+				VectorDouble vd = new VectorDouble(midX, -midY);
+				// Get camera position, invert as you need to slide g2d in opposite direction
+				VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+				// rotate the canvas (rotation is always about original origin anyway?)
+				translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
+				//translate so CAM is in the middle (uses standard reference frame even though rotated? :/
+				translate.translate(cam.x, cam.y);
+				// get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
+				double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
+				double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
+				VectorDouble unitX = new VectorDouble(cos, sin);
+				VectorDouble unitY = new VectorDouble(sin, -cos);
+				//Get the relative position of the middle of the screen, and translate to it
+				vd = vd.getRelative(unitX, unitY);
+				translate.translate(vd.x, vd.y);
+			}
 			g2d.transform(translate);
 			graphicsUpdatePlaying();
 			try {
@@ -117,24 +124,24 @@ public class GraphicsHandler {
 			// the g2d first to compensate.
 			// this is not the true unscale account for cropping, it is the raw scale to
 			// make text the same size
-			AffineTransform trans = new AffineTransform();
-			trans.scale(1 / scaleForWidth, 1 / scaleForHeight);
-			g2d.transform(trans);
-			// doing GUI in bottom left, so translate as well
-			float transX = 0;
-			float transY = screenHeight - gHeight;
-			g2d.translate(transX, transY);
-			g2d.setColor(new Color(0, 0, 0, 127));
-			g2d.fillRect(0, 1060, 100, 20);
-			g2d.setColor(Color.WHITE);
-			g2d.drawString("[B]uild/Assign", 10, 1070);
-			// now undo the menu transform so it can be drawn normally again
-			g2d.translate(-transX, -transY);
-			try {
-				g2d.transform(trans.createInverse());
-			} catch (NoninvertibleTransformException e) {
-				e.printStackTrace();
-			}
+			// AffineTransform trans = new AffineTransform();
+			// trans.scale(1 / scaleForWidth, 1 / scaleForHeight);
+			// g2d.transform(trans);
+			// // doing GUI in bottom left, so translate as well
+			// float transX = 0;
+			// float transY = screenHeight - gHeight;
+			// g2d.translate(transX, transY);
+			// g2d.setColor(new Color(0, 0, 0, 127));
+			// g2d.fillRect(0, 1060, 100, 20);
+			// g2d.setColor(Color.WHITE);
+			// g2d.drawString("[B]uild/Assign", 10, 1070);
+			// // now undo the menu transform so it can be drawn normally again
+			// g2d.translate(-transX, -transY);
+			// try {
+			// g2d.transform(trans.createInverse());
+			// } catch (NoninvertibleTransformException e) {
+			// e.printStackTrace();
+			// }
 			break;
 		case Connecting:
 			graphicsUpdateConnecting();
@@ -165,8 +172,9 @@ public class GraphicsHandler {
 		int index = ClientPhysicsHandler.tickCount % 8;
 		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
 		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
-		for (int i = approxX - 11; i < approxX + 11; i++) {
-			for (int j = approxY - 7; j < approxY + 7; j++) {
+		//used to be 11 horizontal and 7 vertical. Do 12 in each direction incase orientation is at 90, or a diagonal (hence +1)
+		for (int i = approxX - 12; i < approxX + 12; i++) {
+			for (int j = approxY - 12; j < approxY + 12; j++) {
 				int x = 100 * i;
 				int y = 100 * j;
 				TerrainType tt = WorldHandler.getTerrainType(i, j);
@@ -273,9 +281,9 @@ public class GraphicsHandler {
 					TaskConstruct tc = (TaskConstruct) t;
 					double x = tc.resultantTile.getAbsoluteX(cud.raft);
 					double y = tc.resultantTile.getAbsoluteY(cud.raft);
-					double workDone = (tc.maximumWork-tc.workRemaining);
-					double proportionDone = workDone/((double) tc.maximumWork);
-					double angleDone = proportionDone*360;
+					double workDone = (tc.maximumWork - tc.workRemaining);
+					double proportionDone = workDone / ((double) tc.maximumWork);
+					double angleDone = proportionDone * 360;
 					// using graphics instead of colors
 					AffineTransform rotator = new AffineTransform();
 					rotator.translate(100 * x, 100 * y);
@@ -291,12 +299,12 @@ public class GraphicsHandler {
 					}
 				} else if (t instanceof TaskRepair) {
 					TaskRepair tc = (TaskRepair) t;
-					VectorDouble pos =  tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos());
+					VectorDouble pos = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos());
 					double x = pos.x;
 					double y = pos.y;
-					double workDone = (tc.maximumWork-tc.workRemaining);
-					double proportionDone = workDone/((double) tc.maximumWork);
-					double angleDone = proportionDone*360;
+					double workDone = (tc.maximumWork - tc.workRemaining);
+					double proportionDone = workDone / ((double) tc.maximumWork);
+					double angleDone = proportionDone * 360;
 					// using graphics instead of colors
 					AffineTransform rotator = new AffineTransform();
 					rotator.translate(100 * x, 100 * y);
@@ -418,10 +426,7 @@ public class GraphicsHandler {
 		frame = new JFrame("Raft Game");
 
 		/**
-		 * GUI Building notes: Note: Alot of sizes dynamically set when JFrame resizes
-		 * use .setLayout(new LayoutManagerStrictSizes()); to keep things in place and
-		 * the right size buttons need .setFocusable(false); otherwise they interfere
-		 * with KeyListener
+		 * GUI Building notes: Note: Alot of sizes dynamically set when JFrame resizes use .setLayout(new LayoutManagerStrictSizes()); to keep things in place and the right size buttons need .setFocusable(false); otherwise they interfere with KeyListener
 		 * 
 		 * 
 		 */
@@ -851,30 +856,14 @@ public class GraphicsHandler {
 			});
 		}
 
-		//JPanel chatContainer = new JPanel();
-		/*doChat: {
-			// entire chat container (typing+fields)
-			chatContainer.setPreferredSize(new Dimension(400, 500));
-			chatContainer.setBackground(new Color(0, 0, 0, 0));
-			chatContainer.setLayout(new LayoutManagerStrictSizes());
-			
-			JPanel chatMessagesContainer = new JPanel();
-			chatMessagesContainer.setPreferredSize(new Dimension(380, 450));
-			chatMessagesContainer.setLocation(10, 10);
-			chatMessagesContainer.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127));
-			chatMessagesContainer.setLayout(new LayoutManagerStrictSizes());
-			chatContainer.add(chatMessagesContainer);
-			chatContainer.setVisible(false); // hidden by default
-			menuPanel.add(chatContainer);
-			
-			JTextField chatLine = new JTextField();
-			chatLine.setPreferredSize(new Dimension(380, 20));
-			chatLine.setLocation(10, 470);
-			chatLine.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127));
-			chatLine.setLayout(new LayoutManagerStrictSizes());
-			chatLine.setFocusable(false);
-			chatContainer.add(chatLine);
-		}*/
+		// JPanel chatContainer = new JPanel();
+		/*
+		 * doChat: { // entire chat container (typing+fields) chatContainer.setPreferredSize(new Dimension(400, 500)); chatContainer.setBackground(new Color(0, 0, 0, 0)); chatContainer.setLayout(new LayoutManagerStrictSizes());
+		 * 
+		 * JPanel chatMessagesContainer = new JPanel(); chatMessagesContainer.setPreferredSize(new Dimension(380, 450)); chatMessagesContainer.setLocation(10, 10); chatMessagesContainer.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127)); chatMessagesContainer.setLayout(new LayoutManagerStrictSizes()); chatContainer.add(chatMessagesContainer); chatContainer.setVisible(false); // hidden by default menuPanel.add(chatContainer);
+		 * 
+		 * JTextField chatLine = new JTextField(); chatLine.setPreferredSize(new Dimension(380, 20)); chatLine.setLocation(10, 470); chatLine.setBackground(new Color(menuGray.getRed(),menuGray.getGreen(),menuGray.getBlue(),127)); chatLine.setLayout(new LayoutManagerStrictSizes()); chatLine.setFocusable(false); chatContainer.add(chatLine); }
+		 */
 
 		// MainMenu
 		JPanel mainMenuContainer = new JPanel();
@@ -902,7 +891,7 @@ public class GraphicsHandler {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bottomBarContainer.setVisible(true);
-				//chatContainer.setVisible(true);
+				// chatContainer.setVisible(true);
 				mainMenuContainer.setVisible(false);
 				ControlHandler.startPlaying();
 			}
@@ -933,7 +922,7 @@ public class GraphicsHandler {
 				menuPanel.setSize(size);
 				// set the location for components that hug the sides
 				bottomBarContainer.setLocation(0, size.height - bottomBarContainer.getHeight());
-				//chatContainer.setLocation(size.width-chatContainer.getWidth(), size.height - chatContainer.getHeight());
+				// chatContainer.setLocation(size.width-chatContainer.getWidth(), size.height - chatContainer.getHeight());
 				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
 				mapGUIPopin.setLocation((size.width - mapGUIPopin.getWidth()) / 2, (size.height - mapGUIPopin.getHeight()) / 2);
 			}

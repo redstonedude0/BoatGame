@@ -230,6 +230,23 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	}
 
 	public static VectorDouble getAbsoluteVectorFromScreenCoordinates(int screenx, int screeny) {
+//		VectorDouble vd = new VectorDouble(midX, -midY);
+//		// Get camera position, invert as you need to slide g2d in opposite direction
+//		VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+//		// rotate the canvas (rotation is always about original origin anyway?)
+//		translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
+//		//translate so CAM is in the middle (uses standard reference frame even though rotated? :/
+//		cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+//		translate.translate(cam.x, cam.y);
+//		// get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
+//		double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
+//		double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
+//		VectorDouble unitX = new VectorDouble(cos, sin);
+//		VectorDouble unitY = new VectorDouble(sin, -cos);
+//		//Get the relative position of the middle of the screen, and translate to it
+//		vd = vd.getRelative(unitX, unitY);
+//		translate.translate(vd.x, vd.y);
+		
 		float screenHeight = GraphicsHandler.frame.getHeight();
 		float screenWidth = GraphicsHandler.frame.getWidth();
 		float gHeight = 1080;
@@ -242,7 +259,6 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		float midY = screenHeight / 2;
 		midX /= scale;
 		midY /= scale;
-		VectorDouble offset = new VectorDouble(midX, midY).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 		VectorDouble clicked = new VectorDouble(screenx, screeny);
 		clicked.x = clicked.x * 1920 / screenWidth; // undo stretching
 		clicked.y = clicked.y * 1080 / screenHeight;
@@ -251,8 +267,23 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		clicked.x = (clicked.x * scaleForWidth) / scale;
 		clicked.y = (clicked.y * scaleForHeight) / scale;
 
-		clicked = clicked.subtract(offset);// .divide(100);
-		clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
+		//finally undo location, do opposite of what was done, in reverse
+		VectorDouble vd = new VectorDouble(midX, -midY);
+		double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
+		double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
+		VectorDouble unitX = new VectorDouble(cos, sin);
+		VectorDouble unitY = new VectorDouble(sin, -cos);
+		vd = vd.getRelative(unitX, unitY);
+		
+		VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+		
+		//translate.rotate(-ClientPhysicsHandler.cameraTheta);
+		clicked = clicked.rotate(ClientPhysicsHandler.cameraTheta);
+		clicked = clicked.subtract(cam);
+		clicked = clicked.subtract(vd);
+		clicked = clicked.divide(100);
+//		clicked = clicked.subtract(offset);// .divide(100);
+//		clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
 		return clicked;
 	}
 
