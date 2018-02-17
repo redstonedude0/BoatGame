@@ -17,7 +17,7 @@ public abstract class Task implements Serializable {
 	
 	public abstract void init();
 	
-	public abstract boolean isEligible(Entity e);
+	public abstract boolean isEligible(EntityCharacter e);
 	
 	public void passiveUpdate() {
 		//do nothing passively

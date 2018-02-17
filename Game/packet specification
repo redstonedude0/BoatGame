@@ -27,6 +27,8 @@ REQUESTTILESTATE	uuid, Tile
 	Request to update the state on a single tile, used to update HP
 REQUESTENTITYSTATE	Entity
 	Request to update state on an entity
+REQUESTDELENTITY	uuid
+	Request to delete an entity
 
 Client bound packets:
 

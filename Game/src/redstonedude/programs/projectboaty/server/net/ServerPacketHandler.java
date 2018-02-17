@@ -15,6 +15,7 @@ import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.Packet;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketCharacterState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketConnect;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelUser;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketMoveCharacter;
@@ -26,6 +27,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketRaftTiles
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketSetControl;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestCharacterState;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestDelEntity;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
@@ -242,6 +244,14 @@ public class ServerPacketHandler {
 			ServerPhysicsHandler.setEntity(pres.entity);
 			PacketEntityState pes = new PacketEntityState(pres.entity);
 			broadcastPacketExcept(connection, pes);
+			break;
+		case "PacketRequestDelEntity":
+			PacketRequestDelEntity prde = (PacketRequestDelEntity) packet;
+			ServerPhysicsHandler.removeEntity(prde.uuid);
+			PacketDelEntity pde = new PacketDelEntity();
+			pde.uuid = prde.uuid;
+			broadcastPacketExcept(connection, pde);
+			break;
 		default:
 			Logger.log("Invalid packet received: " + packet.packetID);
 

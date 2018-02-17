@@ -58,7 +58,13 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 			for (VectorDouble vd : invalidSquares) {
 				validSquares.remove(vd);
 			}
-			validSquares.add(new VectorDouble(ex, ey));// stay here
+			if (validSquares.isEmpty()) {
+				target = new Location();
+				target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
+				target.isAbsolute = false;
+				target.raftUUID = assignedEntity.ownerUUID;
+				return;
+			}
 			int size = validSquares.size();
 			int index = TaskHandler.rand.nextInt(size);
 			target = new Location();
@@ -69,11 +75,8 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 	}
 
 	@Override
-	public boolean isEligible(Entity e) {
-		if (e instanceof EntityCharacter) {
-			return true; // anyone can wander
-		}
-		return false;// barrels cant wander
+	public boolean isEligible(EntityCharacter e) {
+		return true; // anyone can wander
 	}
 
 }

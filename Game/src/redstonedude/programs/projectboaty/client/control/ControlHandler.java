@@ -39,8 +39,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static enum Mode {
 		MainMenu, Playing, Connecting
 	}
+
 	public static boolean escape_menu = false;
-	
+
 	public static boolean clickmode_collection = true;
 	public static boolean clickmode_building_wood = false;
 
@@ -49,13 +50,13 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public void keyPressed(KeyEvent e) {
 		switch (mode) {
 		case MainMenu:
-			//do nothing for now
+			// do nothing for now
 			break;
 		case Playing:
 			doPlayingKeyPressed(e);
 			break;
 		case Connecting:
-			//do nothing for now
+			// do nothing for now
 			break;
 		}
 	}
@@ -63,26 +64,26 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public void keyReleased(KeyEvent e) {
 		switch (mode) {
 		case MainMenu:
-			//do nothing for now
+			// do nothing for now
 			break;
 		case Playing:
 			doPlayingKeyReleased(e);
 			break;
 		case Connecting:
-			//do nothing for now
+			// do nothing for now
 			break;
 		}
 	}
 
 	public void keyTyped(KeyEvent e) {
 	}
-	
+
 	public static void doDebugButton(int i) {
 		switch (i) {
-		case 1://warp lock
+		case 1:// warp lock
 			debug_lockpos = !debug_lockpos;
 			break;
-		case 2://summon character
+		case 2:// summon character
 			ClientPacketHandler.sendPacket(new PacketRequestNewCharacter());
 			break;
 		}
@@ -154,14 +155,14 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			break;
 		}
 	}
-	
+
 	public static void startPlaying() {
-		//PhysicsHandler.reset();
-		//reset();
-		//mode = Mode.Playing;
+		// PhysicsHandler.reset();
+		// reset();
+		// mode = Mode.Playing;
 		ClientPacketHandler.startListener();
 	}
-	
+
 	public static void reset() {
 		control_left_rotate = false;
 		control_right_rotate = false;
@@ -172,20 +173,20 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		debug_menu = false;
 		escape_menu = false;
 	}
-	
+
 	public static double requiredForwardTranslation = 0;
 	public static double requiredClockwiseRotation = 0;
 	public static double requiredRightwardTranslation = 0;
-	
+
 	public static void setControlDoubles() {
-		//w alone will set up thrusts to thrust forward
-		//d alone will set up thrusts to clockwise rotation
-		//w and d will set up thrusts to forward and clockwise
-		//e alone will set up thrusts for rightward translation
-		requiredForwardTranslation = 0;//0 unrequired, 1 forward, -1 backward
+		// w alone will set up thrusts to thrust forward
+		// d alone will set up thrusts to clockwise rotation
+		// w and d will set up thrusts to forward and clockwise
+		// e alone will set up thrusts for rightward translation
+		requiredForwardTranslation = 0;// 0 unrequired, 1 forward, -1 backward
 		requiredClockwiseRotation = 0;
 		requiredRightwardTranslation = 0;
-		
+
 		if (control_forward) {
 			requiredForwardTranslation++;
 		}
@@ -216,45 +217,45 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		prsc.requiredRightwardTranslation = requiredRightwardTranslation;
 		ClientPacketHandler.sendPacket(prsc);
 	}
-	
+
 	public static void doMenuPress(MouseEvent e) {
-		//do nothing for now
+		// do nothing for now
 	}
-	
+
 	public static void doPlayingPress(MouseEvent e) {
 		int screenx = e.getX();
 		int screeny = e.getY();
-		//see if any barrels were clicked on
+		// see if any barrels were clicked on
 		doPlayingPress(getAbsoluteVectorFromScreenCoordinates(screenx, screeny));
 	}
-	
+
 	public static VectorDouble getAbsoluteVectorFromScreenCoordinates(int screenx, int screeny) {
 		float screenHeight = GraphicsHandler.frame.getHeight();
 		float screenWidth = GraphicsHandler.frame.getWidth();
 		float gHeight = 1080;
 		float gWidth = 1920;
-		//Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction 
-		float scaleForWidth = screenWidth/gWidth;
-		float scaleForHeight = screenHeight/gHeight;
+		// Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction
+		float scaleForWidth = screenWidth / gWidth;
+		float scaleForHeight = screenHeight / gHeight;
 		float scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
-		float midX = screenWidth/2;
-		float midY = screenHeight/2;
+		float midX = screenWidth / 2;
+		float midY = screenHeight / 2;
 		midX /= scale;
 		midY /= scale;
 		VectorDouble offset = new VectorDouble(midX, midY).subtract(ClientPhysicsHandler.cameraPosition.multiply(100));
 		VectorDouble clicked = new VectorDouble(screenx, screeny);
-		clicked.x = clicked.x*1920/screenWidth; //undo stretching
-		clicked.y = clicked.y*1080/screenHeight;
-		//now undo scaling
-		//translate.scale(scale/scaleForWidth,scale/scaleForHeight);
-		clicked.x = (clicked.x*scaleForWidth)/scale;
-		clicked.y = (clicked.y*scaleForHeight)/scale;
+		clicked.x = clicked.x * 1920 / screenWidth; // undo stretching
+		clicked.y = clicked.y * 1080 / screenHeight;
+		// now undo scaling
+		// translate.scale(scale/scaleForWidth,scale/scaleForHeight);
+		clicked.x = (clicked.x * scaleForWidth) / scale;
+		clicked.y = (clicked.y * scaleForHeight) / scale;
 
-		clicked = clicked.subtract(offset);//.divide(100);
-		clicked = clicked.divide(100);//convert from screen cords to absolute coordinates
+		clicked = clicked.subtract(offset);// .divide(100);
+		clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
 		return clicked;
 	}
-	
+
 	public static void doPlayingPress(VectorDouble clicked) {
 		if (clickmode_collection) {
 			doBarrelPress(clicked);
@@ -262,9 +263,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			doBuildingPress(clicked);
 		}
 	}
-	
-	public static void doBarrelPress(VectorDouble clicked) {
-		entityLoop: for (WrappedEntity we: ClientPhysicsHandler.getWrappedEntities()) {
+
+	public static synchronized void doBarrelPress(VectorDouble clicked) {
+		entityLoop: for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
 				if (ent.loc.isAbsolute) {
@@ -272,17 +273,19 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 					VectorDouble diff = clicked.subtract(vd);
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
-							//ent.setPos(new VectorDouble(0,0));
+							// ent.setPos(new VectorDouble(0,0));
 							UserData ud = ClientPacketHandler.getCurrentUserData();
 							if (ud != null && ud.raft != null) {
 								TaskCollect t = new TaskCollect();
 								t.targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
-								for (Task t2: ud.raft.getAllTasks()) {
+								for (Task t2 : ud.raft.getAllTasks()) {
 									if (t2 instanceof TaskCollect) {
 										TaskCollect tc = (TaskCollect) t2;
-										if (tc.targetEntity.entity.uuid.equals(t.targetEntity.entity.uuid)) {
-											continue entityLoop; //this barrel is already being collected,
-											//try the next entity however
+										if (tc.targetEntity != null && tc.targetEntity.entity != null) {
+											if (tc.targetEntity.entity.uuid.equals(t.targetEntity.entity.uuid)) {
+												continue entityLoop; // this barrel is already being collected,
+												// try the next entity however
+											}
 										}
 									}
 								}
@@ -294,11 +297,11 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		}
 	}
-	
+
 	public static void doBuildingPress(VectorDouble clicked) {
-		//convert to relative coordinates
+		// convert to relative coordinates
 		UserData ud = ClientPacketHandler.getCurrentUserData();
-		VectorDouble blockPos = getBlockPosFromScreenCoordinates(mouseX, mouseY,ud);
+		VectorDouble blockPos = getBlockPosFromScreenCoordinates(mouseX, mouseY, ud);
 		Tile tile;
 		if (clickmode_building_wood) {
 			tile = new Tile();
@@ -312,7 +315,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		t.target.setPos(blockPos);
 		t.target.isAbsolute = false;
 		t.target.raftUUID = ud.uuid;
-		for (Task t2: ud.raft.getAllTasks()) {
+		for (Task t2 : ud.raft.getAllTasks()) {
 			if (t2 instanceof TaskConstruct) {
 				TaskConstruct tc = (TaskConstruct) t2;
 				if (tc.resultantTile.getPos().equals(t.resultantTile.getPos())) {
@@ -320,37 +323,36 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				}
 			}
 		}
-		for (Tile til: ud.raft.getTiles()) {
+		for (Tile til : ud.raft.getTiles()) {
 			if (t.resultantTile.getPos().equals(til.getPos())) {
 				return;
 			}
 		}
 		ud.raft.addTask(t);
-		
+
 	}
-	
+
 	public static VectorDouble getBlockPosFromScreenCoordinates(int screenx, int screeeny, UserData currentUserData) {
 		VectorDouble absolute = getAbsoluteVectorFromScreenCoordinates(mouseX, mouseY);
 		VectorDouble relative = absolute.subtract(currentUserData.raft.getPos()).getRelative(currentUserData.raft.getUnitX(), currentUserData.raft.getUnitY());
 		VectorDouble blockPos = new VectorDouble(Math.floor(relative.x), Math.floor(relative.y));
 		return blockPos;
 	}
-	
+
 	public static void updateConstructionTile() {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
 		if (!clickmode_collection) {
 			Tile t = new Tile();
-			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY,ud));
+			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY, ud));
 			ud.raft.setConstructionTile(t);
 		} else {
 			ud.raft.setConstructionTile(null);
 		}
 	}
-	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
@@ -371,7 +373,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			doPlayingPress(e);
 			break;
 		case Connecting:
-			//do nothing for now
+			// do nothing for now
 			break;
 		}
 	}
@@ -386,7 +388,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static int mouseX = 0;
 	public static int mouseY = 0;
-	
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();

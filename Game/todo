@@ -87,7 +87,8 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	(R)	  Add construction time (make construction a lasting task)
 	(R)	  Make thrusters require 2 wood
 	(R)	  Add repair task? [automatically added? option in GUI?]
-	(R)	  Update Wander task to account for characters being in water.
+	[R]  Update Wander task to account for characters being in water.
+			Allows them to reside on a fake square at 0,0 however.
 	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
 	(R)	  Paddelling task is cancellable, make all other tasks cancellable
 	(R)	  Implement paddelling, take it into account for control and physics calculations.
@@ -116,16 +117,21 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Investigate barrel 'worm' at t=0
 		Investigate black flash when resizing frame
 		Investigate 1 frame flash when clicking GUI buttons
-		Investigate ghost damage from barrels
+	(R)	Investigate ghost damage from barrels
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
 		Investigate Socket write errors on disconnect?
 		Investigate barrel clicking not being 100% accurate on small view
+			possibly due to the null errors that were fixed with null checks and a sync. Probably not.
 		Investigate latency issues. Consider measuring packets, consider writeUnshared testing.
-		Investigate Task delay - takes a second to take up a task?
+			Consider offloading packet transfer to client-side calculations. esp. for AI.
+	(R)	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
+			priority system implementation)
 -D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
+-D-		Consider queueing input controls
+-D-		Consider adding .send() to packets?
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary

@@ -17,7 +17,7 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 
 	public boolean constructed = false;
 	public Tile resultantTile;
-	
+
 	public TaskConstruct() {
 		taskTypeID = "TaskConstruct";
 	}
@@ -30,7 +30,7 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 			ud.raft.addTile(resultantTile);
 			PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
 			prrt.tiles = ud.raft.getTiles();
-			ClientPacketHandler.sendPacket(prrt); //update the server on this
+			ClientPacketHandler.sendPacket(prrt); // update the server on this
 			assignedEntity.carryingBarrel = false;
 			assignedEntity.sendState();
 			target = new Location();
@@ -39,7 +39,7 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 			target.raftUUID = ud.uuid;
 			constructed = true;
 		} else {
-			//reached boat origin
+			// reached boat origin
 			isCompleted = true;
 		}
 	}
@@ -50,12 +50,9 @@ public class TaskConstruct extends TaskReachLocation implements Serializable {
 	}
 
 	@Override
-	public boolean isEligible(Entity e) {
-		if (e instanceof EntityCharacter) {
-			EntityCharacter ec = (EntityCharacter) e;
-			if (ec.carryingBarrel) {
-				return true;
-			}
+	public boolean isEligible(EntityCharacter ec) {
+		if (ec.carryingBarrel) {
+			return true;
 		}
 		return false;
 	}
