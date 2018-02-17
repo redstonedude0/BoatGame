@@ -101,10 +101,10 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Priority for each task from getPriority() method, lowest priority is done first. (must be >=0)
 	[R]	  Intelligent dismounting (pathfinding not currently necessary)
 	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-	(R)	  Overhaul rest of packet and physics system to work with Location better.
 	(R)	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?
 	(R)	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
 			in-depth setting of Priorities (i.e. repairs always come above building, etc)
+		  Overhaul rest of packet and physics system to work with Location better.
 		GUI Updates:
 -P-	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
@@ -140,18 +140,18 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	(RD)Investigate latency issues. Consider measuring packets, consider writeUnshared testing.
 			Consider offloading packet transfer to client-side calculations. esp. for AI.
 			Investigation 1 - Local latency issues fixed with fps rewrite. Need to analyse WAN latency.
-	(R)	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
-			priority system implementation)
-	[R]	Investigate delay in task activation
+	[R]	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
+			priority system implementation). With new system task delay is near 0.
+	[R]	Investigate task speed reduction
 			Improved graphics display method to reliably achieve 40-50fps. Consider seperating graphics and physics into seperate
 			thread or pseudo-seperate threads.
 -D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
--D-		Consider queueing input controls
+-D-	(R)	Consider queueing input controls
 -D-		Consider adding .send() to packets?
 -D	(R)	Consider overhaul of array handling and consider event listeners
--D-		Decide how to implement resource requirement system + other resources, consider TileHandler and enums
--D-		Consider adding drag interface for task assignment
+-D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
+-D-		Consider adding drag interface for multiple task creation/deletion
 Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
