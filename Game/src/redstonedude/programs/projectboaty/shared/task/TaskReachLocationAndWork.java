@@ -6,7 +6,14 @@ public abstract class TaskReachLocationAndWork extends TaskReachLocation impleme
 
 	private static final long serialVersionUID = 1L;
 	
-	public int workRemaining = 10;
+	public int workRemaining = 0;
+	public int maximumWork = 100;
+	
+	public TaskReachLocationAndWork(int work) {
+		super();
+		maximumWork = work;
+		workRemaining = work;
+	}
 	
 	public abstract void workComplete();
 	

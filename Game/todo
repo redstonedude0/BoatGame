@@ -84,7 +84,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D-		  Add character status effects (cold, wet) gained from swimming, lost over time?
 		Task System Updates:
 	[R]	  Overhaul task system
-	(R)	  Add construction time (make construction a lasting task)
+	[R]	  Add construction time (make construction a lasting task)
 	(R)	  Make thrusters require 2 wood
 	(R)	  Add repair task? [automatically added? option in GUI?]
 	[R]  Update Wander task to account for characters being in water.
@@ -129,6 +129,9 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Consider offloading packet transfer to client-side calculations. esp. for AI.
 	(R)	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
 			priority system implementation)
+	[R]	Investigate delay in task activation
+			Improved graphics display method to reliably achieve 40-50fps. Consider seperating graphics and physics into seperate
+			thread or pseudo-seperate threads.
 -D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
 -D-		Consider queueing input controls
