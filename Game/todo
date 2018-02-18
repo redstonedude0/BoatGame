@@ -74,40 +74,40 @@ Alpha 0.9 (The Intelligence Update): [TODO]
     [R]	  Player controlled entities fall in water if they are no longer on a block
 			On the next pathfinding tick they will update their state.
 		Efficiency enhancements:
--P-	[R]	  Change everything to use floats instead of doubles
+	[R]	  Change everything to use floats instead of doubles? NO. Changed everything to use doubles only.
 			Investigate speed and accuracy difference?
 			floats are VERY marginally faster in some circumstances, however at the cost of signifiant accuracy. DO NOT USE FLOAT.
 		Error handling:
 	[R]	  Wrap packet handlers in try catches to prevent thread crashes [disconnect client]
 	[R]	  Move createNewListener server-side to playerJoin to fix comod exceptions
 		PCE Stats sytem:
--D-	( )	  Implement PCE stats system [walk speed, swim speed]?
--D-	( )	  Add character status effects (cold, wet) gained from swimming, lost over time?
+	[R]	  Implement PCE stats system [walk speed, swim speed]? Implemented WS=0.1, SS=0.08 for all characters
 		Task System Updates:
 	[R]	  Overhaul task system
 	[R]	  Add construction time (make construction a lasting task)
--R-	(R)	  Make thrusters require 2 wood
+-R-	( )	  Make thrusters require 2 wood
+			{need resource system to know how to handle multiple-resource tiles}
 	[R]	  Add repair task? [automatically added? option in GUI?]
 			Automatically adds repair task, no option currently. Consider if block doesn't exist, consider removing if block is
 			destroyed. Consider adding better listeners and possibly a wrapper for Tiles
 	[R]  Update Wander task to account for characters being in water.
 			Allows them to reside on a fake square at 0,0 however.
 -R-	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
+			{need task system to be able to dynamically cancel}
 	[R]	  Make tasks cancellable by right-clicking? Note: Repair tasks won't cancel currently due to auto-creation
--D-	(R)	  Paddelling task is cancellable
-	(R)	  Implement paddelling, take it into account for control and physics calculations.
+-DR-( )	  Paddelling task is cancellable
+-R-	( )	  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
 	[R]	  Make intelligent task selection? (take into account distance, swim/walk speeds)
 			Priority for each task from getPriority() method, lowest priority is done first. (must be >=0)
 	[R]	  Intelligent dismounting (pathfinding not currently necessary)
 -D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-			Consider implications of mid-journey speed-ups
+			Consider implications of mid-journey speed-ups. Need to add failure to move into characters moveToward method.
 	[R]	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?. Task will be
 			cancelled upon error.
 	[R]	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
 			in-depth setting of Priorities (i.e. repairs always come above building, etc)
-	( )	  Overhaul rest of packet and physics system to work with Location better.
 	[R]	  Make build tasks rotatable
 		GUI Updates:
 	[R]	  Update GUI to be graphical based on buttons
@@ -123,7 +123,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Camera Updates:
 -D-	( )	  Add scrolling to world scale?
 -R-	( )	  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
-	( )	  Update Camera to be able to track other objects
+	(R)	  Update Camera to be able to track other objects (need objects to track, allow for tracking of entities?)
 	[R]   Rotation soft follow?
 	(R)	Investigate barrel 'worm' at t=0
 		  Investigation so far - it still exists, not sure how to reproduce it though. Possibly always in direction of wind?
@@ -137,7 +137,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
-	( )	Investigate Socket write errors on disconnect?
+	[R]	Investigate Socket write errors on disconnect? Added better handling on disconnect server-side.
 	[R]	Investigate barrel clicking not being 100% accurate on small view
 			possibly due to the null errors that were fixed with null checks and a sync. Probably not.
 			Investigation 1 - not found; possibly fixed
@@ -151,18 +151,24 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	Investigate task speed reduction
 			Improved graphics display method to reliably achieve 40-50fps. Consider seperating graphics and physics into seperate
 			thread or pseudo-seperate threads.
--D-	(R)	Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
-			"socket closed" error on server shutdown
+	[R]	Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
+			"socket closed" error on server shutdown. "socket closed" fixed, making methods synced should be fine. Need to consider
+			full queueing system.
 -D-	(R)	Consider queueing input controls
--D-	( )	Consider adding .send() to packets?
--D	(R)	Consider overhaul of array handling and consider event listeners
+-D	(R)	Consider event listeners
 -D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
 -D-	( )	Consider adding drag interface for multiple task creation/deletion
--D-	(R) Investigate thrust selection system (forward also applies translation)
+	(R)	Investigate mouse being very slightly off with mouse interface
+	[R] Investigate thrust selection system (forward also applies translation). Fixed system by implementing effectiveZero.
 Alpha 0.10 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
 		Add a way to trigger sounds and music on events in the code
+		Data type cleanup:
+-P-	(R)	  Overhaul rest of packet and physics system to work with Location better.
+	(R)	  Add helper methods to Location to calculate distances, get movespeed type, etc
+-P-	(R)	  Consider adding .send() to packets?
+	(R)	  Reorganise packet structure so shared, server, and client, resources are seperate where required.
 Alpha 0.11 (Company Setup): [TODO]
 		Set up the company or whatever we need to do
 			I would like us to have a corporate meme because then we can be like a real company meme
@@ -191,13 +197,13 @@ Alpha 1.0 (Initial Gameplay): [TODO]
 		Begin paperwork for Steam direct steamworks (requires atleast 5 days review, 30 days processing, 2 weeks "coming soon")
 		Test the game works on other platforms (other windows, mac, etc)
 		Consider adding a launcher (detects java version, splashscreen built in, etc)
-Alpha 1.1 (The Floating Update): [TODO]
-		Add buoyancy mechanics, possibly consider how capsizing will work?
 		Boat Destruction Mechanics:
 		  Add mechanics for a player to restart from scratch if needed
--P-(R)	  Boat complete destruction should cause new boat respawn at random location?
+-P- (R)	  Boat complete destruction should cause new boat respawn at random location?
 		    Added after-death cam?. Need to handle respawn.
-		    Death cam causes the clients graphics to freeze, also anyone who views the raft may freeze as well? not certain 
+		    Death cam causes the clients graphics to freeze, also anyone who views the raft may freeze as well? not certain   
+Alpha 1.1 (The Floating Update): [TODO]
+		Add buoyancy mechanics, possibly consider how capsizing will work? 
 		[discuss and implement mechanics for how more PCEs can be obtained?]
 		Implement reefs
 		Add mechanics for flooding and hull leakage, add collisions with islands and reefs
@@ -205,6 +211,8 @@ Alpha 1.2 (The Fleet Update): [TODO]
 		Add mechanics to have multiple ships, and assigning PCEs to different boats?
 		[discuss how boat assignment will work, color coded tasks for different boats?]
 		Add boarding plank to allow PCEs to transfer between rafts
+-PD-( )	Add character status effects (cold, wet) gained from swimming, lost over time?
+		  Postponed as not important and may be better with event system.
 		Add Anchor to keep rafts in place
 		[begin discusson on how different resources will be obtained]
 		[Boat destruction down the middle will need to cause fleeting in future?]
@@ -232,7 +240,7 @@ List of discussion and decision points:
 		[consider change in angular momentum when a block gets destroyed?]
 		[consider adding static friction?]
 		[decide how barrel spawning should work]
-			#Not important - current spawning is fine
+			Not important - current spawning is fine
 		[how to implement disconnection whilst in a server - 'ghost' ship raidable?]
 		[how to implement ship destruction, abandonment, and hacking reporting systems?]
 		[discuss barrel physics, barrel despawning, etc, global currents/winds?]
@@ -286,6 +294,8 @@ DONE	[Consider how to implement thread-safe arrays]
 			Print :	327		326		3664
 			Size  :	5				9
 		[Consider adding Location helper functions to compare locations]
+		[Consider allowing building whilst on land to create defendable bases (Perhaps farmables? Perhaps mines?)]
+		[Consider AI-based rafts (transport rafts in fleeting, offensive rafts that can attack, etc)]
 
 List of in-depth notes for decision points:
 		Pathfinding [+Task overhaul]:

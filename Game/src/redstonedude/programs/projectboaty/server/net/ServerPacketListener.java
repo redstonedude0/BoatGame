@@ -32,12 +32,16 @@ public class ServerPacketListener implements Runnable {
 				ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket((Packet) inputObject, this));
 				// ServerPacketHandler.handlePacket(this, (Packet) inputObject);
 			}
-		} catch (Exception e) {
-			// error occured, disconnect the user
-			if (e.getMessage() == null || (!e.getMessage().equalsIgnoreCase("Connection Reset") && !e.getMessage().equalsIgnoreCase("Socket Closed"))) {
-				e.printStackTrace();
-			}
+		} catch (IOException | ClassNotFoundException e) {
+			// IOException - client closed connected. Disconnet them.
 			Logger.log("Disconnection: " + e.getMessage());
+			ServerPacketHandler.playerDisconnect(this);
+		} catch (Exception e) { //This should never actually occur, since packet handling isn't done in this thread.
+			// actual error occured (Possibly cast error), crash the user
+			e.printStackTrace();
+			if (e.getMessage() != null) {
+				Logger.log("Disconnection: " + e.getMessage());
+			}
 			// disconnect
 			ServerPacketHandler.playerDisconnect(this);
 		}
@@ -56,7 +60,6 @@ public class ServerPacketListener implements Runnable {
 				oos.reset();
 			} catch (IOException e) {
 				if (ServerPacketHandler.listeners.contains(this)) {//if not disconnected
-					e.printStackTrace();
 					Logger.log("Disconnection: " + e.getMessage());
 					ServerPacketHandler.playerDisconnect(this);
 					// ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now

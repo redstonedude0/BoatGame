@@ -26,7 +26,10 @@ public class ClientPacketListener implements Runnable {
 				//ClientPacketHandler.handlePacket(this, (Packet) inputObject);
 				ClientPacketHandler.queuedPackets.add((Packet)inputObject);
 			}
-		} catch (Exception e) {
+		} catch (IOException | ClassNotFoundException e) {
+			// IOException - client closed connected. This is expected.
+		} catch (Exception e) { //This should never actually occur, since packet handling isn't done in this thread.
+			// actual error occured (Possibly cast error), display error message
 			e.printStackTrace();
 		}
 	}
