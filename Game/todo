@@ -60,7 +60,6 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Task selection is done randomly
 	[R]	Boats collide with islands, somehow 
 	[R]	Investigate NaN when a line of tiles is detroyed?
-			tile line 80, need to look into setMagnitude(0) as all pt2 tests return NaN
 	[R]	Boats collide with barrels, also somehow, perhaps velocity setting?
 	[R]	Make click system more accurate? Add graphics scaling
 	[R]	PCEs wander around the raft when they have nothing to do
@@ -72,17 +71,17 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Investigate physics between clients being weird
 Alpha 0.9 (The Intelligence Update): [TODO]
 		Minor fixes:
--PR-	  Player controlled entities fall in water if they are no longer on a block
--PD-(R)	  Boat complete destruction should cause new boat respawn at random location?
-		  Added after-death cam?. Need to handle respawn.
+    [R]	  Player controlled entities fall in water if they are no longer on a block
+			On the next pathfinding tick they will update their state.
 		Efficiency enhancements:
--P-		  Change everything to use floats instead of doubles
+-P-	( )	  Change everything to use floats instead of doubles
+			Investigate speed and accuracy difference? [floats are VERY marginally faster in some circumstances]
 		Error handling:
--P-	[R]	  Wrap packet handlers in try catches to prevent thread crashes [disconnect client]
--P-	[R]	  Move createNewListener server-side to playerJoin to fix comod exceptions
+	[R]	  Wrap packet handlers in try catches to prevent thread crashes [disconnect client]
+	[R]	  Move createNewListener server-side to playerJoin to fix comod exceptions
 		PCE Stats sytem:
--D-		  Implement PCE stats system [walk speed, swim speed]?
--D-		  Add character status effects (cold, wet) gained from swimming, lost over time?
+-D-	( )	  Implement PCE stats system [walk speed, swim speed]?
+-D-	( )	  Add character status effects (cold, wet) gained from swimming, lost over time?
 		Task System Updates:
 	[R]	  Overhaul task system
 	[R]	  Add construction time (make construction a lasting task)
@@ -93,8 +92,8 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]  Update Wander task to account for characters being in water.
 			Allows them to reside on a fake square at 0,0 however.
 -R-	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
--D-	(R)	  Paddelling task is cancellable, make all other tasks cancellable
-			How to cancel? Rightclick with any task selected?
+	[R]	  Make tasks cancellable by right-clicking? Note: Repair tasks won't cancel currently due to auto-creation
+-D-	(R)	  Paddelling task is cancellable
 	(R)	  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
@@ -107,59 +106,63 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			cancelled upon error.
 	[R]	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
 			in-depth setting of Priorities (i.e. repairs always come above building, etc)
-		  Overhaul rest of packet and physics system to work with Location better.
+	( )	  Overhaul rest of packet and physics system to work with Location better.
+	[R]	  Make build tasks rotatable
 		GUI Updates:
--P-	[R]	  Update GUI to be graphical based on buttons
+	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
 	[R]	  Add larger worldmap, openable in the GUI.
--D-		  Add GUI scale into a graphics settings page?
+-D-	( )	  Add GUI scale into a graphics settings page?
 	[R]	  Add GUI to show number of characters, their status and world coordinates?, 
 	[R]	  Add GUI to show list of tasks, etc
--D-		  Add debug GUI
--D-		  Implement server-side chat?
+    [R]	  Modified debug GUI so its visible
+    [R]	  Made escape menu a GUI
+-D-	( )	  Implement server-side chat?
 			Need to decide how to handle focus & modification of chatqueue
 		Camera Updates:
--D-		  Add scrolling to world scale?
--R-		  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
-		  Update Camera to be able to track other objects
--P-	[R]   Rotation soft follow?
+-D-	( )	  Add scrolling to world scale?
+-R-	( )	  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+	( )	  Update Camera to be able to track other objects
+	[R]   Rotation soft follow?
 	(R)	Investigate barrel 'worm' at t=0
 		  Investigation so far - it still exists, not sure how to reproduce it though. Possibly always in direction of wind?
 	[R]	Investigate black flash when resizing frame
 		  Investigation 1 - Not found, possibly solved with new fps method
 		  Inv 2 - "". Not found marked as completed.
-	[R[	Investigate 1 frame flash when clicking GUI buttons
+	[R]	Investigate 1 frame flash when clicking GUI buttons
 		  Investigation 1 - Not found, possibly solved with new fps method
 		  Inv 2 - "". Not found marked as completed.
 	[R]	Investigate ghost damage from barrels
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
 			Caused by non-synchronous methods, fixed.
-		Investigate Socket write errors on disconnect?
+	( )	Investigate Socket write errors on disconnect?
 	[R]	Investigate barrel clicking not being 100% accurate on small view
 			possibly due to the null errors that were fixed with null checks and a sync. Probably not.
 			Investigation 1 - not found; possibly fixed
 			Investigation 2 - found, source not identified. Checked code - no reason why it shouldn't work. Possibly sync bug.
 	(RD)Investigate latency issues. Consider measuring packets, consider writeUnshared testing.
 			Consider offloading packet transfer to client-side calculations. esp. for AI.
-			Investigation 1 - Local latency issues fixed with fps rewrite. Need to analyse WAN latency.
+			Investigation 1 - Local latency issues fixed with fps rewrite. Need to analyse WAN latency. (consider UDP packets)
+			Investigation 2 - Upon creating task removal it appears tilestates are sent every tick?
 	[R]	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
 			priority system implementation). With new system task delay is near 0.
 	[R]	Investigate task speed reduction
 			Improved graphics display method to reliably achieve 40-50fps. Consider seperating graphics and physics into seperate
 			thread or pseudo-seperate threads.
--D-		Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
+-D-	(R)	Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown
 -D-	(R)	Consider queueing input controls
--D-		Consider adding .send() to packets?
+-D-	( )	Consider adding .send() to packets?
 -D	(R)	Consider overhaul of array handling and consider event listeners
 -D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
--D-		Consider adding drag interface for multiple task creation/deletion
-Alpha 0.91 (The Sounds Update): [TODO]
+-D-	( )	Consider adding drag interface for multiple task creation/deletion
+-D-	(R) Investigate thrust selection system (forward also applies translation)
+Alpha 0.10 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
 		Add a way to trigger sounds and music on events in the code
-Alpha 0.92 (Company Setup): [TODO]
+Alpha 0.11 (Company Setup): [TODO]
 		Set up the company or whatever we need to do
 			I would like us to have a corporate meme because then we can be like a real company meme
 			Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.
@@ -189,7 +192,11 @@ Alpha 1.0 (Initial Gameplay): [TODO]
 		Consider adding a launcher (detects java version, splashscreen built in, etc)
 Alpha 1.1 (The Floating Update): [TODO]
 		Add buoyancy mechanics, possibly consider how capsizing will work?
-		Add mechanics for a player to restart from scratch if needed
+		Boat Destruction Mechanics:
+		  Add mechanics for a player to restart from scratch if needed
+-P-(R)	  Boat complete destruction should cause new boat respawn at random location?
+		    Added after-death cam?. Need to handle respawn.
+		    Death cam causes the clients graphics to freeze, also anyone who views the raft may freeze as well? not certain 
 		[discuss and implement mechanics for how more PCEs can be obtained?]
 		Implement reefs
 		Add mechanics for flooding and hull leakage, add collisions with islands and reefs
@@ -256,10 +263,28 @@ List of discussion and decision points:
 			Should it also display on the task once clicked?
 			Task icon for repair?
 			Should repair have a layer of enforced transparency to cause holes in objects?
-		[Discuss assert and keep in mind strictfp if needed, also discuss Predicates]
-		Consider pathfinding with dynamic targets - reach and recalculate? every second recalculate?
+		[Discuss assert and keep in mind strictfp if needed, also discuss Predicates. Also discuss finally and return statements]
+DONE	Consider pathfinding with dynamic targets - reach and recalculate? every second recalculate?
 			Use Trace pathfinding algorithm, possibly best-first-search if not
 			http://qiao.github.io/PathFinding.js/visual/
+		[Decide how new characters will be obtained]
+DONE	[Consider how to implement thread-safe arrays]
+			Array testing results: (see TestArea for full code, tests are done with 1,000 and 10,000 objects respectively)
+			CopyOnWriteArrayList:
+					small	small	large
+			Create: 76		75		5343
+			Predic: 3		4		9
+			Iterat: 334		322		3013
+			Print : 315		331		3690
+			Size  :	0				0
+			ConcurrentLinkedQueue:  <--using these now
+					small	small	large
+			Create:	6		4		17
+			Predic:	4		3		12
+			Iterat:	314		327		2941
+			Print :	327		326		3664
+			Size  :	5				9
+		[Consider adding Location helper functions to compare locations]
 
 List of in-depth notes for decision points:
 		Pathfinding [+Task overhaul]:

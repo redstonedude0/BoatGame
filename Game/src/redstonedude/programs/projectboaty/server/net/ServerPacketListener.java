@@ -55,13 +55,14 @@ public class ServerPacketListener implements Runnable {
 				// consider writeUnshared()
 				oos.reset();
 			} catch (IOException e) {
-				e.printStackTrace();
-				Logger.log("Disconnection: " + e.getMessage());
-				ServerPacketHandler.playerDisconnect(this);
-				// ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now
-				// ServerPacketHandler.playerDisconnect(this);
-				oos = null;// close this connection
-
+				if (ServerPacketHandler.listeners.contains(this)) {//if not disconnected
+					e.printStackTrace();
+					Logger.log("Disconnection: " + e.getMessage());
+					ServerPacketHandler.playerDisconnect(this);
+					// ServerPacketHandler.queuedPackets.add(new ServerQueuedPacket(null,this));//represent player disconnect with null packet for now
+					// ServerPacketHandler.playerDisconnect(this);
+					oos = null;// close this connection
+				}
 			}
 		}
 	}

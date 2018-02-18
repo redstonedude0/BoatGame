@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
@@ -49,6 +50,8 @@ public class GraphicsHandler {
 	public static JPanel graphicsPanel;
 	public static JPanel menuPanel;
 
+	public static JPanel escapeMenuContainer;
+	
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
 	public static BufferedImage worldMap = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
@@ -95,20 +98,21 @@ public class GraphicsHandler {
 			// check for nulls
 			UserData ud = ClientPacketHandler.getCurrentUserData();
 			if (ud != null && ud.raft != null) {
+				// System.out.println(ClientPhysicsHandler.cameraTheta);
 				// Get the vector to get to the middle of the screen (Y is negative because the rafts reference frame has negative Y in relation to screen)
 				VectorDouble vd = new VectorDouble(midX, -midY);
 				// Get camera position, invert as you need to slide g2d in opposite direction
 				VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
 				// rotate the canvas (rotation is always about original origin anyway?)
 				translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
-				//translate so CAM is in the middle (uses standard reference frame even though rotated? :/
+				// translate so CAM is in the middle (uses standard reference frame even though rotated? :/
 				translate.translate(cam.x, cam.y);
 				// get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
 				double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
 				double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
 				VectorDouble unitX = new VectorDouble(cos, sin);
 				VectorDouble unitY = new VectorDouble(sin, -cos);
-				//Get the relative position of the middle of the screen, and translate to it
+				// Get the relative position of the middle of the screen, and translate to it
 				vd = vd.getRelative(unitX, unitY);
 				translate.translate(vd.x, vd.y);
 			}
@@ -171,8 +175,9 @@ public class GraphicsHandler {
 		g2d.setColor(Color.BLUE);
 		int index = ClientPhysicsHandler.tickCount % 8;
 		int approxX = (int) ClientPhysicsHandler.cameraPosition.x;
+		// System.out.println(approxX);
 		int approxY = (int) ClientPhysicsHandler.cameraPosition.y;
-		//used to be 11 horizontal and 7 vertical. Do 12 in each direction incase orientation is at 90, or a diagonal (hence +1)
+		// used to be 11 horizontal and 7 vertical. Do 12 in each direction incase orientation is at 90, or a diagonal (hence +1)
 		for (int i = approxX - 12; i < approxX + 12; i++) {
 			for (int j = approxY - 12; j < approxY + 12; j++) {
 				int x = 100 * i;
@@ -258,9 +263,13 @@ public class GraphicsHandler {
 				AffineTransform rotator = new AffineTransform();
 				rotator.translate(100 * x, 100 * y);
 				rotator.rotate(cud.raft.theta);
+				if (constructionTile instanceof TileThruster) {
+					rotator.translate(50, -50);
+					rotator.rotate(-((TileThruster) constructionTile).thrustAngle);
+					rotator.translate(-50, 50);
+				}
 				g2d.transform(rotator);
-				// g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)),
-				// 0, -100, 100, 0, 0, 0, 32, 32, frame);
+				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				try {
 					g2d.transform(rotator.createInverse());
@@ -358,18 +367,14 @@ public class GraphicsHandler {
 		g2d.setColor(Color.RED);
 		g2d.drawOval((int) (100 * ClientPhysicsHandler.cameraPosition.x - 10), (int) (100 * ClientPhysicsHandler.cameraPosition.y - 10), 20, 20);
 
-		if (ControlHandler.debug_menu) {
-			g2d.setColor(Color.WHITE);
-			g2d.drawString("1. lock position", 50, 70);
-			g2d.drawString("2. spawn character", 50, 90);
-
-		}
-
-		if (ControlHandler.escape_menu) {
+		if (ControlHandler.debug_menu) { // very. Very. Simple
+			int x = (int) ClientPhysicsHandler.cameraPosition.multiply(100).x;
+			int y = (int) ClientPhysicsHandler.cameraPosition.multiply(100).y;
 			g2d.setColor(new Color(0, 0, 0, 127));
-			g2d.fillRect(480, 270, 960, 540);
+			g2d.fillRect(x, y, 200, 200);
 			g2d.setColor(Color.WHITE);
-			g2d.drawString("Press enter to return to main menu", 500, 300);
+			g2d.drawString("1. lock position", x + 50, y + 70);
+			g2d.drawString("2. spawn character", x + 50, y + 90);
 		}
 	}
 
@@ -867,35 +872,84 @@ public class GraphicsHandler {
 
 		// MainMenu
 		JPanel mainMenuContainer = new JPanel();
-		mainMenuContainer.setPreferredSize(new Dimension(300, 300));
-		mainMenuContainer.setBackground(new Color(0, 0, 0, 0));
-		mainMenuContainer.setLayout(new LayoutManagerStrictSizes());
-		JLabel mainMenuText = new JLabel("Main Menu");
-		mainMenuText.setPreferredSize(new Dimension(300, 100));
-		mainMenuText.setLayout(new LayoutManagerStrictSizes());
-		mainMenuText.setLocation(0, 0);
-		mainMenuText.setForeground(Color.WHITE);
-		mainMenuText.setHorizontalAlignment(SwingConstants.CENTER);
-		mainMenuText.setFont(mainMenuText.getFont().deriveFont(Font.BOLD, 30));// big, bold
-		mainMenuContainer.add(mainMenuText);
-		menuPanel.add(mainMenuContainer);
-		JButton mainMenuJoin = new JButton("Join Server");
-		mainMenuJoin.setPreferredSize(new Dimension(300, 100));
-		mainMenuJoin.setLayout(new LayoutManagerStrictSizes());
-		mainMenuJoin.setLocation(0, 100);
-		mainMenuJoin.setFocusable(false);
-		mainMenuJoin.setHorizontalAlignment(SwingConstants.CENTER);
-		mainMenuJoin.setFont(mainMenuJoin.getFont().deriveFont(Font.BOLD, 30));// big, bold
-		mainMenuContainer.add(mainMenuJoin);
-		mainMenuJoin.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				bottomBarContainer.setVisible(true);
-				// chatContainer.setVisible(true);
-				mainMenuContainer.setVisible(false);
-				ControlHandler.startPlaying();
-			}
-		});
+		doMainMenu: {
+			mainMenuContainer.setPreferredSize(new Dimension(300, 300));
+			mainMenuContainer.setBackground(new Color(0, 0, 0, 0));
+			mainMenuContainer.setLayout(new LayoutManagerStrictSizes());
+			JLabel mainMenuText = new JLabel("Main Menu");
+			mainMenuText.setPreferredSize(new Dimension(300, 100));
+			mainMenuText.setLayout(new LayoutManagerStrictSizes());
+			mainMenuText.setLocation(0, 0);
+			mainMenuText.setForeground(Color.WHITE);
+			mainMenuText.setHorizontalAlignment(SwingConstants.CENTER);
+			mainMenuText.setFont(mainMenuText.getFont().deriveFont(Font.BOLD, 30));// big, bold
+			mainMenuContainer.add(mainMenuText);
+			menuPanel.add(mainMenuContainer);
+			JButton mainMenuJoin = new JButton("Join Server");
+			mainMenuJoin.setPreferredSize(new Dimension(300, 100));
+			mainMenuJoin.setLayout(new LayoutManagerStrictSizes());
+			mainMenuJoin.setLocation(0, 100);
+			mainMenuJoin.setFocusable(false);
+			mainMenuJoin.setHorizontalAlignment(SwingConstants.CENTER);
+			mainMenuJoin.setFont(mainMenuJoin.getFont().deriveFont(Font.BOLD, 30));// big, bold
+			mainMenuContainer.add(mainMenuJoin);
+			mainMenuJoin.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					bottomBarContainer.setVisible(true);
+					// chatContainer.setVisible(true);
+					mainMenuContainer.setVisible(false);
+					ControlHandler.startPlaying();
+				}
+			});
+		}
+
+		// EscapeMenu
+		escapeMenuContainer = new JPanel();
+		doEscapeMenu: {
+			escapeMenuContainer.setPreferredSize(new Dimension(300, 300));
+			escapeMenuContainer.setBackground(new Color(0,0,0,127));
+			escapeMenuContainer.setLayout(new LayoutManagerStrictSizes());
+			escapeMenuContainer.setVisible(false);
+			JLabel escapeMenuText = new JLabel("Escape Menu");
+			escapeMenuText.setPreferredSize(new Dimension(300, 100));
+			escapeMenuText.setLayout(new LayoutManagerStrictSizes());
+			escapeMenuText.setLocation(0, 0);
+			escapeMenuText.setForeground(Color.WHITE);
+			escapeMenuText.setHorizontalAlignment(SwingConstants.CENTER);
+			escapeMenuText.setFont(escapeMenuText.getFont().deriveFont(Font.BOLD, 30));// big, bold
+			escapeMenuContainer.add(escapeMenuText);
+			menuPanel.add(escapeMenuContainer);
+			
+			JButton escapeMenuDisconnect = new JButton("Disconnect");
+			escapeMenuDisconnect.setPreferredSize(new Dimension(300, 100));
+			escapeMenuDisconnect.setLayout(new LayoutManagerStrictSizes());
+			escapeMenuDisconnect.setLocation(0, 100);
+			escapeMenuDisconnect.setFocusable(false);
+			escapeMenuDisconnect.setHorizontalAlignment(SwingConstants.CENTER);
+			escapeMenuDisconnect.setFont(escapeMenuDisconnect.getFont().deriveFont(Font.BOLD, 30));// big, bold
+			escapeMenuContainer.add(escapeMenuDisconnect);
+			escapeMenuDisconnect.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ClientPacketListener.disconnect();
+				}
+			});
+			JButton escapeMenuResume = new JButton("Resume");
+			escapeMenuResume.setPreferredSize(new Dimension(300, 100));
+			escapeMenuResume.setLayout(new LayoutManagerStrictSizes());
+			escapeMenuResume.setLocation(0, 200);
+			escapeMenuResume.setFocusable(false);
+			escapeMenuResume.setHorizontalAlignment(SwingConstants.CENTER);
+			escapeMenuResume.setFont(escapeMenuResume.getFont().deriveFont(Font.BOLD, 30));// big, bold
+			escapeMenuContainer.add(escapeMenuResume);
+			escapeMenuResume.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					escapeMenuContainer.setVisible(false);
+				}
+			});
+		}
 
 		// Add layers to pane, Add menuPanel first so menuPanel is on top
 		jlp.add(menuPanel);
@@ -925,6 +979,8 @@ public class GraphicsHandler {
 				// chatContainer.setLocation(size.width-chatContainer.getWidth(), size.height - chatContainer.getHeight());
 				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
 				mapGUIPopin.setLocation((size.width - mapGUIPopin.getWidth()) / 2, (size.height - mapGUIPopin.getHeight()) / 2);
+				escapeMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
+				
 			}
 
 			@Override

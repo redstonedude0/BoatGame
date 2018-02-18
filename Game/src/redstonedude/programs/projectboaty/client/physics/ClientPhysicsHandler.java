@@ -132,23 +132,25 @@ public class ClientPhysicsHandler {
 					physicsUpdate(we.entity);
 				}
 			}
-			//update tasks
+			//nullcheck
 			if (currentUser != null && currentUser.raft != null) {
+				//update tasks
 				for (Task t: currentUser.raft.getTasks()) {
 					t.passiveUpdate();
 					if (tickCount%50 == 0) { //every 50 ticks (1 second)
 						t.slowPassiveUpdate();
 					}
 				}
-			}
-			// move camera accordingly
-			if (currentUser != null && currentUser.raft != null && !Double.isNaN(currentUser.raft.getPos().x)) {
-				VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
-				posDiff = posDiff.divide(10);// do it slower
-				cameraPosition = cameraPosition.add(posDiff);
-				double thetaDiff = currentUser.raft.theta-cameraTheta;
-				thetaDiff /= 10;
-				cameraTheta += thetaDiff;
+				// move camera accordingly
+				if (!Double.isNaN(currentUser.raft.getPos().x)) {
+					VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
+					//System.out.println(posDiff.x + ":" + currentUser.raft.getCOMPos().x + ":" + currentUser.raft.getUnitX().x + ":" + currentUser.raft.getPos().x + ":" + cameraPosition.x);
+					posDiff = posDiff.divide(10);// do it slower
+					cameraPosition = cameraPosition.add(posDiff);
+					double thetaDiff = currentUser.raft.theta-cameraTheta;
+					thetaDiff /= 10;
+					cameraTheta += thetaDiff;
+				}
 			}
 		}
 	}

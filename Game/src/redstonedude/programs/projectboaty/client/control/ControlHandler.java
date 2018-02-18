@@ -5,6 +5,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.function.Consumer;
+
+import javax.swing.SwingUtilities;
 
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
@@ -23,6 +26,7 @@ import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
 
 public class ControlHandler implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -40,10 +44,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		MainMenu, Playing, Connecting
 	}
 
-	public static boolean escape_menu = false;
-
 	public static boolean clickmode_collection = true;
 	public static boolean clickmode_building_wood = false;
+	public static int clickmode_roation_index = 0;
 
 	public static Mode mode = Mode.MainMenu;
 
@@ -122,14 +125,14 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				ClientPacketHandler.sendPacket(new PacketRequestRaft(Integer.parseInt("" + e.getKeyChar())));
 			}
 			break;
-		case KeyEvent.VK_ESCAPE:
-			escape_menu = !escape_menu;
+		case KeyEvent.VK_ESCAPE://Invert visibility
+			GraphicsHandler.escapeMenuContainer.setVisible(!GraphicsHandler.escapeMenuContainer.isVisible());
 			break;
-		case KeyEvent.VK_ENTER:
-			if (escape_menu) {
-				ClientPacketListener.disconnect();
+		case KeyEvent.VK_R:
+			clickmode_roation_index++;
+			if (clickmode_roation_index >= 4) {
+				clickmode_roation_index = 0;
 			}
-			break;
 		}
 	}
 
@@ -171,7 +174,6 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		control_forward = false;
 		control_backward = false;
 		debug_menu = false;
-		escape_menu = false;
 	}
 
 	public static double requiredForwardTranslation = 0;
@@ -226,27 +228,27 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		int screenx = e.getX();
 		int screeny = e.getY();
 		// see if any barrels were clicked on
-		doPlayingPress(getAbsoluteVectorFromScreenCoordinates(screenx, screeny));
+		doPlayingPress(getAbsoluteVectorFromScreenCoordinates(screenx, screeny), e);
 	}
 
 	public static VectorDouble getAbsoluteVectorFromScreenCoordinates(int screenx, int screeny) {
-//		VectorDouble vd = new VectorDouble(midX, -midY);
-//		// Get camera position, invert as you need to slide g2d in opposite direction
-//		VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
-//		// rotate the canvas (rotation is always about original origin anyway?)
-//		translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
-//		//translate so CAM is in the middle (uses standard reference frame even though rotated? :/
-//		cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
-//		translate.translate(cam.x, cam.y);
-//		// get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
-//		double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
-//		double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
-//		VectorDouble unitX = new VectorDouble(cos, sin);
-//		VectorDouble unitY = new VectorDouble(sin, -cos);
-//		//Get the relative position of the middle of the screen, and translate to it
-//		vd = vd.getRelative(unitX, unitY);
-//		translate.translate(vd.x, vd.y);
-		
+		// VectorDouble vd = new VectorDouble(midX, -midY);
+		// // Get camera position, invert as you need to slide g2d in opposite direction
+		// VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+		// // rotate the canvas (rotation is always about original origin anyway?)
+		// translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
+		// //translate so CAM is in the middle (uses standard reference frame even though rotated? :/
+		// cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
+		// translate.translate(cam.x, cam.y);
+		// // get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
+		// double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
+		// double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
+		// VectorDouble unitX = new VectorDouble(cos, sin);
+		// VectorDouble unitY = new VectorDouble(sin, -cos);
+		// //Get the relative position of the middle of the screen, and translate to it
+		// vd = vd.getRelative(unitX, unitY);
+		// translate.translate(vd.x, vd.y);
+
 		float screenHeight = GraphicsHandler.frame.getHeight();
 		float screenWidth = GraphicsHandler.frame.getWidth();
 		float gHeight = 1080;
@@ -267,31 +269,35 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		clicked.x = (clicked.x * scaleForWidth) / scale;
 		clicked.y = (clicked.y * scaleForHeight) / scale;
 
-		//finally undo location, do opposite of what was done, in reverse
+		// finally undo location, do opposite of what was done, in reverse
 		VectorDouble vd = new VectorDouble(midX, -midY);
 		double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
 		double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
 		VectorDouble unitX = new VectorDouble(cos, sin);
 		VectorDouble unitY = new VectorDouble(sin, -cos);
 		vd = vd.getRelative(unitX, unitY);
-		
+
 		VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
-		
-		//translate.rotate(-ClientPhysicsHandler.cameraTheta);
+
+		// translate.rotate(-ClientPhysicsHandler.cameraTheta);
 		clicked = clicked.rotate(ClientPhysicsHandler.cameraTheta);
 		clicked = clicked.subtract(cam);
 		clicked = clicked.subtract(vd);
 		clicked = clicked.divide(100);
-//		clicked = clicked.subtract(offset);// .divide(100);
-//		clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
+		// clicked = clicked.subtract(offset);// .divide(100);
+		// clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
 		return clicked;
 	}
 
-	public static void doPlayingPress(VectorDouble clicked) {
-		if (clickmode_collection) {
-			doBarrelPress(clicked);
-		} else {
-			doBuildingPress(clicked);
+	public static void doPlayingPress(VectorDouble clicked, MouseEvent e) {
+		if (SwingUtilities.isLeftMouseButton(e)) {
+			if (clickmode_collection) {
+				doBarrelPress(clicked);
+			} else {
+				doBuildingPress(clicked);
+			}
+		} else if (SwingUtilities.isRightMouseButton(e)) {
+			doCancellingPress(clicked);
 		}
 	}
 
@@ -328,22 +334,43 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		}
 	}
+	
+	public static synchronized void doCancellingPress(VectorDouble clicked) {
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		if (ud != null && ud.raft != null) {
+			ud.raft.getAllTasksNotWander().forEach(new Consumer<Task>() {
+				@Override
+				public void accept(Task t) {
+					if (t instanceof TaskReachLocation) {
+						TaskReachLocation trl = (TaskReachLocation) t;
+						VectorDouble targetPos = trl.target.getPos();
+						if (!trl.target.isAbsolute) {
+							UserData udTarget = ClientPacketHandler.getUserData(trl.target.raftUUID);
+							targetPos = targetPos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(),udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
+						}
+						if (clicked.x > targetPos.x && clicked.x < targetPos.x+1) {
+							if (clicked.y > targetPos.y && clicked.y < targetPos.y+1) {
+								ud.raft.removeTask(t);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
 
 	public static void doBuildingPress(VectorDouble clicked) {
 		// convert to relative coordinates
 		UserData ud = ClientPacketHandler.getCurrentUserData();
-		VectorDouble blockPos = getBlockPosFromScreenCoordinates(mouseX, mouseY, ud);
-		Tile tile;
-		if (clickmode_building_wood) {
-			tile = new Tile();
-		} else {
-			tile = new TileThruster();
+		updateConstructionTile();
+		Tile tile = ud.raft.getConstructionTile();
+		if (tile == null) {
+			return;
 		}
-		tile.setPos(blockPos);
 		TaskConstruct t = new TaskConstruct();
 		t.resultantTile = tile;
 		t.target = new Location();
-		t.target.setPos(blockPos);
+		t.target.setPos(tile.getPos());
 		t.target.isAbsolute = false;
 		t.target.raftUUID = ud.uuid;
 		for (Task t2 : ud.raft.getAllTasks()) {
@@ -373,7 +400,14 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static void updateConstructionTile() {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
 		if (!clickmode_collection) {
-			Tile t = new Tile();
+			Tile t;
+			if (clickmode_building_wood) {
+				t = new Tile();
+			} else {
+				t = new TileThruster();
+				TileThruster tr = (TileThruster) t;
+				tr.thrustAngle = (Math.PI * ((float) clickmode_roation_index)) / 2F;
+			}
 			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY, ud));
 			ud.raft.setConstructionTile(t);
 		} else {

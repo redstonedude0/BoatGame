@@ -2,7 +2,6 @@ package redstonedude.programs.projectboaty.server.net;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -42,11 +41,11 @@ import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 
 public class ServerPacketHandler {
 
-	public static ArrayList<ServerPacketListener> listeners = new ArrayList<ServerPacketListener>();
-	public static ArrayList<ServerUserData> userData = new ArrayList<ServerUserData>();
+	public static ConcurrentLinkedQueue<ServerPacketListener> listeners = new ConcurrentLinkedQueue<ServerPacketListener>();
+	public static ConcurrentLinkedQueue<ServerUserData> userData = new ConcurrentLinkedQueue<ServerUserData>();
 	public static int portNumber = 49555;
 	public static ConcurrentLinkedQueue<ServerQueuedPacket> queuedPackets = new ConcurrentLinkedQueue<ServerQueuedPacket>();
-
+	
 	public static void handlePackets() {
 		while (!queuedPackets.isEmpty()) {
 			ServerQueuedPacket sqp = queuedPackets.remove();
