@@ -14,25 +14,6 @@ public class TaskHandler {
 	
 	public static Random rand = new Random();
 	
-//	public static void assignTask(Raft raft, EntityCharacter ec) {
-//		ArrayList<Task> tasks = raft.getTasks();
-//		int size = tasks.size();
-//		if (size != 0) {
-//			int index = rand.nextInt(size);
-//			Task t = tasks.get(index);
-//			if (t.getPriority(ec) >= 0) {
-//				t.assignedEntity = ec;
-//				raft.removeTask(t);
-//				ec.currentTask = t;
-//				return;
-//			}
-//		}//else
-//		TaskWander tw = new TaskWander(ec);
-//		//tw.targetLoc = new VectorDouble(0,1);
-//		//tw.targetLoc_absolute = false;
-//		ec.currentTask = tw;
-//	}
-	
 	public static void assignTask(Raft raft, EntityCharacter ec) {
 		ArrayList<Task> tasks = raft.getTasks();
 		Task lowestPriorityTask = null;

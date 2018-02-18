@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 
 import javax.swing.SwingUtilities;
 
+import com.sun.security.ntlm.Client;
+
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
@@ -125,7 +127,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				ClientPacketHandler.sendPacket(new PacketRequestRaft(Integer.parseInt("" + e.getKeyChar())));
 			}
 			break;
-		case KeyEvent.VK_ESCAPE://Invert visibility
+		case KeyEvent.VK_ESCAPE:// Invert visibility
 			GraphicsHandler.escapeMenuContainer.setVisible(!GraphicsHandler.escapeMenuContainer.isVisible());
 			break;
 		case KeyEvent.VK_R:
@@ -298,6 +300,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		} else if (SwingUtilities.isRightMouseButton(e)) {
 			doCancellingPress(clicked);
+		} else if (SwingUtilities.isMiddleMouseButton(e)) {
+			doCameraPress(clicked);
 		}
 	}
 
@@ -334,7 +338,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		}
 	}
-	
+
 	public static synchronized void doCancellingPress(VectorDouble clicked) {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
 		if (ud != null && ud.raft != null) {
@@ -346,10 +350,10 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 						VectorDouble targetPos = trl.target.getPos();
 						if (!trl.target.isAbsolute) {
 							UserData udTarget = ClientPacketHandler.getUserData(trl.target.raftUUID);
-							targetPos = targetPos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(),udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
+							targetPos = targetPos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
 						}
-						if (clicked.x > targetPos.x && clicked.x < targetPos.x+1) {
-							if (clicked.y > targetPos.y && clicked.y < targetPos.y+1) {
+						if (clicked.x > targetPos.x && clicked.x < targetPos.x + 1) {
+							if (clicked.y > targetPos.y && clicked.y < targetPos.y + 1) {
 								ud.raft.removeTask(t);
 							}
 						}
@@ -357,6 +361,26 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				}
 			});
 		}
+	}
+
+	public static synchronized void doCameraPress(VectorDouble clicked) {
+		for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
+			VectorDouble wePos = we.entity.loc.getPos();
+			if (!we.entity.loc.isAbsolute) {
+				UserData udTarget = ClientPacketHandler.getUserData(we.entity.loc.raftUUID);
+				if (udTarget != null && udTarget.raft != null) {
+					wePos = wePos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
+				}
+			}
+			if (clicked.x > wePos.x && clicked.x < wePos.x + 1) {
+				if (clicked.y > wePos.y && clicked.y < wePos.y + 1) {
+					// do this entity
+					ClientPhysicsHandler.cameraTarget = we;
+					return;
+				}
+			}
+		} // target raft if not targetting entity
+		ClientPhysicsHandler.cameraTarget = null;
 	}
 
 	public static void doBuildingPress(VectorDouble clicked) {

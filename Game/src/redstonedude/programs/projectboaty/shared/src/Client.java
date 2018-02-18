@@ -11,7 +11,9 @@ import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
+import redstonedude.programs.projectboaty.shared.event.EventRegistry;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
+import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 
 public class Client implements Runnable, ImageObserver {
 
@@ -23,7 +25,7 @@ public class Client implements Runnable, ImageObserver {
 	}
 
 	public Client() {
-		ClientPacketHandler.hostName = "25.95.178.83";
+		ClientPacketHandler.hostName = "localhost";//"25.95.178.83";
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
@@ -32,6 +34,7 @@ public class Client implements Runnable, ImageObserver {
 		GraphicsHandler.frame.addMouseListener(ch);
 		GraphicsHandler.frame.addMouseMotionListener(ch);
 		MusicHandler.musicTester();
+		registerEvents();
 		start();
 		/*
 		 * try { if (!SteamAPI.init()) { // Steamworks initialization error, e.g. Steam client not running System.out.println("Steam client dead"); } System.out.println("bool: " + SteamAPI.isSteamRunning()); SteamUser su = new SteamUser(new SteamUserCallback() {
@@ -42,6 +45,10 @@ public class Client implements Runnable, ImageObserver {
 		 * 
 		 * @Override public void onEncryptedAppTicket(SteamResult arg0) { } }); System.out.println("su: " + su.getSteamID()); } catch (SteamException e) { // Error extracting or loading native libraries e.printStackTrace(); }//steam JNI code
 		 */
+	}
+	
+	public static void registerEvents() {
+		EventRegistry.addListener(TaskRepair.class);
 	}
 
 	public void run() {

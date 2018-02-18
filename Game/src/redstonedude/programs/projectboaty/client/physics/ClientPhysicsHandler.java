@@ -25,6 +25,7 @@ public class ClientPhysicsHandler {
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
 	public static double cameraTheta = 0;
+	public static WrappedEntity cameraTarget = null;//defualts to raft if null entity
 	public static int tickCount = 0;
 	private static ArrayList<WrappedEntity> entities = new ArrayList<WrappedEntity>();
 
@@ -126,12 +127,6 @@ public class ClientPhysicsHandler {
 					approxPhysicsUpdate(ud);
 				}
 			}
-			//update entities
-			for (WrappedEntity we : getWrappedEntities()) {
-				if (we != null && we.entity != null) { //one entity update can make an entity null :/
-					physicsUpdate(we.entity);
-				}
-			}
 			//nullcheck
 			if (currentUser != null && currentUser.raft != null) {
 				//update tasks
@@ -140,16 +135,37 @@ public class ClientPhysicsHandler {
 					if (tickCount%50 == 0) { //every 50 ticks (1 second)
 						t.slowPassiveUpdate();
 					}
+					if (t.isCompleted) {
+						currentUser.raft.removeTask(t);//either complete or cancelled, remove it
+					}
 				}
-				// move camera accordingly
-				if (!Double.isNaN(currentUser.raft.getPos().x)) {
-					VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
-					//System.out.println(posDiff.x + ":" + currentUser.raft.getCOMPos().x + ":" + currentUser.raft.getUnitX().x + ":" + currentUser.raft.getPos().x + ":" + cameraPosition.x);
-					posDiff = posDiff.divide(10);// do it slower
-					cameraPosition = cameraPosition.add(posDiff);
-					double thetaDiff = currentUser.raft.theta-cameraTheta;
-					thetaDiff /= 10;
-					cameraTheta += thetaDiff;
+				// move camera accordingly, target raft by default
+				VectorDouble targetPos = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos());
+				if (cameraTarget != null && cameraTarget.entity == null) {
+					cameraTarget = null;//nullify cameraTarget if the entity is null
+				}
+				if (cameraTarget != null) {//target entity
+					if (!cameraTarget.entity.loc.isAbsolute) {
+						UserData targetRaft = ClientPacketHandler.getUserData(cameraTarget.entity.loc.raftUUID);
+						if (targetRaft != null && targetRaft.raft != null) {
+							targetPos = cameraTarget.entity.loc.getPos().add(new VectorDouble(0.5, 0.5)).getAbsolute(targetRaft.raft.getUnitX(), targetRaft.raft.getUnitY()).add(targetRaft.raft.getPos());
+						}
+					} else {//get absolute position COM
+						targetPos = cameraTarget.entity.loc.getPos().add(new VectorDouble(0.5, 0.5));
+					}
+				}				
+				VectorDouble posDiff = targetPos.subtract(ClientPhysicsHandler.cameraPosition);
+				//System.out.println(posDiff.x + ":" + currentUser.raft.getCOMPos().x + ":" + currentUser.raft.getUnitX().x + ":" + currentUser.raft.getPos().x + ":" + cameraPosition.x);
+				posDiff = posDiff.divide(10);// do it slower
+				cameraPosition = cameraPosition.add(posDiff);
+				double thetaDiff = currentUser.raft.theta-cameraTheta;
+				thetaDiff /= 10;
+				cameraTheta += thetaDiff;
+			}
+			//update entities
+			for (WrappedEntity we : getWrappedEntities()) {
+				if (we != null && we.entity != null) { //one entity update can make an entity null :/
+					physicsUpdate(we.entity);
 				}
 			}
 		}
@@ -234,7 +250,6 @@ public class ClientPhysicsHandler {
 		//System.out.println("Raft output:");
 		//System.out.println("  TRG:" + raft.cos + "," + raft.sin);
 		//System.out.println("  THE:" + raft.theta + "," + raft.dtheta);
-		//System.out.println("  POS:" + raft.getPos().x + "," + raft.getPos().y);
 		//System.out.println("  COM:" + raft.getCOMPos().x + "," + raft.getCOMPos().y);
 		//System.out.println("  UNX:" + raft.getUnitX().x + "," + raft.getUnitX().y);
 		//System.out.println("  UNY:" + raft.getUnitY().x + "," + raft.getUnitY().y);
@@ -261,7 +276,6 @@ public class ClientPhysicsHandler {
 		VectorDouble acceleration = thrust.divide(mass);
 		raft.setVelocity(raft.getVelocity().add(acceleration));
 		raft.setPos(raft.getPos().add(raft.getVelocity()));
-
 		// calculate rotational physics
 		// a = Fr/mrr
 		// centre of mass must first be located.
@@ -274,7 +288,7 @@ public class ClientPhysicsHandler {
 		centreOfMass = centreOfMass.divide(mass);
 		raft.setCOMPos(centreOfMass);
 		//System.out.println("COM at: " + centreOfMass.x + ":" + centreOfMass.y);
-
+		
 		// calculate moments of inertia about this point
 		double forcemoments = 0;
 		double squareradiusofgyration = 0;
@@ -361,6 +375,8 @@ public class ClientPhysicsHandler {
 			prrt.tiles = raft.getTiles();
 			ClientPacketHandler.sendPacket(prrt); //update the server on this
 		}
+		
+		assert !Double.isNaN(raft.getPos().x) : "NaN asserted";
 	}
 	
 	public void reset() {

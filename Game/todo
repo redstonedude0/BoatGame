@@ -1,11 +1,11 @@
 Key:
 [X] Done by X
 (X) assigned to be done by X
+( ) unassigned
 R - Harrison
 D - Harry
-	[we need to select letters for ourselves, any ideas? Perhaps R and D based on our usernames?]
 	[Note to self: look to see if fogbugz is free or if free similar program exists]
--P- postponed from previous alpha
+-P- postponed from a previous build
 -D- a discussion or decision must occur first
 -R- requires some other task to be completed first
 
@@ -93,7 +93,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]  Update Wander task to account for characters being in water.
 			Allows them to reside on a fake square at 0,0 however.
 -R-	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
-			{need task system to be able to dynamically cancel}
+			{need event system to be able to dynamically cancel}
 	[R]	  Make tasks cancellable by right-clicking? Note: Repair tasks won't cancel currently due to auto-creation
 -DR-( )	  Paddelling task is cancellable
 -R-	( )	  Implement paddelling, take it into account for control and physics calculations.
@@ -122,8 +122,9 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			Need to decide how to handle focus & modification of chatqueue
 		Camera Updates:
 -D-	( )	  Add scrolling to world scale?
+			Consider how to handle world tiling
 -R-	( )	  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
-	(R)	  Update Camera to be able to track other objects (need objects to track, allow for tracking of entities?)
+	[R]	  Update Camera to be able to track other objects (need objects to track, allow for tracking of entities?)
 	[R]   Rotation soft follow?
 	[R]	Investigate barrel 'worm' at t=0
 		  Investigation so far - it still exists, not sure how to reproduce it though. Possibly always in direction of wind?
@@ -158,11 +159,14 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			"socket closed" error on server shutdown. "socket closed" fixed, making methods synced should be fine. Need to consider
 			full queueing system.
 -D-	(R)	Consider queueing input controls
--D	(R)	Consider event listeners
+	[R]	Consider event listeners
 -D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
 -D-	( )	Consider adding drag interface for multiple task creation/deletion
 	(R)	Investigate mouse being very slightly off with mouse interface
 	[R] Investigate thrust selection system (forward also applies translation). Fixed system by implementing effectiveZero.
+	[R]	Fix NaN errors on raft (check before and assert after, if the variable turns NaN, find out where and what caused it, then
+			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
+			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
 Alpha 0.10 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
@@ -244,6 +248,7 @@ List of discussion and decision points:
 		[consider adding static friction?]
 		[decide how barrel spawning should work]
 			Not important - current spawning is fine
+		[Consider barrel spawning - if it occurs outside of raft view or player view?]
 		[how to implement disconnection whilst in a server - 'ghost' ship raidable?]
 		[how to implement ship destruction, abandonment, and hacking reporting systems?]
 		[discuss barrel physics, barrel despawning, etc, global currents/winds?]
@@ -301,6 +306,7 @@ DONE	[Consider how to implement thread-safe arrays]
 		[Consider AI-based rafts (transport rafts in fleeting, offensive rafts that can attack, etc)]
 		[Consider overhauling rotation and drag system (rot.damage and drag should apply to 1-tile rafts, rafts should not spin
 			wildly on shorelines, perhaps use reefs to do this?]
+		[Decide how to handle auto-tasks, add listeners for them? hardcode?]
 
 List of in-depth notes for decision points:
 		Pathfinding [+Task overhaul]:
@@ -346,6 +352,22 @@ List of in-depth notes for decision points:
 				VectorDouble pos;
 				boolean isAbsolute;
 				String raft_uuid; //if not absolute
+		
+	#	Event System:
+			https://bukkit.gamepedia.com/Event_API_Reference
+			List of events to implement:
+			-TileDamageEvent (depending on tilestate system perhaps TileStateChangeEvent and/or TileDamageEvent only fires on 25HP boundry)
+				Fired when a tile takes damage, contains a reference to the tile, the raft it belongs to, the previous HP?, etc (potentially damagecause)
+				fired (queued?) when damage() is called on a tile {shared PhysicsHandler required? Move damage function to physics handlers?}
+			-TileBrokenEvent
+				Fired when a tile is broken critically (when damage() is called, after TileDamageEvent is fired)
+			-TileBuiltEvent
+				Fired when a tile is built? (not currently necessary?)
+			Events are fired by creating the event and calling .fire();
+			Events are executed in the .fire() function, immediately.
+			Events search for classes that are registed, extend Listener, and find their @EventHandler annotations.
+			Events iterate through the list using Priority, until there are no more listeners.
+			
 			
 			
 			

@@ -2,6 +2,7 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
@@ -9,6 +10,8 @@ import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
+import redstonedude.programs.projectboaty.shared.event.Event;
+import redstonedude.programs.projectboaty.shared.event.EventTileBroken;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskHandler;
@@ -44,7 +47,7 @@ public class Raft implements Serializable {
 	}
 	
 	public synchronized void setTiles(ArrayList<Tile> t) {
-		tiles = t;
+		tiles = t; //server-side only?
 	}
 	
 	public synchronized void addTile(Tile t) {
@@ -52,8 +55,11 @@ public class Raft implements Serializable {
 		t.checkState();
 	}
 	
-	public synchronized void removeAllTiles(ArrayList<Tile> t) {
-		tiles.removeAll(t);
+	public synchronized void removeAllTiles(ArrayList<Tile> ts) {
+		tiles.removeAll(ts);
+		for (Tile t: ts) {
+			new EventTileBroken(t,this).fire();
+		}
 	}
 	
 	public Tile getTileAt(int x, int y) {

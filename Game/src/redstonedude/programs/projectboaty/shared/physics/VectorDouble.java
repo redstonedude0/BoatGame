@@ -44,6 +44,9 @@ public class VectorDouble implements Serializable {
 
 	public VectorDouble divide(double d) {
 		VectorDouble ans = new VectorDouble(this);
+		if (d == 0) {
+			return new VectorDouble(0,0);
+		}
 		ans.x /= d;
 		ans.y /= d;
 		return ans;
@@ -116,5 +119,10 @@ public class VectorDouble implements Serializable {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return x + "," + y;
 	}
 }

@@ -336,25 +336,30 @@ public class ServerPhysicsHandler {
 			raft.addTile(thruster);
 			break;
 		case 4:
-			tile = new Tile();
-			tile.setPos(new VectorDouble(1, 0));
-			raft.addTile(tile);
-			tile = new Tile();
-			tile.setPos(new VectorDouble(1, 1));
-			raft.addTile(tile);
+//			tile = new Tile();
+//			tile.setPos(new VectorDouble(1, 0));
+//			raft.addTile(tile);
+//			tile = new Tile();
+//			tile.setPos(new VectorDouble(1, 1));
+//			raft.addTile(tile);
+//			thruster = new TileThruster();
+//			thruster.setPos(new VectorDouble(0, 0));
+//			raft.addTile(thruster);
+//			thruster = new TileThruster();
+//			thruster.setPos(new VectorDouble(0, 1));
+//			thruster.thrustAngle = -Math.PI/2;
+//			raft.addTile(thruster);
+//			thruster = new TileThruster();
+//			thruster.setPos(new VectorDouble(2, 0));
+//			raft.addTile(thruster);
+//			thruster = new TileThruster();
+//			thruster.setPos(new VectorDouble(2, 1));
+//			thruster.thrustAngle = Math.PI/2;
+//			raft.addTile(thruster);
+			
+			//Code for 1-thruster debug
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
-			raft.addTile(thruster);
-			thruster = new TileThruster();
-			thruster.setPos(new VectorDouble(0, 1));
-			thruster.thrustAngle = -Math.PI/2;
-			raft.addTile(thruster);
-			thruster = new TileThruster();
-			thruster.setPos(new VectorDouble(2, 0));
-			raft.addTile(thruster);
-			thruster = new TileThruster();
-			thruster.setPos(new VectorDouble(2, 1));
-			thruster.thrustAngle = Math.PI/2;
 			raft.addTile(thruster);
 			break;
 		}
