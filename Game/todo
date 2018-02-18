@@ -167,6 +167,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	Fix NaN errors on raft (check before and assert after, if the variable turns NaN, find out where and what caused it, then
 			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
+	(R)	Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
 Alpha 0.10 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
