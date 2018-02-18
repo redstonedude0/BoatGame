@@ -10,12 +10,12 @@ public class WorldHandler {
 	private static VectorDouble wind;
 	
 	public static enum TerrainType {
-		Water(0.2F, 0F), Land(5F, 50F);
+		Water(0.2, 0), Land(5, 50);
 		
-		public float frictionCoefficient;
-		public float damageCoefficient; //1m will do this much damage
+		public double frictionCoefficient;
+		public double damageCoefficient; //1m will do this much damage
 		
-		TerrainType(float f, float d) {
+		TerrainType(double f, double d) {
 			frictionCoefficient = f;
 			damageCoefficient = d;
 		}

@@ -74,8 +74,9 @@ Alpha 0.9 (The Intelligence Update): [TODO]
     [R]	  Player controlled entities fall in water if they are no longer on a block
 			On the next pathfinding tick they will update their state.
 		Efficiency enhancements:
--P-	( )	  Change everything to use floats instead of doubles
-			Investigate speed and accuracy difference? [floats are VERY marginally faster in some circumstances]
+-P-	[R]	  Change everything to use floats instead of doubles
+			Investigate speed and accuracy difference?
+			floats are VERY marginally faster in some circumstances, however at the cost of signifiant accuracy. DO NOT USE FLOAT.
 		Error handling:
 	[R]	  Wrap packet handlers in try catches to prevent thread crashes [disconnect client]
 	[R]	  Move createNewListener server-side to playerJoin to fix comod exceptions

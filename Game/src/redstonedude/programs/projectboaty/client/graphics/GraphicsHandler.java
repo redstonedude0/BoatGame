@@ -74,22 +74,22 @@ public class GraphicsHandler {
 			// scale for standard AR, crop for nonstandard
 			// System.out.println(ClientPhysicsHandler.cameraPosition.x + ":" +
 			// ClientPhysicsHandler.cameraPosition.y);
-			float screenHeight = frame.getHeight();
-			float screenWidth = frame.getWidth();
-			float gHeight = 1080;
-			float gWidth = 1920;
+			double screenHeight = frame.getHeight();
+			double screenWidth = frame.getWidth();
+			double gHeight = 1080;
+			double gWidth = 1920;
 			// Scale for cropping mechanics - the largest scalar needs to be used, so excess
 			// is cut off in the other direction
-			float scaleForWidth = screenWidth / gWidth;
-			float scaleForHeight = screenHeight / gHeight;
-			float scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
+			double scaleForWidth = screenWidth / gWidth;
+			double scaleForHeight = screenHeight / gHeight;
+			double scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
 			// screen needs to be multipled by scale, and the cameraposition(midpoint?) of g
 			// needs to correspond with the midpoint of the screen.
 
 			// graphics are stretched to fill 0,0 to width,height
 			// scale to ensure that midpoint of g lines up to camera
-			float midX = screenWidth / 2;
-			float midY = screenHeight / 2;
+			double midX = screenWidth / 2;
+			double midY = screenHeight / 2;
 			midX /= scale;
 			midY /= scale;
 			AffineTransform translate = new AffineTransform();

@@ -13,7 +13,7 @@ public class ServerWorldHandler extends WorldHandler {
 			key = rand.nextLong();
 		}
 		if (getWind() == null) {
-			float theta = (float) (rand.nextFloat()*Math.PI*2);//generate random angle
+			double theta = rand.nextFloat()*Math.PI*2;//generate random angle
 			VectorDouble win = new VectorDouble(0,1).rotate(theta).setMagnitude(0.01);
 			setWind(win);
 		}

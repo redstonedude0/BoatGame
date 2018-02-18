@@ -18,9 +18,9 @@ public class Tile implements Serializable {
 
 	private VectorDouble pos = new VectorDouble();
 	public double mass = 10;
-	public float hp = 100;
+	public double hp = 100;
 
-	public void damage(float dmg) {
+	public void damage(double dmg) {
 		hp -= dmg;
 		// if damage is non-0 sent packet
 		if (dmg != 0) {
@@ -102,10 +102,10 @@ public class Tile implements Serializable {
 		return motion;
 	}
 
-	public float getDamage(Raft parent) {
+	public double getDamage(Raft parent) {
 		VectorDouble motion = getAbsoluteMotion(parent);
-		float dmg = (float) motion.getSquaredLength();
-		dmg = (float) Math.sqrt(dmg);
+		double dmg = motion.getSquaredLength();
+		dmg = Math.sqrt(dmg);
 		dmg *= getTerrain(parent).damageCoefficient;
 		return dmg;
 	}

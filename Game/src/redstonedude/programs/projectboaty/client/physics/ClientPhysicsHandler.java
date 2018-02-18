@@ -24,7 +24,7 @@ public class ClientPhysicsHandler {
 	// consider making this do all the physics for local boats perhaps?
 
 	public static VectorDouble cameraPosition = new VectorDouble(0, 0);
-	public static float cameraTheta = 0;
+	public static double cameraTheta = 0;
 	public static int tickCount = 0;
 	private static ArrayList<WrappedEntity> entities = new ArrayList<WrappedEntity>();
 

@@ -100,10 +100,10 @@ public class ServerPhysicsHandler {
 			Entity e = we.entity;
 			if (e instanceof EntityBarrel) {
 				//it's a barrel boiks, see if its near any raft
-				float shortestSquareDistance = -1;
+				double shortestSquareDistance = -1;
 				for (ServerUserData sud: ServerPacketHandler.userData) {
 					if (sud.raft != null) {
-						float squareDistance = (float) sud.raft.getPos().subtract(e.loc.getPos()).getSquaredLength();
+						double squareDistance = sud.raft.getPos().subtract(e.loc.getPos()).getSquaredLength();
 						if (squareDistance < shortestSquareDistance || shortestSquareDistance == -1) {
 							shortestSquareDistance = squareDistance;
 						}
@@ -145,7 +145,7 @@ public class ServerPhysicsHandler {
 										/**
 										 * This is a really bad workaround and needs to be fixed properly for beta
 										 */
-										float dmg = (float) Math.sqrt(velo.getSquaredLength());
+										double dmg = Math.sqrt(velo.getSquaredLength());
 										dmg *= 50;//some damage coefficient
 										t.hp -= dmg;
 										PacketTileState pts = new PacketTileState(t);

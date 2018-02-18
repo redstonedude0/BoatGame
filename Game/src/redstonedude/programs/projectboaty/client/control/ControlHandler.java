@@ -249,16 +249,16 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		// vd = vd.getRelative(unitX, unitY);
 		// translate.translate(vd.x, vd.y);
 
-		float screenHeight = GraphicsHandler.frame.getHeight();
-		float screenWidth = GraphicsHandler.frame.getWidth();
-		float gHeight = 1080;
-		float gWidth = 1920;
+		double screenHeight = GraphicsHandler.frame.getHeight();
+		double screenWidth = GraphicsHandler.frame.getWidth();
+		double gHeight = 1080;
+		double gWidth = 1920;
 		// Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction
-		float scaleForWidth = screenWidth / gWidth;
-		float scaleForHeight = screenHeight / gHeight;
-		float scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
-		float midX = screenWidth / 2;
-		float midY = screenHeight / 2;
+		double scaleForWidth = screenWidth / gWidth;
+		double scaleForHeight = screenHeight / gHeight;
+		double scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
+		double midX = screenWidth / 2;
+		double midY = screenHeight / 2;
 		midX /= scale;
 		midY /= scale;
 		VectorDouble clicked = new VectorDouble(screenx, screeny);
@@ -406,7 +406,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			} else {
 				t = new TileThruster();
 				TileThruster tr = (TileThruster) t;
-				tr.thrustAngle = (Math.PI * ((float) clickmode_roation_index)) / 2F;
+				tr.thrustAngle = (Math.PI * ((double) clickmode_roation_index)) / 2F;
 			}
 			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY, ud));
 			ud.raft.setConstructionTile(t);

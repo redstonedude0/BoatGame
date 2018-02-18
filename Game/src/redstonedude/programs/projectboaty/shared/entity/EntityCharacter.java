@@ -74,7 +74,7 @@ public class EntityCharacter extends Entity implements Serializable {
 		// If the maximum speed would exceed the distance then move the target to the raw location and return
 		VectorDouble bodyCOM = loc.getPos().add(new VectorDouble(0.5, 0.5));
 		VectorDouble change = transformedTargetCOM.subtract(bodyCOM);
-		float speed = 0.1F;
+		double speed = 0.1F;
 		if (change.getSquaredLength() <= Math.pow(speed, 2)) {
 			loc = target;// Move to target.
 			//System.out.println("Curr loc3: " + loc.getPos().x + ",");
