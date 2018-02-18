@@ -9,6 +9,7 @@ import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestDelEntity;
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
 public class TaskCollect extends TaskReachEntity implements Serializable {
 
@@ -37,11 +38,11 @@ public class TaskCollect extends TaskReachEntity implements Serializable {
 	}
 
 	@Override
-	public int getPriority(EntityCharacter ec) {
+	public Priority getPriority(EntityCharacter ec) {
 		if (!ec.carryingBarrel) {
-			return getDistanceToTarget(ec);
+			return new Priority(PriorityType.NORMAL,getDistanceToTarget(ec));
 		}
-		return INELIGIBLE;
+		return Priority.getIneligible();
 	}
 
 }

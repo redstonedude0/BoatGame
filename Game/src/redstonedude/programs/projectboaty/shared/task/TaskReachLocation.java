@@ -27,7 +27,7 @@ public abstract class TaskReachLocation extends Task implements Serializable {
 	
 	public int getDistanceToTarget(EntityCharacter ec) {
 		if (target == null) {
-			return INELIGIBLE;
+			return 0;
 		}
 		VectorDouble absoluteTargetCOM = target.getPos().add(new VectorDouble(0.5,0.5));
 		VectorDouble absoluteCOM = ec.loc.getPos().add(new VectorDouble(0.5,0.5));

@@ -73,7 +73,8 @@ Alpha 0.8 (The Entities Update): [TODO]
 Alpha 0.9 (The Intelligence Update): [TODO]
 		Minor fixes:
 -PR-	  Player controlled entities fall in water if they are no longer on a block
--PD-	  Boat complete destruction should cause new boat respawn at random location?
+-PD-(R)	  Boat complete destruction should cause new boat respawn at random location?
+		  Added after-death cam?. Need to handle respawn.
 		Efficiency enhancements:
 -P-		  Change everything to use floats instead of doubles
 		Error handling:
@@ -100,9 +101,11 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	  Make intelligent task selection? (take into account distance, swim/walk speeds)
 			Priority for each task from getPriority() method, lowest priority is done first. (must be >=0)
 	[R]	  Intelligent dismounting (pathfinding not currently necessary)
-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-	(R)	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?
-	(R)	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
+-D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
+			Consider implications of mid-journey speed-ups
+	[R]	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?. Task will be
+			cancelled upon error.
+	[R]	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
 			in-depth setting of Priorities (i.e. repairs always come above building, etc)
 		  Overhaul rest of packet and physics system to work with Location better.
 		GUI Updates:
@@ -120,14 +123,14 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -R-		  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
 		  Update Camera to be able to track other objects
 -P-	[R]   Rotation soft follow?
-		Investigate barrel 'worm' at t=0
+	(R)	Investigate barrel 'worm' at t=0
 		  Investigation so far - it still exists, not sure how to reproduce it though. Possibly always in direction of wind?
-	(R)	Investigate black flash when resizing frame
+	[R]	Investigate black flash when resizing frame
 		  Investigation 1 - Not found, possibly solved with new fps method
-		  Inv 2 - ""
-	(R)	Investigate 1 frame flash when clicking GUI buttons
+		  Inv 2 - "". Not found marked as completed.
+	[R[	Investigate 1 frame flash when clicking GUI buttons
 		  Investigation 1 - Not found, possibly solved with new fps method
-		  Inv 2 - ""
+		  Inv 2 - "". Not found marked as completed.
 	[R]	Investigate ghost damage from barrels
 			Appears to occur as 1 client doesn't acknowledge a barrel dissapearing, make sure only doing collisions for own raft
 	[R]	Investigate raft reset to 0,0 on disconnect?
@@ -152,7 +155,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -D	(R)	Consider overhaul of array handling and consider event listeners
 -D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
 -D-		Consider adding drag interface for multiple task creation/deletion
-Alpha 0.91 (The Sounds [and camera?] Update): [TODO]
+Alpha 0.91 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
 		Add a way to trigger sounds and music on events in the code

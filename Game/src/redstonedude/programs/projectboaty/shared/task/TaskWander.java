@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
 public class TaskWander extends TaskReachLocation implements Serializable {
 
@@ -75,8 +75,9 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 	}
 
 	@Override
-	public int getPriority(EntityCharacter e) {
-		return 0; // anyone can wander, this value is never even checked.
+	public Priority getPriority(EntityCharacter e) {
+		// anyone can wander, this value is never even checked.
+		return new Priority(PriorityType.NORMAL,0);
 	}
 
 }

@@ -142,7 +142,7 @@ public class ClientPhysicsHandler {
 				}
 			}
 			// move camera accordingly
-			if (currentUser != null && currentUser.raft != null) {
+			if (currentUser != null && currentUser.raft != null && !Double.isNaN(currentUser.raft.getPos().x)) {
 				VectorDouble posDiff = currentUser.raft.getCOMPos().getAbsolute(currentUser.raft.getUnitX(), currentUser.raft.getUnitY()).add(currentUser.raft.getPos()).subtract(ClientPhysicsHandler.cameraPosition);
 				posDiff = posDiff.divide(10);// do it slower
 				cameraPosition = cameraPosition.add(posDiff);
@@ -172,7 +172,12 @@ public class ClientPhysicsHandler {
 					if (tickCount%50 == 0) { //every 50 ticks (1 second)
 						ec.currentTask.slowUpdate();
 					}
-					ec.currentTask.execute();
+					try {
+						ec.currentTask.execute();
+					} catch (Exception e1) { //error handling, if there's an error during execution effectively cancel this task.
+						e1.printStackTrace();
+						ec.currentTask.isCompleted = true;
+					}
 				} else {
 					//System.out.println("e1");
 				}
@@ -182,9 +187,7 @@ public class ClientPhysicsHandler {
 				prmc.absolutePos = ec.loc.isAbsolute;
 				prmc.raftPosID = ec.loc.raftUUID;
 				ClientPacketHandler.sendPacket(prmc);
-			} else {
-				//System.out.println("other player");
-			}
+			} // else System.out.println("other player");
 			
 			//do not try to use other players characters
 			break;

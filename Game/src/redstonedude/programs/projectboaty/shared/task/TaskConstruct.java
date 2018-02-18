@@ -9,6 +9,7 @@ import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRa
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
 public class TaskConstruct extends TaskReachLocationAndWork implements Serializable {
 
@@ -27,11 +28,11 @@ public class TaskConstruct extends TaskReachLocationAndWork implements Serializa
 	}
 
 	@Override
-	public int getPriority(EntityCharacter ec) {
+	public Priority getPriority(EntityCharacter ec) {
 		if (ec.carryingBarrel) {
-			return getDistanceToTarget(ec);
+			return new Priority(PriorityType.NORMAL,getDistanceToTarget(ec));
 		}
-		return INELIGIBLE;
+		return Priority.getIneligible();
 	}
 
 	@Override

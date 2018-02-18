@@ -183,14 +183,14 @@ public class ServerPhysicsHandler {
 			//do barrels for this raft
 			//count barrels around here
 			VectorDouble pos = sud.raft.getPos();
-			double xFar1 = pos.x-24;
-			double xClose1 = pos.x-12;
-			double yFar1 = pos.y-16;
-			double yClose1 = pos.y-8;
+			double xFar1 = pos.x-24; //screen is no longer 12*8, consider it as 13*13 now.
+			double xClose1 = pos.x-13;
+			double yFar1 = pos.y-24;
+			double yClose1 = pos.y-13;
 			double xFar2 = pos.x+24;
-			double xClose2 = pos.x+12;
-			double yFar2 = pos.y+16;
-			double yClose2 = pos.y+8;
+			double xClose2 = pos.x+13;
+			double yFar2 = pos.y+24;
+			double yClose2 = pos.y+13;
 			double count = 0;
 			for (WrappedEntity we: getWrappedEntities()) {
 				Entity e = we.entity;

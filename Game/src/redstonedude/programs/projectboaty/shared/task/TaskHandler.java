@@ -8,6 +8,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSetTaskList;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
+import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
 public class TaskHandler {
 	
@@ -35,16 +36,16 @@ public class TaskHandler {
 	public static void assignTask(Raft raft, EntityCharacter ec) {
 		ArrayList<Task> tasks = raft.getTasks();
 		Task lowestPriorityTask = null;
-		int lowestPriority = Task.INELIGIBLE;
+		Priority lowestPriority = Priority.getIneligible();
 		for (Task t: tasks) {
-			int priority = t.getPriority(ec);
+			Priority priority = t.getPriority(ec);
 			//lowest priority but not ineligible.
-			if ((priority < lowestPriority || lowestPriority == Task.INELIGIBLE) && priority != Task.INELIGIBLE) {
+			if (((priority.priorityModifier < lowestPriority.priorityModifier && priority.priorityType.priority == lowestPriority.priorityType.priority) || priority.priorityType.priority > lowestPriority.priorityType.priority ||lowestPriority.priorityType == PriorityType.INELIGIBLE ) && priority.priorityType != PriorityType.INELIGIBLE) {
 				lowestPriority = priority;
 				lowestPriorityTask = t;
 			}
 		}
-		if (lowestPriority != Task.INELIGIBLE) {
+		if (lowestPriority.priorityType != PriorityType.INELIGIBLE) {
 			//there's an actual task we can do, do it.
 			lowestPriorityTask.assignedEntity = ec;
 			raft.removeTask(lowestPriorityTask);
