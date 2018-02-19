@@ -28,6 +28,7 @@ import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
 
 public class ControlHandler implements KeyListener, MouseListener, MouseMotionListener {
@@ -48,6 +49,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static boolean clickmode_collection = true;
 	public static boolean clickmode_building_wood = false;
+	public static boolean clickmode_deconstruct = false;
 	public static int clickmode_roation_index = 0;
 
 	public static Mode mode = Mode.MainMenu;
@@ -295,6 +297,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (clickmode_collection) {
 				doBarrelPress(clicked);
+			} else if (clickmode_deconstruct) {
+				doDeconstructPress(clicked);
 			} else {
 				doBuildingPress(clicked);
 			}
@@ -411,6 +415,36 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		}
 		ud.raft.addTask(t);
+
+	}
+	
+	public static void doDeconstructPress(VectorDouble clicked) {
+		// convert to relative coordinates
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		updateConstructionTile();
+		Tile tile = ud.raft.getConstructionTile();
+		if (tile == null) {
+			return;
+		}
+		TaskDeconstruct t = new TaskDeconstruct();
+		t.target = new Location();
+		t.target.setPos(tile.getPos());
+		t.target.isAbsolute = false;
+		t.target.raftUUID = ud.uuid;
+		for (Task t2 : ud.raft.getAllTasks()) {
+			if (t2 instanceof TaskDeconstruct) {
+				TaskDeconstruct tc = (TaskDeconstruct) t2;
+				if (tc.target.getPos().equals(t.target.getPos())) {
+					return;
+				}
+			}
+		}
+		for (Tile til : ud.raft.getTiles()) {
+			if (t.target.getPos().equals(til.getPos())) {
+				ud.raft.addTask(t);
+				return;//actually a tile here so do it
+			}
+		}
 
 	}
 

@@ -95,8 +95,8 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 -R-	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
 			{need event system to be able to dynamically cancel}
 	[R]	  Make tasks cancellable by right-clicking? Note: Repair tasks won't cancel currently due to auto-creation
--DR-( )	  Paddelling task is cancellable
--R-	( )	  Implement paddelling, take it into account for control and physics calculations.
+-R- (R)	  Paddelling task is cancellable
+-R-	(R)	  Implement paddelling, take it into account for control and physics calculations.
 			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
 			Perhaps set as unreachable if speed difference is too great?
 	[R]	  Make intelligent task selection? (take into account distance, swim/walk speeds)
@@ -123,7 +123,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Camera Updates:
 -D-	( )	  Add scrolling to world scale?
 			Consider how to handle world tiling
--R-	( )	  Add a hard render limit on ships to save GPU, also add fog of war to show approximately this limit (-20 perhaps?)
+-R-	( )	  Add a hard render limit on ships+entities to save GPU, also add fog of war to show approximately this limit (-20 perhaps?), limit focussed on camera?
 	[R]	  Update Camera to be able to track other objects (need objects to track, allow for tracking of entities?)
 	[R]   Rotation soft follow?
 	[R]	Investigate barrel 'worm' at t=0
@@ -168,10 +168,12 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
 	(R)	Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
+	(R)	Investigate coordinates in Character menu - not using COM pos?
 Alpha 0.10 (The Sounds Update): [TODO]
 		Decide on sound design
 		Make the music and sounds as necessary
 		Add a way to trigger sounds and music on events in the code
+	(D)	Animations
 		Data type cleanup:
 -P-	(R)	  Overhaul rest of packet and physics system to work with Location better.
 	(R)	  Add helper methods to Location to calculate distances, get movespeed type, etc
@@ -240,10 +242,13 @@ Alpha 1.4 (The Fighting Update): [TODO]
 List of discussion and decision points:
 		[Decide how boat complete destruction will work]
 			Immediately new boat? Need to be able to show death, Camera settings?
+			Respawn or disconnect menu?
 		[discuss PCE stats system]
 		[decide how PCE stats should work, random? guaranteed for 1st person? etc]
-		[discuss PCE status effects - 'cold','wet']
+		[discuss PCE status effects - 'cold','wet'] Cool meme
+		[find guys on islands to expand crew, start with small crew]
 		[terrain tile system or polygonal?]
+			Polygonal?
 		[discuss how GUI will work, WASD always move? Perhaps need to select control mode?]
 		[consider change in angular momentum when a block gets destroyed?]
 		[consider adding static friction?]
@@ -261,9 +266,9 @@ List of discussion and decision points:
 		[how to implement rejoin of players, and how overlapping will work, optional teleportation or waiting]
 		[consider overhauling despawn and spawn system to have global barrel count and increase efficiency?]
 		[discuss barrel-barrel and barrel-terrain collisions]
-			Should they occur? Do they damage barrels?
+			Should they occur? Do they damage barrels? Yes, no damage
 			They will need new physics sytem or else barrels will bounce around shorelines
-			Should barrel collisions be based on midpoint or a set radius?
+			Should barrel collisions be based on midpoint or a set radius? Radius
 			Barrels blown across beaches? Should collisions with terrain be based on graphical gradient or true gradient?
 			Need to improve collisions - take relative velocities and implement a coefficient of restitution?
 		[Consider overhauling texture system]
@@ -277,6 +282,7 @@ List of discussion and decision points:
 				methods where required?
 		[Discuss VAC integration]
 		[Update display to show the tile and orientation of construction tile?]
+			"That would be cool"
 			Show the tile and orientation? Grayed out? Transparent?
 			Should it also display on the task once clicked?
 			Task icon for repair?
@@ -286,6 +292,8 @@ DONE	Consider pathfinding with dynamic targets - reach and recalculate? every se
 			Use Trace pathfinding algorithm, possibly best-first-search if not
 			http://qiao.github.io/PathFinding.js/visual/
 		[Decide how new characters will be obtained]
+			Stroll freely around boat
+			Pickup off islands, spawn like barrels? Wander around?
 DONE	[Consider how to implement thread-safe arrays]
 			Array testing results: (see TestArea for full code, tests are done with 1,000 and 10,000 objects respectively)
 			CopyOnWriteArrayList:
@@ -304,6 +312,7 @@ DONE	[Consider how to implement thread-safe arrays]
 			Size  :	5				9
 		[Consider adding Location helper functions to compare locations]
 		[Consider allowing building whilst on land to create defendable bases (Perhaps farmables? Perhaps mines?)]
+TODODO		Check out from the depths
 		[Consider AI-based rafts (transport rafts in fleeting, offensive rafts that can attack, etc)]
 		[Consider overhauling rotation and drag system (rot.damage and drag should apply to 1-tile rafts, rafts should not spin
 			wildly on shorelines, perhaps use reefs to do this?]

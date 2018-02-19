@@ -40,6 +40,7 @@ import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
@@ -327,7 +328,27 @@ public class GraphicsHandler {
 					} catch (NoninvertibleTransformException e) {
 						e.printStackTrace();
 					}
-				}
+				} else if (t instanceof TaskDeconstruct) {
+					TaskDeconstruct tc = (TaskDeconstruct) t;
+					double x = tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos()).x;
+					double y = tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos()).y;
+					double workDone = (tc.maximumWork - tc.workRemaining);
+					double proportionDone = workDone / ((double) tc.maximumWork);
+					double angleDone = proportionDone * 360;
+					// using graphics instead of colors
+					AffineTransform rotator = new AffineTransform();
+					rotator.translate(100 * x, 100 * y);
+					rotator.rotate(cud.raft.theta);
+					g2d.transform(rotator);
+					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
+					try {
+						g2d.transform(rotator.createInverse());
+					} catch (NoninvertibleTransformException e) {
+						e.printStackTrace();
+					}
+				} 
 			}
 		}
 
@@ -460,12 +481,12 @@ public class GraphicsHandler {
 		Color menuGray = new Color(127, 127, 127);
 		// entire bottomBar container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
-		bottomBarContainer.setPreferredSize(new Dimension(400, 150));
+		bottomBarContainer.setPreferredSize(new Dimension(400, 190));
 		bottomBarContainer.setBackground(new Color(0, 0, 0, 0));
 		bottomBarContainer.setLayout(new LayoutManagerStrictSizes());
 		JPanel bottomBarButtonContainer = new JPanel();
 		bottomBarButtonContainer.setPreferredSize(new Dimension(400, 20));
-		bottomBarButtonContainer.setLocation(0, 130);
+		bottomBarButtonContainer.setLocation(0, 170);
 		bottomBarButtonContainer.setBackground(menuGray);
 		bottomBarButtonContainer.setLayout(new LayoutManagerStrictSizes());
 		bottomBarContainer.add(bottomBarButtonContainer);
@@ -496,7 +517,7 @@ public class GraphicsHandler {
 			JPanel buildGUIPopup = new JPanel();
 			buildGUIPopup.setLocation(0, 0);
 			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
-			buildGUIPopup.setPreferredSize(new Dimension(150, 130));// height of container-barheight
+			buildGUIPopup.setPreferredSize(new Dimension(150, 180));// height of container-barheight
 			buildGUIPopup.setBackground(menuGray);
 			buildGUIPopup.setVisible(false);
 			bottomBarContainer.add(buildGUIPopup);
@@ -519,7 +540,14 @@ public class GraphicsHandler {
 			buildGUIBarrel.setPreferredSize(new Dimension(150, 40));
 			buildGUIBarrel.setFocusable(false);
 			buildGUIPopup.add(buildGUIBarrel);
+			JButton buildGUIDeconstruct = new JButton("Deconstruct");
+			buildGUIDeconstruct.setLocation(0, 120);
+			buildGUIDeconstruct.setLayout(new LayoutManagerStrictSizes());
+			buildGUIDeconstruct.setPreferredSize(new Dimension(150, 40));
+			buildGUIDeconstruct.setFocusable(false);
+			buildGUIPopup.add(buildGUIDeconstruct);
 			popups.add(buildGUIPopup);
+			
 
 			buildGUIButton.addActionListener(new ActionListener() {
 				@Override
@@ -538,6 +566,7 @@ public class GraphicsHandler {
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_building_wood = true;
 					ControlHandler.clickmode_collection = false;
+					ControlHandler.clickmode_deconstruct = false;
 					// make button depressed?
 				}
 			});
@@ -546,6 +575,7 @@ public class GraphicsHandler {
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_building_wood = false;
 					ControlHandler.clickmode_collection = false;
+					ControlHandler.clickmode_deconstruct = false;
 					// make button depressed?
 				}
 			});
@@ -553,6 +583,15 @@ public class GraphicsHandler {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					ControlHandler.clickmode_collection = true;
+					ControlHandler.clickmode_deconstruct = false;
+					// make button depressed?
+				}
+			});
+			buildGUIDeconstruct.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ControlHandler.clickmode_collection = false;
+					ControlHandler.clickmode_deconstruct = true;
 					// make button depressed?
 				}
 			});
