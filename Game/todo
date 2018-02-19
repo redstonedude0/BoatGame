@@ -184,8 +184,44 @@ Alpha 0.10 (The Sounds Update): [TODO]
 		Misc:
 -P-	(R)	  Investigate coordinates in Character menu - not using COM pos?
 
-
-			
+	Further notes for this update (and future updates):
+		Resources:
+			Wood - obtained in barrels on the ocean, obtained from trees on islands
+			Scrap Metal - obtained in barrels on the ocean, can be found on beaches
+			Cloth - obtained in barrels on the ocean, can be obtained from cotton plants on islands?
+			(Characters) - recruited from islands? Can just be grabbed? Need to be bribed with food? Can be taken prisoner?
+			Food? - Can go fishing? Can grab fruit from islands? Required to nourish and keep characters (they die or revolt without food?)
+			Coral - Can be collected from reefs, used as weaponry and armor?
+			Stone blocks - Can be collected from rocky outcrops, required to make anchors, very heavy
+			Steel, Silver, Gold - Can be mined from islands? Dropped by characters, some aboard AI ships, etc?
+			Consider adding animals - Sheep (Wool, Mutton), Cows (Milk, Beef)
+			*Consider medical system - body part resources?*
+			Ammunition/Gunpowder/Cannonballs? Start with some, craft from scrap metal or find on islands?
+			More in-depth systems (type of food, type of coral, etc)?
+		Tiles:
+			Wooden Planks - weak, buoyant, light
+			Offboard Motor - heavy, fairly durable, requires scrap?
+			Sail (multitile construction) - very large, fairly heavy, massive thrust.
+			Rudder (multitile construction) - fairly heavy, large torque from speed
+			Anchor (multitile construction?) - very heavy, extreme thrust(drag)
+			Metal hull (dynamic parttile?) - fairly heavy, extremely durable
+			Spiked hull (dynamic parttile?) - fairly heavy, requires more metal, fairly durable, higher drag, deals more damage and grabs barrels?
+			Bitts (mooring bollards) - heavy, can be used to tie mooring lines.
+			Planks (multitile construction) - can be used for dry boarding (has no collisions~)
+			Cannon (multitile construction) - very heavy, can be used to fire cannonballs.
+			Mounted crossbow? - light, fairly fast fire rate, low damage
+			Stairs (multilevel construction) - used to transfer between layers
+			Oar - allows for faster thrust than paddeling, has a task fulfillment.
+			Bed/Bunk/Hammock - can be given for characters to sleep, helps keep them happy, consider day/night cycle?
+			Table - used by characters to socialise
+			Walls (dynamic parttile?) - used in layers to provide full protection
+			Doors - used to seperate walls
+			Windows - allows shooting though, boarding through is difficult.
+			Low wall - used to act as some cover above deck.
+			Boat wheel - required to steer the boat(?)
+			Grapples - used to tether a boat to an enemy boat during a boarding operation
+		Sources and stuff:
+			Check out https://game-development.zeef.com/david.arcila
 			
 		
 Alpha 0.11 (Company Setup): [TODO]
@@ -246,7 +282,7 @@ Alpha 1.3 (The Boat Update): [TODO]
 		[discussion of pre-generated structures such a strongholds, ports, and dry docks]
 Alpha 1.4 (The Fighting Update): [TODO]
 		Implement hand-to-hand combat and pistols, perhaps give every PCE infinite ammo and a pistol by default.
-
+		Consider adding boarding policies (kill all, take prisoners, take ship, etc)
 
 List of discussion and decision points:
 		[Decide how boat complete destruction will work]
