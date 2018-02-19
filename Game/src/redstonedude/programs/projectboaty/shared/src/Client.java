@@ -25,7 +25,7 @@ public class Client implements Runnable, ImageObserver {
 	}
 
 	public Client() {
-		ClientPacketHandler.hostName = "10.1.11.7";//"25.95.178.83";
+		ClientPacketHandler.hostName = "localhost";//"25.95.178.83";
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();

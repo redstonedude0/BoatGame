@@ -85,25 +85,15 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 		Task System Updates:
 	[R]	  Overhaul task system
 	[R]	  Add construction time (make construction a lasting task)
--R-	( )	  Make thrusters require 2 wood
-			{need resource system to know how to handle multiple-resource tiles}
 	[R]	  Add repair task? [automatically added? option in GUI?]
 			Automatically adds repair task, no option currently. Consider if block doesn't exist, consider removing if block is
 			destroyed. Consider adding better listeners and possibly a wrapper for Tiles
 	[R]  Update Wander task to account for characters being in water.
 			Allows them to reside on a fake square at 0,0 however.
--R-	(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
-			{need event system to be able to dynamically cancel}
 	[R]	  Make tasks cancellable by right-clicking? Note: Repair tasks won't cancel currently due to auto-creation
--R- (R)	  Paddelling task is cancellable
--R-	(R)	  Implement paddelling, take it into account for control and physics calculations.
-			Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1
-			Perhaps set as unreachable if speed difference is too great?
 	[R]	  Make intelligent task selection? (take into account distance, swim/walk speeds)
 			Priority for each task from getPriority() method, lowest priority is done first. (must be >=0)
 	[R]	  Intelligent dismounting (pathfinding not currently necessary)
--D-	(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable
-			Consider implications of mid-journey speed-ups. Need to add failure to move into characters moveToward method.
 	[R]	  Consider adding try-catch around all execute()s to ensure that pathfinding is fine, else set as unreachable?. Task will be
 			cancelled upon error.
 	[R]	  Implement custom Priority class where you have PriorityType (Critical, Normal, Low), and a int priorityModifier. Allows more
@@ -113,17 +103,11 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	  Update GUI to be graphical based on buttons
 	[R]	  Make main menu GUI
 	[R]	  Add larger worldmap, openable in the GUI.
--D-	( )	  Add GUI scale into a graphics settings page?
 	[R]	  Add GUI to show number of characters, their status and world coordinates?, 
 	[R]	  Add GUI to show list of tasks, etc
     [R]	  Modified debug GUI so its visible
     [R]	  Made escape menu a GUI
--D-	( )	  Implement server-side chat?
-			Need to decide how to handle focus & modification of chatqueue
 		Camera Updates:
--D-	( )	  Add scrolling to world scale?
-			Consider how to handle world tiling
--R-	( )	  Add a hard render limit on ships+entities to save GPU, also add fog of war to show approximately this limit (-20 perhaps?), limit focussed on camera?
 	[R]	  Update Camera to be able to track other objects (need objects to track, allow for tracking of entities?)
 	[R]   Rotation soft follow?
 	[R]	Investigate barrel 'worm' at t=0
@@ -146,9 +130,6 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 			possibly due to the null errors that were fixed with null checks and a sync. Probably not.
 			Investigation 1 - not found; possibly fixed
 			Investigation 2 - found, source not identified. Checked code - no reason why it shouldn't work. Possibly sync bug.
-	(RD)Investigate latency issues. Consider measuring packets, consider writeUnshared testing.
-			Consider offloading packet transfer to client-side calculations. esp. for AI.
-			Investigation 1 - Local latency issues fixed with fps rewrite. Need to analyse WAN latency. (consider UDP packets)
 			Investigation 2 - Upon creating task removal it appears tilestates are sent every tick?
 	[R]	Investigate Task delay - takes a second to take up a task? (due to random selection each time - should be fixed with
 			priority system implementation). With new system task delay is near 0.
@@ -158,27 +139,55 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	Consider implications of making join and disconnect synchronized now, consider other ways around this, consider removing
 			"socket closed" error on server shutdown. "socket closed" fixed, making methods synced should be fine. Need to consider
 			full queueing system.
--D-	(R)	Consider queueing input controls
 	[R]	Consider event listeners
--D-	(R)	Decide how to implement resource requirement system + other resources, consider TileHandler and enums
--D-	( )	Consider adding drag interface for multiple task creation/deletion
-	(R)	Investigate mouse being very slightly off with mouse interface
 	[R] Investigate thrust selection system (forward also applies translation). Fixed system by implementing effectiveZero.
 	[R]	Fix NaN errors on raft (check before and assert after, if the variable turns NaN, find out where and what caused it, then
 			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
-	(R)	Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
-	(R)	Investigate coordinates in Character menu - not using COM pos?
 Alpha 0.10 (The Sounds Update): [TODO]
-		Decide on sound design
-		Make the music and sounds as necessary
-		Add a way to trigger sounds and music on events in the code
-	(D)	Animations
+		PR:
+	(D)	  Create PR accounts (Twitter, fb? etc)
+	(D)	  Get feedback from Alpha 0.9 and suggest features
+	(D)	  Get feedback from Alpha 0.9 and begin to outline a financial strategy
+		Graphics & Sound:
+	(D)	  Decide on sound design
+	(D)	  Make the music and sounds as necessary
+	(D)	  Animations
+-D-	(D)	  Add sounds for character walking+swimming. Discuss how to - possibly hook into moveToward function
+	(RD)  Add a way to trigger sounds and music on events in the code - Discuss how music system might work
 		Data type cleanup:
 -P-	(R)	  Overhaul rest of packet and physics system to work with Location better.
 	(R)	  Add helper methods to Location to calculate distances, get movespeed type, etc
 -P-	(R)	  Consider adding .send() to packets?
 	(R)	  Reorganise packet structure so shared, server, and client, resources are seperate where required.
+		Task system changes:
+-P-	(R)   Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
+-PR-(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
+-P- (R)	  Investigate cancelling tasks
+-D-	(R)	  Consider priority handling for non-collective destruction? Consider resource dropping
+-PR-(R)	  Implement paddelling, take it into account for control and physics calculations. Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1 Perhaps set as unreachable if speed difference is too great?
+-PD-(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable Consider implications of mid-journey speed-ups. Need to add failure to move into characters moveToward method.
+		Interface and Camera changes:
+-PD-(R)	  Consider adding drag interface for multiple task creation/deletion
+-P-	(R)	  Investigate mouse being very slightly off with mouse interface
+-PD-(R)   Consider queueing input controls
+-PD-(R)	  Add scrolling to world scale? Consider effects of tile graphics
+-PR-(R)	  Add a hard render limit on ships+entities to save GPU, also add fog of war to show approximately this limit (-20 perhaps?), limit focussed on camera?
+	(RD)  Investigate latency issues. Consider measuring packets, consider writeUnshared testing. Consider offloading packet transfer to client-side calculations. esp. for AI. Need to analyse WAN latency. (consider UDP packets)
+-PD-(R)	  Add GUI scale into a graphics settings page?
+-PD-(R)	  Implement server-side chat? Need to decide how to handle focus & modification of chatqueue
+-D- (R)	  Consider allowing for a delocalised camera
+		Resource System:
+-PD-(R)	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
+-PR-(R)	  Make thrusters require 2 wood
+-D-	(R)	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
+		Misc:
+-P-	(R)	  Investigate coordinates in Character menu - not using COM pos?
+
+
+			
+			
+		
 Alpha 0.11 (Company Setup): [TODO]
 		Set up the company or whatever we need to do
 			I would like us to have a corporate meme because then we can be like a real company meme
