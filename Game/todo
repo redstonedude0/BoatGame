@@ -1,5 +1,6 @@
 Key:
 [X] Done by X
+[X) In progress by X
 (X) assigned to be done by X
 ( ) unassigned
 R - Harrison
@@ -146,13 +147,23 @@ Alpha 0.9 (The Intelligence Update):
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
 Alpha 0.10 (The Sounds Update): [In Progress]
 		PR:
-	(D)	  Create PR accounts (Twitter, fb? etc)
+	[D)	  Create PR accounts (Twitter, fb? etc)
+			Need a company email.
+				This means I need to get a domain.
+					-Use GoDaddy and use an external website designer and etc (Very, very costly)
+					-Use a website creator (Costly)
+					-Use GoDaddy and point to a webserver and then set up an email server (Second cheapest)
+					-Use G-Suite (Cheapest? (GoDaddy + servers may be cheaper overall)
+			Once the domain is set up, I can then create twitter, set up a website, etc.
 	(D)	  Get feedback from Alpha 0.9 and suggest features
 	(D)	  Get feedback from Alpha 0.9 and begin to outline a financial strategy
 		Graphics & Sound:
 	(D)	  Decide on sound design
+			See file
 	(D)	  Make the music and sounds as necessary
+			Plan to use open source sfx for the time being, but should be able to at least create some midis or tracks for music
 	(D)	  Animations
+		(R)   Need a specification for this
 -D-	(D)	  Add sounds for character walking+swimming. Discuss how to - possibly hook into moveToward function
 	(RD)  Add a way to trigger sounds and music on events in the code - Discuss how music system might work
 		Data type cleanup:
@@ -460,6 +471,6 @@ Beta 1.2 (The Modding Update): [TODO]
 			Custom Platform?
 			Other...
 		Add ability to mod in a viable way
-		Create a mod forum?
+		Create a mod forum? (Probably unnecessary if we use a pre-existing platform)
 
 
