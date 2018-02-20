@@ -2,17 +2,34 @@ Sound Design Notes
 
 Music
 
-Genre: 
-Instrumentation:
-Music Events:
+	Genre:
+		Mixed
+		Rock/Metal
+		Folk
+		Classical
+	
+	Instrumentation:
+		Midi
+		Real Instruments
+	
+	Music Events:
+		Combat
+		Ambient
+		Danger
 
 Soundscape
 
-Realistic or Cartoony?
-	OOT realistic. Creaky wood and skidding etc 
-Using unliscenced sound or make our own?
-	Probably either unlicenced or paid
-How deatiled should sounds be (i.e. footsteps, splash when someone enters water, etc)
-	Fairly detailed
+	Realistic or Cartoony?
+		OOT realistic. Creaky wood and skidding etc 
+	Using unliscenced sound or make our own?
+		Probably either unlicenced or paid
+	How detailed should sounds be (i.e. footsteps, splash when someone enters water, etc)
+		Fairly detailed
 
 Create a new section here on a list of sounds needed
+
+	-Footsteps on a variety of materials
+	-Splashing for entering/exiting water
+	-Splashing for swimming
+	-Ambient boat sounds
+	-Boat combat sounds
