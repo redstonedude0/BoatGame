@@ -97,7 +97,7 @@ public class ServerPhysicsHandler {
 		c++;
 		//do  barrel despawning
 		ArrayList<Entity> toDespawn = new ArrayList<Entity>();
-		for (WrappedEntity we: entities) {
+		for (WrappedEntity we: getWrappedEntities()) {
 			Entity e = we.entity;
 			if (e instanceof EntityBarrel) {
 				//it's a barrel boiks, see if its near any raft
@@ -262,7 +262,6 @@ public class ServerPhysicsHandler {
 	public static void createRaft(int id, ServerUserData sud) {
 		//System.out.println("RIIIIIIIGHT WE ARE ACTUALLY MAKING A RAFT RIGHT NOW");
 		Raft raft = new Raft();
-		int characters = 0;
 		raft.setPos(new VectorDouble(4, 3));
 		//sud.cameraPosition = new VectorDouble(4,3);
 		raft.theta = 0;
@@ -286,8 +285,6 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(2, 0));
 			raft.addTile(thruster);
-			EntityCharacter ec = new EntityCharacter();
-			characters = 6;
 			break;
 		case 2:
 			tile = new Tile();
@@ -309,7 +306,6 @@ public class ServerPhysicsHandler {
 			thruster.setPos(new VectorDouble(2, 1));
 			thruster.thrustAngle = Math.PI;
 			raft.addTile(thruster);
-			characters = 6;
 			break;
 		case 3:
 			tile = new Tile();
@@ -339,7 +335,6 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(5, 0));
 			raft.addTile(thruster);
-			characters = 8;
 			break;
 		case 4:
 //			tile = new Tile();
@@ -367,6 +362,24 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
 			raft.addTile(thruster);
+			break;
+		}
+		sud.raft = raft;
+	}
+	
+	public static void populateRaft(int id, ServerUserData sud) {
+		int characters = 0;
+		switch (id) {
+		case 1:
+			characters = 6;
+			break;
+		case 2:
+			characters = 4;
+			break;
+		case 3:
+			characters = 8;
+			break;
+		case 4:
 			characters = 1;
 			break;
 		}
@@ -377,11 +390,13 @@ public class ServerPhysicsHandler {
 					EntityCharacter ec = (EntityCharacter) we.entity;
 					if (ec.ownerUUID.equals(sud.uuid)) {
 						removeEntity(ec.uuid);
+						PacketDelEntity pde = new PacketDelEntity();
+						pde.uuid = ec.uuid;
+						ServerPacketHandler.broadcastPacket(pde);
 					}
 				}
 			}
 		});
-		sud.raft = raft;
 		for (int i = 0; i < characters; i++) {
 			newCharacter(sud.uuid);
 		}

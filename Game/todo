@@ -197,9 +197,11 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -PD-(R)	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
 -PR-(R)	  Make thrusters require 2 wood
 -D-	(R)	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
+	[R]   Make it so you spawn with a number of starting characters
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
 	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
+	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
 
 	Further notes for this update (and future updates):
 		Resources:

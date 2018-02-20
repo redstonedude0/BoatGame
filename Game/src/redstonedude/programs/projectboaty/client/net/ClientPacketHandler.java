@@ -46,6 +46,7 @@ public class ClientPacketHandler {
 				handlePacket(p);
 			} catch (Exception e) {
 				// error occured in that packet, be very careful now.
+				e.printStackTrace();
 				// kill the connection with the server
 				try {
 					ClientPacketListener.disconnect(); // disconnect
@@ -133,9 +134,11 @@ public class ClientPacketHandler {
 		case "PacketMoveCharacter":
 			PacketMoveCharacter pmc = (PacketMoveCharacter) packet;
 			Entity e = ClientPhysicsHandler.getEntity(pmc.uuid);
-			e.loc.isAbsolute = pmc.absolutePos;
-			e.loc.setPos(pmc.pos);
-			e.loc.raftUUID = pmc.raftPosID;
+			if (e != null) {
+				e.loc.isAbsolute = pmc.absolutePos;
+				e.loc.setPos(pmc.pos);
+				e.loc.raftUUID = pmc.raftPosID;
+			}//we may not have received entity data yet
 			break;
 		case "PacketRaftTiles":
 			PacketRaftTiles prt = (PacketRaftTiles) packet;

@@ -123,6 +123,7 @@ public class ServerPacketHandler {
 			ServerPhysicsHandler.createRaft(prr.raftID, sud);
 			PacketNewRaft pnr = new PacketNewRaft(connection.listener_uuid, sud.raft);
 			broadcastPacket(pnr);
+			ServerPhysicsHandler.populateRaft(prr.raftID, sud);
 			break;
 		case "PacketRequestMoveRaft":
 			PacketRequestMoveRaft prmr = (PacketRequestMoveRaft) packet;
@@ -298,7 +299,9 @@ public class ServerPacketHandler {
 		}
 		ud.uuid = spl.listener_uuid;
 		userData.add(ud);
+		boolean needNewRaft = false;
 		if (ud.raft == null) {
+			needNewRaft = true;
 			ServerPhysicsHandler.createRaft(1, ud);
 		}
 		// tell all users about this new user, including their raft
@@ -315,6 +318,9 @@ public class ServerPacketHandler {
 		for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
 			Entity e = we.entity;
 			spl.send(new PacketNewEntity(e));
+		}
+		if (needNewRaft) {
+			ServerPhysicsHandler.populateRaft(1, ud);
 		}
 
 	}
