@@ -34,7 +34,7 @@ public class ClientPacketHandler {
 
 	public static int portNumber = 49555;
 	public static String hostName = "";
-	public static ArrayList<UserData> userData = new ArrayList<UserData>();
+	public static ConcurrentLinkedQueue<UserData> userData = new ConcurrentLinkedQueue<UserData>();
 	public static String currentUserUUID = "";
 
 	public static ConcurrentLinkedQueue<Packet> queuedPackets = new ConcurrentLinkedQueue<Packet>();

@@ -54,10 +54,10 @@ public class GraphicsHandler {
 	public static JPanel menuPanel;
 
 	public static JPanel escapeMenuContainer;
-	
+
 	public static Graphics2D g2d;
 	public static BufferedImage backbuffer;
-	public static BufferedImage worldMap = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
+	public static BufferedImage worldMap = new BufferedImage(300, 300, BufferedImage.TYPE_INT_ARGB);
 
 	public static void graphicsUpdate() {
 		/*
@@ -332,8 +332,8 @@ public class GraphicsHandler {
 					}
 				} else if (t instanceof TaskDeconstruct) {
 					TaskDeconstruct tc = (TaskDeconstruct) t;
-					double x = tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos()).x;
-					double y = tc.target.getPos().getAbsolute(cud.raft.getUnitX(),cud.raft.getUnitY()).add(cud.raft.getPos()).y;
+					double x = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos()).x;
+					double y = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos()).y;
 					double workDone = (tc.maximumWork - tc.workRemaining);
 					double proportionDone = workDone / ((double) tc.maximumWork);
 					double angleDone = proportionDone * 360;
@@ -356,7 +356,7 @@ public class GraphicsHandler {
 						VectorDouble pos = tr.target.getPos();
 						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
 					}
-				} 
+				}
 			}
 		}
 
@@ -404,27 +404,27 @@ public class GraphicsHandler {
 			g2d.setColor(Color.WHITE);
 			g2d.drawString("1. lock position", x + 50, y + 70);
 			g2d.drawString("2. spawn character", x + 50, y + 90);
-//			int i = 0;
-//			for (WrappedEntity e: ClientPhysicsHandler.getWrappedEntities()) {
-//				if (e.entity != null && e.entity instanceof EntityCharacter) {
-//					EntityCharacter ec = (EntityCharacter) e.entity;
-//					if (!ec.ownerUUID.equals("")) {
-//						g2d.drawString(ec.uuid + ":" + ec.ownerUUID + ":" + ec.loc.getPos(), x + 50, y + 110 + 20*i);
-//						i++;
-//					}
-//				}
-//			}
+			// int i = 0;
+			// for (WrappedEntity e: ClientPhysicsHandler.getWrappedEntities()) {
+			// if (e.entity != null && e.entity instanceof EntityCharacter) {
+			// EntityCharacter ec = (EntityCharacter) e.entity;
+			// if (!ec.ownerUUID.equals("")) {
+			// g2d.drawString(ec.uuid + ":" + ec.ownerUUID + ":" + ec.loc.getPos(), x + 50, y + 110 + 20*i);
+			// i++;
+			// }
+			// }
+			// }
 		}
 	}
 
 	public static void updateWorldMap() {
 		int w = worldMap.getWidth();
 		int h = worldMap.getHeight();
-		UserData ud = ClientPacketHandler.getCurrentUserData();
+		UserData cud = ClientPacketHandler.getCurrentUserData();
 		int Ox = 0;
 		int Oy = 0;
-		if (ud != null && ud.raft != null) {
-			VectorDouble pos = ud.raft.getPos();
+		if (cud != null && cud.raft != null) {
+			VectorDouble pos = cud.raft.getPos();
 			Ox = (int) Math.floor(pos.x);
 			Oy = (int) Math.floor(pos.y);
 		}
@@ -444,9 +444,38 @@ public class GraphicsHandler {
 				}
 				// use solid circle radius 5 to show player
 				if (Math.pow(x + i - Ox, 2) + Math.pow(y + j - Oy, 2) <= 25) {
-					rgb = Color.RED.getRGB();
+					rgb = Color.WHITE.getRGB();
+				}
+				//circularise
+				if (Math.pow(i-w/2,2)+Math.pow(j-h/2, 2) > Math.pow(w/2, 2)/*assume square*/) {
+					rgb = new Color(0,0,0,0).getRGB();
 				}
 				worldMap.setRGB(i, j, rgb);
+				
+			}
+		}
+		// now add players
+		for (UserData ud : ClientPacketHandler.userData) {
+			if (ud != null && ud.raft != null && !ud.uuid.equals(ClientPacketHandler.currentUserUUID)) {
+				int Rx = 0;
+				int Ry = 0;
+				VectorDouble Rpos = ud.raft.getPos();
+				Rx = (int) Math.floor(Rpos.x);
+				Ry = (int) Math.floor(Rpos.y);
+				// convert to relative positions
+				int Ri = Rx + w / 2 - Ox;
+				int Rj = Ry + h / 2 - Oy;
+				for (int Mi = -5; Mi <= 5; Mi++) {
+					for (int Mj = -5; Mj <= 5; Mj++) {
+						int i = Ri + Mi;
+						int j = Rj + Mj;
+						if (i >= 0 && i < w && j >= 0 && j < h) {
+							if (Math.pow(Mi, 2) + Math.pow(Mj, 2) <= 25) {
+								worldMap.setRGB(i, j, Color.RED.getRGB());
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -495,7 +524,7 @@ public class GraphicsHandler {
 		menuPanel.setBackground(new Color(0, 0, 0, 0)); // Transparent
 		menuPanel.setLayout(null); // Menupanel doesn't shuffle around its internal components here, it's done on
 									// frame resize.
-		
+
 		Color menuGray = new Color(127, 127, 127);
 		// entire bottomBar container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
@@ -571,7 +600,6 @@ public class GraphicsHandler {
 			buildGUIRecruit.setFocusable(false);
 			buildGUIPopup.add(buildGUIRecruit);
 			popups.add(buildGUIPopup);
-			
 
 			buildGUIButton.addActionListener(new ActionListener() {
 				@Override
@@ -641,9 +669,14 @@ public class GraphicsHandler {
 			popups.add(mapGUIPopin);
 
 			JLabel mapGUImap = new JLabel(new Icon() {
+				int frameCount = 0;
 				@Override
 				public void paintIcon(Component c, Graphics g, int x, int y) {
 					g.drawImage(worldMap, x, y, frame);
+					frameCount++;
+					if (frameCount%20 == 0) {
+						updateWorldMap();
+					}
 				}
 
 				@Override
@@ -730,7 +763,7 @@ public class GraphicsHandler {
 										ecstring += "Busy-";
 									}
 									if (ec.loc.isAbsolute) {
-										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos().add(new VectorDouble(0.5,0.5))).getSquaredLength());
+										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos().add(new VectorDouble(0.5, 0.5))).getSquaredLength());
 										ecstring += distance + "m from raft";
 									} else {
 										VectorDouble pos = ec.loc.getPos();
@@ -972,7 +1005,7 @@ public class GraphicsHandler {
 		escapeMenuContainer = new JPanel();
 		doEscapeMenu: {
 			escapeMenuContainer.setPreferredSize(new Dimension(300, 300));
-			escapeMenuContainer.setBackground(new Color(0,0,0,127));
+			escapeMenuContainer.setBackground(new Color(0, 0, 0, 127));
 			escapeMenuContainer.setLayout(new LayoutManagerStrictSizes());
 			escapeMenuContainer.setVisible(false);
 			JLabel escapeMenuText = new JLabel("Escape Menu");
@@ -984,7 +1017,7 @@ public class GraphicsHandler {
 			escapeMenuText.setFont(escapeMenuText.getFont().deriveFont(Font.BOLD, 30));// big, bold
 			escapeMenuContainer.add(escapeMenuText);
 			menuPanel.add(escapeMenuContainer);
-			
+
 			JButton escapeMenuDisconnect = new JButton("Disconnect");
 			escapeMenuDisconnect.setPreferredSize(new Dimension(300, 100));
 			escapeMenuDisconnect.setLayout(new LayoutManagerStrictSizes());
@@ -1044,7 +1077,7 @@ public class GraphicsHandler {
 				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
 				mapGUIPopin.setLocation((size.width - mapGUIPopin.getWidth()) / 2, (size.height - mapGUIPopin.getHeight()) / 2);
 				escapeMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);
-				
+
 			}
 
 			@Override

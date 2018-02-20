@@ -199,6 +199,10 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -PR-(R)	  Make thrusters require 2 wood
 	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 	[R]   Make it so you spawn with a number of starting characters
+		World gen and map:
+-D-	(R)	  Trees, foliage, etc?
+-D-	(R)	  Polygonal islands with perlin noise generation. How to implement?
+	[R]	  Make the map show other players and update live
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
 	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
