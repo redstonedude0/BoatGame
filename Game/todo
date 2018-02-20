@@ -15,18 +15,18 @@ Alpha 0.1 (The Physics Update):
 Alpha 0.2 (The Looks Update):
 	[R]	Fix physics engine so COM moves in straight line
 	[R]	Add handling for textured tiles
-Alpha 0.3 (The Menu Update): [TODO]
+Alpha 0.3 (The Menu Update):
 	[R]	Add temporary main menu and loading screens, add splash screens
 	[R]	Add escape menu to return to main menu and shutdown internal engine
 	[R]	Make outboard motor graphical orientation be based on thrust angle
-Alpha 0.4 (The Vector Update): [TODO]
+Alpha 0.4 (The Vector Update):
 	[R]	Create VectorDouble and handlers to represent vectors and transformations
 	[R]	Replace the physics engine with VectorDouble objects
 	[R]	Implement friction being applied based on relative velocity
-Alpha 0.5 (The Debug Update): [TODO]
+Alpha 0.5 (The Debug Update):
 	[R]	Add functions to allow for easy debug, add a debug menu, add debug options to show moments? (added vector display)
 	[R] Add more vecor helper functions
-Alpha 0.6 (The Control Update): [TODO]
+Alpha 0.6 (The Control Update):
 	[R]	Make controls be based on how they will affect motion
 			i.e. right will always make you turn right?
 			how to implement:
@@ -36,7 +36,7 @@ Alpha 0.6 (The Control Update): [TODO]
 				e alone will set up thrusts for rightward translation
 	[R]	Make camera follow boat (following COM? linear soft follow? bounded? sigmoid? hard? Rotation?)
 	[R]	Check that block masses are working properly
-Alpha 0.7 (The Worlds Update): [TODO]
+Alpha 0.7 (The Worlds Update):
 	[R]	If it will be server-side, make the server
 			when a client connects they can request 1,2,3,4 as a raft and use it as normal
 			central server? client-run servers? local play?
@@ -45,7 +45,7 @@ Alpha 0.7 (The Worlds Update): [TODO]
 	[R]	Display islands based on noisemap
 	[R]	Save noisemap key to world when world saves
 	[D] Add sounds
-Alpha 0.8 (The Entities Update): [TODO]
+Alpha 0.8 (The Entities Update):
 	[R]	Add barrel entities [random spawn chance each tick?]
 	[R]	Do barrel despawning
 	[R]	Do barrel velocities and global wind
@@ -69,7 +69,7 @@ Alpha 0.8 (The Entities Update): [TODO]
 	[R]	Check task overlap on barrels and construction?
 	[R]	Investigate barrel spawn mechanics?
 	[R]	Investigate physics between clients being weird
-Alpha 0.9 (The Intelligence Update): [TODO]
+Alpha 0.9 (The Intelligence Update):
 		Minor fixes:
     [R]	  Player controlled entities fall in water if they are no longer on a block
 			On the next pathfinding tick they will update their state.
@@ -144,7 +144,7 @@ Alpha 0.9 (The Intelligence Update): [TODO]
 	[R]	Fix NaN errors on raft (check before and assert after, if the variable turns NaN, find out where and what caused it, then
 			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
-Alpha 0.10 (The Sounds Update): [TODO]
+Alpha 0.10 (The Sounds Update): [In Progress]
 		PR:
 	(D)	  Create PR accounts (Twitter, fb? etc)
 	(D)	  Get feedback from Alpha 0.9 and suggest features
