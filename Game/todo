@@ -144,7 +144,7 @@ Alpha 0.9 (The Intelligence Update):
 	[R]	Fix NaN errors on raft (check before and assert after, if the variable turns NaN, find out where and what caused it, then
 			search for the causal variable. If the variable is NaN and Nan then its broken outside of physics update by that
 			variable). Caused by a divide-by-zero on VectorDouble, modified it to return (0,0) on 0 divisor.
-Alpha 0.10 (The Sounds Update): [In Progress]
+Alpha 1.0 (The Sounds Update): [In Progress]
 		PR:
 	(D)	  Create PR accounts (Twitter, fb? etc)
 	(D)	  Get feedback from Alpha 0.9 and suggest features
@@ -182,14 +182,15 @@ Alpha 0.10 (The Sounds Update): [In Progress]
 -PR-(R)	  Make thrusters require 2 wood
 -D-	(R)	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 		Misc:
--P-	(R)	  Investigate coordinates in Character menu - not using COM pos?
+-P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
+	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
 
 	Further notes for this update (and future updates):
 		Resources:
 			Wood - obtained in barrels on the ocean, obtained from trees on islands
 			Scrap Metal - obtained in barrels on the ocean, can be found on beaches
 			Cloth - obtained in barrels on the ocean, can be obtained from cotton plants on islands?
-			(Characters) - recruited from islands? Can just be grabbed? Need to be bribed with food? Can be taken prisoner?
+			(Characters) - recruited from islands? Can just be grabbed? (should be task) Need to be bribed with food? Can be taken prisoner?
 			Food? - Can go fishing? Can grab fruit from islands? Required to nourish and keep characters (they die or revolt without food?)
 			Coral - Can be collected from reefs, used as weaponry and armor?
 			Stone blocks - Can be collected from rocky outcrops, required to make anchors, very heavy
@@ -200,18 +201,19 @@ Alpha 0.10 (The Sounds Update): [In Progress]
 			More in-depth systems (type of food, type of coral, etc)?
 		Tiles:
 			Wooden Planks - weak, buoyant, light
-			Offboard Motor - heavy, fairly durable, requires scrap?
-			Sail (multitile construction) - very large, fairly heavy, massive thrust.
+			Offboard Motor? - heavy, fairly durable, requires scrap?
+			Sail (multitile construction) - very large, fairly heavy, massive thrust. Can be climbed to provide lookout informaiton?
 			Rudder (multitile construction) - fairly heavy, large torque from speed
 			Anchor (multitile construction?) - very heavy, extreme thrust(drag)
-			Metal hull (dynamic parttile?) - fairly heavy, extremely durable
+			Metal hull (dynamic parttile? how to polygon?) - fairly heavy, extremely durable
 			Spiked hull (dynamic parttile?) - fairly heavy, requires more metal, fairly durable, higher drag, deals more damage and grabs barrels?
 			Bitts (mooring bollards) - heavy, can be used to tie mooring lines.
 			Planks (multitile construction) - can be used for dry boarding (has no collisions~)
 			Cannon (multitile construction) - very heavy, can be used to fire cannonballs.
 			Mounted crossbow? - light, fairly fast fire rate, low damage
+			Mini Trebuchet - fires barrels of oil and flaming arrows.....
 			Stairs (multilevel construction) - used to transfer between layers
-			Oar - allows for faster thrust than paddeling, has a task fulfillment.
+			Oar - allows for faster thrust than paddeling, has a task fulfillment. (single and double?)
 			Bed/Bunk/Hammock - can be given for characters to sleep, helps keep them happy, consider day/night cycle?
 			Table - used by characters to socialise
 			Walls (dynamic parttile?) - used in layers to provide full protection
@@ -219,12 +221,20 @@ Alpha 0.10 (The Sounds Update): [In Progress]
 			Windows - allows shooting though, boarding through is difficult.
 			Low wall - used to act as some cover above deck.
 			Boat wheel - required to steer the boat(?)
+			Sail rudder combo for very small boats?
+			Drums - 
 			Grapples - used to tether a boat to an enemy boat during a boarding operation
+			Prison bars+doors? - used to create cages for prisoners
+			Figurehead? - possibly design-your-own, send as Image.
+		Task system notes/ideas:
+			Deck swabbing - cleans boat
+			Bail water - used to reduce flooding within the ship
+			
 		Sources and stuff:
 			Check out https://game-development.zeef.com/david.arcila
 			
 		
-Alpha 0.11 (Company Setup): [TODO]
+Alpha 1.1 (Company Setup): [TODO]
 		Set up the company or whatever we need to do
 			I would like us to have a corporate meme because then we can be like a real company meme
 			Perhaps we could in-corporate (ayy lmao) our names into the company name? HCH Games or something along those lines.

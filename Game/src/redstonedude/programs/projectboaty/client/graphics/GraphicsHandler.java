@@ -477,7 +477,7 @@ public class GraphicsHandler {
 		menuPanel.setBackground(new Color(0, 0, 0, 0)); // Transparent
 		menuPanel.setLayout(null); // Menupanel doesn't shuffle around its internal components here, it's done on
 									// frame resize.
-
+		
 		Color menuGray = new Color(127, 127, 127);
 		// entire bottomBar container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
@@ -705,7 +705,7 @@ public class GraphicsHandler {
 										ecstring += "Busy-";
 									}
 									if (ec.loc.isAbsolute) {
-										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos().add(new VectorDouble(0.5,0.5))).getSquaredLength());
 										ecstring += distance + "m from raft";
 									} else {
 										VectorDouble pos = ec.loc.getPos();

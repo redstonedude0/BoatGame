@@ -1,6 +1,7 @@
 package redstonedude.programs.projectboaty.server.physics;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -259,8 +260,9 @@ public class ServerPhysicsHandler {
 	}
 
 	public static void createRaft(int id, ServerUserData sud) {
-		//System.out.println("RIIIIIIIGHT WE ARE ACTUALLY MKAING A RAFT RIGHT NOW");
+		//System.out.println("RIIIIIIIGHT WE ARE ACTUALLY MAKING A RAFT RIGHT NOW");
 		Raft raft = new Raft();
+		int characters = 0;
 		raft.setPos(new VectorDouble(4, 3));
 		//sud.cameraPosition = new VectorDouble(4,3);
 		raft.theta = 0;
@@ -284,6 +286,8 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(2, 0));
 			raft.addTile(thruster);
+			EntityCharacter ec = new EntityCharacter();
+			characters = 6;
 			break;
 		case 2:
 			tile = new Tile();
@@ -305,6 +309,7 @@ public class ServerPhysicsHandler {
 			thruster.setPos(new VectorDouble(2, 1));
 			thruster.thrustAngle = Math.PI;
 			raft.addTile(thruster);
+			characters = 6;
 			break;
 		case 3:
 			tile = new Tile();
@@ -334,6 +339,7 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(5, 0));
 			raft.addTile(thruster);
+			characters = 8;
 			break;
 		case 4:
 //			tile = new Tile();
@@ -361,9 +367,24 @@ public class ServerPhysicsHandler {
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
 			raft.addTile(thruster);
+			characters = 1;
 			break;
 		}
+		getWrappedEntities().forEach(new Consumer<WrappedEntity>() {
+			@Override
+			public void accept(WrappedEntity we) {
+				if (we.entity instanceof EntityCharacter) {
+					EntityCharacter ec = (EntityCharacter) we.entity;
+					if (ec.ownerUUID.equals(sud.uuid)) {
+						removeEntity(ec.uuid);
+					}
+				}
+			}
+		});
 		sud.raft = raft;
+		for (int i = 0; i < characters; i++) {
+			newCharacter(sud.uuid);
+		}
 	}
 	
 	public static void reset() {
