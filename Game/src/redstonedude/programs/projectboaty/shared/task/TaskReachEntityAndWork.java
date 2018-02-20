@@ -5,11 +5,16 @@ import java.io.Serializable;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.physics.Location;
 
-public abstract class TaskReachEntity extends TaskReachLocation implements Serializable {
+public abstract class TaskReachEntityAndWork extends TaskReachLocationAndWork implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	public WrappedEntity targetEntity;
+	
+	public TaskReachEntityAndWork(int work) {
+		super(work);
+		
+	}
 	
 	public void updateLocation() {
 		if (targetEntity != null && targetEntity.entity != null) {

@@ -75,7 +75,7 @@ public class ClientPhysicsHandler {
 	public synchronized static boolean removeEntity(String uuid) {
 		WrappedEntity del = null;
 		for (WrappedEntity e : entities) {
-			if (e.entity.uuid.equals(uuid)) {
+			if (e.entity != null && e.entity.uuid.equals(uuid)) {
 				del = e;
 				break;
 			}

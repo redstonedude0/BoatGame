@@ -15,6 +15,8 @@ public class Location implements Serializable {
 	
 	public Location(Location l) {
 		pos = new VectorDouble(l.pos);
+		isAbsolute = l.isAbsolute;
+		raftUUID = l.raftUUID;
 	}
 	
 	public VectorDouble getPos() {

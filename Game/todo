@@ -183,6 +183,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -D-	(R)	  Consider priority handling for non-collective destruction? Consider resource dropping
 -PR-(R)	  Implement paddelling, take it into account for control and physics calculations. Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1 Perhaps set as unreachable if speed difference is too great?
 -PD-(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable Consider implications of mid-journey speed-ups. Need to add failure to move into characters moveToward method.
+	(R)	  Currently cannot cancel a task if it is in progress
 		Interface and Camera changes:
 -PD-(R)	  Consider adding drag interface for multiple task creation/deletion
 -P-	(R)	  Investigate mouse being very slightly off with mouse interface
@@ -196,12 +197,13 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 		Resource System:
 -PD-(R)	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
 -PR-(R)	  Make thrusters require 2 wood
--D-	(R)	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
+	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 	[R]   Make it so you spawn with a number of starting characters
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
 	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
+	(R)	  Consider packet ordering to ensure that null entries don't occur with player movement packets etc? re-queue?
 
 	Further notes for this update (and future updates):
 		Resources:

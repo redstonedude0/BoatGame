@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
+import redstonedude.programs.projectboaty.client.control.ControlHandler.ClickMode;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
@@ -41,6 +42,7 @@ import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
 import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
@@ -348,6 +350,12 @@ public class GraphicsHandler {
 					} catch (NoninvertibleTransformException e) {
 						e.printStackTrace();
 					}
+				} else if (t instanceof TaskRecruit) {
+					TaskRecruit tr = (TaskRecruit) t;
+					if (tr.target != null) {
+						VectorDouble pos = tr.target.getPos();
+						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
+					}
 				} 
 			}
 		}
@@ -396,6 +404,16 @@ public class GraphicsHandler {
 			g2d.setColor(Color.WHITE);
 			g2d.drawString("1. lock position", x + 50, y + 70);
 			g2d.drawString("2. spawn character", x + 50, y + 90);
+//			int i = 0;
+//			for (WrappedEntity e: ClientPhysicsHandler.getWrappedEntities()) {
+//				if (e.entity != null && e.entity instanceof EntityCharacter) {
+//					EntityCharacter ec = (EntityCharacter) e.entity;
+//					if (!ec.ownerUUID.equals("")) {
+//						g2d.drawString(ec.uuid + ":" + ec.ownerUUID + ":" + ec.loc.getPos(), x + 50, y + 110 + 20*i);
+//						i++;
+//					}
+//				}
+//			}
 		}
 	}
 
@@ -481,12 +499,12 @@ public class GraphicsHandler {
 		Color menuGray = new Color(127, 127, 127);
 		// entire bottomBar container (bar+popups)
 		JPanel bottomBarContainer = new JPanel();
-		bottomBarContainer.setPreferredSize(new Dimension(400, 190));
+		bottomBarContainer.setPreferredSize(new Dimension(400, 230));
 		bottomBarContainer.setBackground(new Color(0, 0, 0, 0));
 		bottomBarContainer.setLayout(new LayoutManagerStrictSizes());
 		JPanel bottomBarButtonContainer = new JPanel();
 		bottomBarButtonContainer.setPreferredSize(new Dimension(400, 20));
-		bottomBarButtonContainer.setLocation(0, 170);
+		bottomBarButtonContainer.setLocation(0, 210);
 		bottomBarButtonContainer.setBackground(menuGray);
 		bottomBarButtonContainer.setLayout(new LayoutManagerStrictSizes());
 		bottomBarContainer.add(bottomBarButtonContainer);
@@ -517,7 +535,7 @@ public class GraphicsHandler {
 			JPanel buildGUIPopup = new JPanel();
 			buildGUIPopup.setLocation(0, 0);
 			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
-			buildGUIPopup.setPreferredSize(new Dimension(150, 180));// height of container-barheight
+			buildGUIPopup.setPreferredSize(new Dimension(150, 220));// height of container-barheight
 			buildGUIPopup.setBackground(menuGray);
 			buildGUIPopup.setVisible(false);
 			bottomBarContainer.add(buildGUIPopup);
@@ -546,6 +564,12 @@ public class GraphicsHandler {
 			buildGUIDeconstruct.setPreferredSize(new Dimension(150, 40));
 			buildGUIDeconstruct.setFocusable(false);
 			buildGUIPopup.add(buildGUIDeconstruct);
+			JButton buildGUIRecruit = new JButton("Recruit");
+			buildGUIRecruit.setLocation(0, 160);
+			buildGUIRecruit.setLayout(new LayoutManagerStrictSizes());
+			buildGUIRecruit.setPreferredSize(new Dimension(150, 40));
+			buildGUIRecruit.setFocusable(false);
+			buildGUIPopup.add(buildGUIRecruit);
 			popups.add(buildGUIPopup);
 			
 
@@ -564,34 +588,35 @@ public class GraphicsHandler {
 			buildGUIWood.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickmode_building_wood = true;
-					ControlHandler.clickmode_collection = false;
-					ControlHandler.clickmode_deconstruct = false;
+					ControlHandler.clickMode = ClickMode.BuildingWood;
 					// make button depressed?
 				}
 			});
 			buildGUIThruster.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickmode_building_wood = false;
-					ControlHandler.clickmode_collection = false;
-					ControlHandler.clickmode_deconstruct = false;
+					ControlHandler.clickMode = ClickMode.BuildingThruster;
 					// make button depressed?
 				}
 			});
 			buildGUIBarrel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickmode_collection = true;
-					ControlHandler.clickmode_deconstruct = false;
+					ControlHandler.clickMode = ClickMode.Collection;
 					// make button depressed?
 				}
 			});
 			buildGUIDeconstruct.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickmode_collection = false;
-					ControlHandler.clickmode_deconstruct = true;
+					ControlHandler.clickMode = ClickMode.Deconstruct;
+					// make button depressed?
+				}
+			});
+			buildGUIRecruit.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ControlHandler.clickMode = ClickMode.Recruiting;
 					// make button depressed?
 				}
 			});

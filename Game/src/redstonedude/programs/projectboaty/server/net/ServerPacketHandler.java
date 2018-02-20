@@ -53,6 +53,7 @@ public class ServerPacketHandler {
 				handlePacket(sqp.spl, sqp.packet);
 			} catch (Exception e) {
 				// error occured in that packet, be very careful now.
+				e.printStackTrace();
 				// kill the connection with the player
 				if (sqp.spl != null) {
 					sqp.spl.killConnection();
@@ -240,6 +241,7 @@ public class ServerPacketHandler {
 			}
 			break;
 		case "PacketRequestEntityState":
+			System.out.println("PRES");
 			PacketRequestEntityState pres = (PacketRequestEntityState) packet;
 			ServerPhysicsHandler.setEntity(pres.entity);
 			PacketEntityState pes = new PacketEntityState(pres.entity);

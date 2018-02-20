@@ -9,13 +9,11 @@ import java.util.function.Consumer;
 
 import javax.swing.SwingUtilities;
 
-import com.sun.security.ntlm.Client;
-
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestNewCharacter;
@@ -30,6 +28,7 @@ import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
+import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
 
 public class ControlHandler implements KeyListener, MouseListener, MouseMotionListener {
 
@@ -47,10 +46,12 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		MainMenu, Playing, Connecting
 	}
 
-	public static boolean clickmode_collection = true;
-	public static boolean clickmode_building_wood = false;
-	public static boolean clickmode_deconstruct = false;
 	public static int clickmode_roation_index = 0;
+	
+	public static enum ClickMode {
+		Collection, BuildingWood, BuildingThruster, Deconstruct, Recruiting
+	}
+	public static ClickMode clickMode = ClickMode.Collection;
 
 	public static Mode mode = Mode.MainMenu;
 
@@ -295,10 +296,12 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static void doPlayingPress(VectorDouble clicked, MouseEvent e) {
 		if (SwingUtilities.isLeftMouseButton(e)) {
-			if (clickmode_collection) {
+			if (clickMode == ClickMode.Collection) {
 				doBarrelPress(clicked);
-			} else if (clickmode_deconstruct) {
+			} else if (clickMode == ClickMode.Deconstruct) {
 				doDeconstructPress(clicked);
+			} else if (clickMode == ClickMode.Recruiting) {
+				doRecruitingPress(clicked);
 			} else {
 				doBuildingPress(clicked);
 			}
@@ -335,6 +338,44 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 									}
 								}
 								ud.raft.addTask(t);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public static synchronized void doRecruitingPress(VectorDouble clicked) {
+		entityLoop: for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
+			Entity ent = we.entity;
+			if (ent.entityTypeID.equals("EntityCharacter")) {
+				//EntityCharacter ec = (EntityCharacter) ent;
+				if (ent.loc.isAbsolute /*&& ec.ownerUUID.equals("")*/) {
+					VectorDouble vd = ent.loc.getPos();
+					VectorDouble diff = clicked.subtract(vd);
+					if (diff.x >= 0 && diff.x <= 1) {
+						if (diff.y >= 0 && diff.y <= 1) {
+							UserData ud = ClientPacketHandler.getCurrentUserData();
+							if (ud != null && ud.raft != null) {
+								TaskRecruit tr = new TaskRecruit();
+//								tr.target = new Location();
+//								tr.target.setPos(ent.loc.getPos());
+//								tr.target.isAbsolute = true;
+//								tr.target = ent.loc;
+								tr.targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
+								for (Task t2 : ud.raft.getAllTasks()) {
+									if (t2 instanceof TaskRecruit) {
+										TaskRecruit tr2 = (TaskRecruit) t2;
+										if (tr2.targetEntity != null && tr2.targetEntity.entity != null) {
+											if (tr2.targetEntity.entity.uuid.equals(tr.targetEntity.entity.uuid)) {
+												continue entityLoop; // this entity is already being recruited,
+												// try the next entity however
+											}
+										}
+									}
+								}
+								ud.raft.addTask(tr);
 							}
 						}
 					}
@@ -457,9 +498,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static void updateConstructionTile() {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
-		if (!clickmode_collection) {
+		if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.BuildingThruster || clickMode == ClickMode.Deconstruct) {
 			Tile t;
-			if (clickmode_building_wood) {
+			if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.Deconstruct) {
 				t = new Tile();
 			} else {
 				t = new TileThruster();

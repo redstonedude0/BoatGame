@@ -12,7 +12,7 @@ public class PacketRequestEntityState extends Packet implements Serializable {
 	public final Entity entity;
 	
 	public PacketRequestEntityState(Entity e) {
-		super("PacketRequestTileState");
+		super("PacketRequestEntityState");
 		entity = e;
 	}
 

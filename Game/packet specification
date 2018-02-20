@@ -26,7 +26,7 @@ REQUESTSETTASKLIST	ArrayList<Task>
 REQUESTTILESTATE	uuid, Tile
 	Request to update the state on a single tile, used to update HP
 REQUESTENTITYSTATE	Entity
-	Request to update state on an entity
+	Request to update state on an entity (how was this here yet completely unused?)
 REQUESTDELENTITY	uuid
 	Request to delete an entity
 

@@ -42,6 +42,7 @@ public class EntityCharacter extends Entity implements Serializable {
 	 * @return true if target reached, false if not
 	 */
 	public boolean moveToward(Location target) {
+		
 		// System.out.println("Iteration: #####################");
 		// System.out.println(" Initial loc: " + loc.getPos().x + ",");
 		// System.out.println(" Target loc: " + target.getPos().x + ",");
@@ -87,7 +88,7 @@ public class EntityCharacter extends Entity implements Serializable {
 			}
 		}
 		if (change.getSquaredLength() <= Math.pow(speed, 2)) {
-			loc = target;// Move to target.
+			loc = new Location(target);// Move to target. (redundancy clone)
 			// System.out.println("Curr loc3: " + loc.getPos().x + ",");
 			return true;
 		}
