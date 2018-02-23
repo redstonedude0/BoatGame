@@ -310,7 +310,7 @@ public class GraphicsHandler {
 							if (ud == null) {
 								continue;
 							}
-							pos = pos.add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5));
+							pos = pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos());
 							rotator.translate(100 * pos.x, 100 * pos.y);
 							rotator.rotate(ud.raft.theta);
 						} else {

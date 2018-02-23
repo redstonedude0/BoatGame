@@ -54,7 +54,7 @@ public class TileHandler {
 	public static String getTextureName(String entityName, Entity e) {
 		if (entityName.equals("EntityCharacter")) {
 			EntityCharacter ec = (EntityCharacter) e;
-			if (ec.carryingBarrel) {
+			if (ec.carrying != null) {
 				return "Character_Barrel";
 			} else {
 				return "Character_Normal";

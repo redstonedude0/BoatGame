@@ -205,14 +205,14 @@ public class ServerPacketHandler {
 				// System.out.println(" PRCSC:" + prcs.currentTask.completed);
 				// System.out.println(" PRCSB:" + prcs.carryingBarrel);
 				// System.out.println(" PRCSU:" + prcs.characterUUID);
-				ec.carryingBarrel = prcs.carryingBarrel;
+				ec.carrying = prcs.carrying;
 				ec.currentTask = prcs.currentTask; // does it still break in transport? who knows
 				// ec.currentTask.assignedEntity = (EntityCharacter)
 				// ServerPhysicsHandler.getEntity(prcs.characterUUID);// idk if it still breaks
 				// in transport
 				PacketCharacterState pcs = new PacketCharacterState();
 				pcs.characterUUID = prcs.characterUUID;
-				pcs.carryingBarrel = prcs.carryingBarrel;
+				pcs.carrying = prcs.carrying;
 				pcs.currentTask = prcs.currentTask;
 				broadcastPacketExcept(connection, pcs);
 			}

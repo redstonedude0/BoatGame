@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.event.EventHandler;
 import redstonedude.programs.projectboaty.shared.event.EventListener;
 import redstonedude.programs.projectboaty.shared.event.EventTileBroken;
@@ -30,7 +31,7 @@ public class TaskRepair extends TaskReachLocationAndWork implements Serializable
 
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
-		if (ec.carryingBarrel) {
+		if (ec.carrying != null && ec.carrying.resourceType == ResourceType.Wood) {
 			return new Priority(PriorityType.CRITICAL, getDistanceToTarget(ec));
 		}
 		return Priority.getIneligible();
@@ -45,7 +46,7 @@ public class TaskRepair extends TaskReachLocationAndWork implements Serializable
 			t.hp = 100;// maximise HP
 			PacketRequestTileState prts = new PacketRequestTileState(t);
 			ClientPacketHandler.sendPacket(prts); // update the server on this
-			assignedEntity.carryingBarrel = false;
+			assignedEntity.carrying = null;
 			assignedEntity.sendState();
 		}
 		isCompleted = true; // let wander bring us back or take us around the boat

@@ -152,7 +152,7 @@ public class ClientPacketHandler {
 			e = ClientPhysicsHandler.getEntity(pcs.characterUUID);
 			if (e instanceof EntityCharacter) {
 				EntityCharacter ec = (EntityCharacter) e;
-				ec.carryingBarrel = pcs.carryingBarrel;
+				ec.carrying = pcs.carrying;
 				ec.currentTask = pcs.currentTask;
 			}
 			break;

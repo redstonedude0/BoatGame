@@ -18,7 +18,7 @@ public class EntityCharacter extends Entity implements Serializable {
 
 	public String ownerUUID = "";
 	public Task currentTask = null;
-	public boolean carryingBarrel = false;
+	public EntityResource carrying;
 	public double walkSpeed = 0.1; // unchanged currently but can be changed
 	public double swimSpeed = 0.08;
 
@@ -29,7 +29,7 @@ public class EntityCharacter extends Entity implements Serializable {
 
 	public void sendState() {
 		PacketRequestCharacterState prcs = new PacketRequestCharacterState();
-		prcs.carryingBarrel = carryingBarrel;
+		prcs.carrying = carrying;
 		prcs.characterUUID = uuid;
 		prcs.currentTask = currentTask;
 		ClientPacketHandler.sendPacket(prcs);

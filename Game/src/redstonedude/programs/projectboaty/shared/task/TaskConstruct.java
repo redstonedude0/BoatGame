@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.physics.Location;
@@ -29,7 +30,7 @@ public class TaskConstruct extends TaskReachLocationAndWork implements Serializa
 
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
-		if (ec.carryingBarrel) {
+		if (ec.carrying != null && ec.carrying.resourceType == ResourceType.Wood) {
 			return new Priority(PriorityType.NORMAL,getDistanceToTarget(ec));
 		}
 		return Priority.getIneligible();
@@ -43,7 +44,7 @@ public class TaskConstruct extends TaskReachLocationAndWork implements Serializa
 		PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
 		prrt.tiles = ud.raft.getTiles();
 		ClientPacketHandler.sendPacket(prrt); // update the server on this
-		assignedEntity.carryingBarrel = false;
+		assignedEntity.carrying = null;
 		assignedEntity.sendState();
 		isCompleted = true; // let wander bring us back or take us around the boat
 	}

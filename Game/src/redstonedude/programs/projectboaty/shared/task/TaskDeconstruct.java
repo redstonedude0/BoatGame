@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.physics.Location;
@@ -28,7 +30,7 @@ public class TaskDeconstruct extends TaskReachLocationAndWork implements Seriali
 
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
-		if (!ec.carryingBarrel) {
+		if (ec.carrying == null) {
 			return new Priority(PriorityType.NORMAL,getDistanceToTarget(ec));
 		}
 		return Priority.getIneligible();
@@ -43,7 +45,7 @@ public class TaskDeconstruct extends TaskReachLocationAndWork implements Seriali
 		PacketRequestRaftTiles prrt = new PacketRequestRaftTiles();
 		prrt.tiles = ud.raft.getTiles();
 		ClientPacketHandler.sendPacket(prrt); // update the server on this
-		assignedEntity.carryingBarrel = true;
+		assignedEntity.carrying = new EntityResource(ResourceType.Wood);
 		assignedEntity.sendState();
 		isCompleted = true; // let wander bring us back or take us around the boat
 	}
