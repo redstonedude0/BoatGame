@@ -31,6 +31,7 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketListener;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
@@ -366,6 +367,9 @@ public class GraphicsHandler {
 			VectorDouble pos = e.loc.getPos();
 			if (e.loc.isAbsolute) {
 				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID, e)), (int) (pos.x * 100), (int) (pos.y * 100), (int) (pos.x * 100 + 100), (int) (pos.y * 100 + 100), 0, 0, 32, 32, frame);
+				if (e instanceof EntityBarrel) {
+					g2d.drawImage(TextureHandler.getTexture("Resource_" + ((EntityBarrel)e).resource.resourceType.textureName), (int) (pos.x * 100), (int) (pos.y * 100), (int) (pos.x * 100 + 100), (int) (pos.y * 100 + 100), 0, 0, 32, 32, frame);
+				}
 			} else {
 				UserData ud = ClientPacketHandler.getUserData(e.loc.raftUUID);
 				if (ud != null && ud.raft != null) {
@@ -376,6 +380,9 @@ public class GraphicsHandler {
 					rotator.rotate(ud.raft.theta);
 					g2d.transform(rotator);
 					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID, e)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					if (e instanceof EntityBarrel) {
+						g2d.drawImage(TextureHandler.getTexture("Resource_" + ((EntityBarrel)e).resource.resourceType.textureName), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+					}
 					try {
 						g2d.transform(rotator.createInverse());
 					} catch (NoninvertibleTransformException e1) {

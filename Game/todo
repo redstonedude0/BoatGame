@@ -168,9 +168,10 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(D)	  Make the music and sounds as necessary
 			Plan to use open source sfx for the time being, but should be able to at least create some midis or tracks for music
 	(D)	  Animations
-		(R)   Need a specification for this
+	[R]     See animation specification below (approx. line 260)
 -D-	(D)	  Add sounds for character walking+swimming. Discuss how to - possibly hook into moveToward function
 	(RD)  Add a way to trigger sounds and music on events in the code - Discuss how music system might work
+-D-	(DR)  Discuss potentially moving to multiple different spritesheets
 		Data type cleanup:
 -P-	(R)	  Overhaul rest of packet and physics system to work with Location better.
 	(R)	  Add helper methods to Location to calculate distances, get movespeed type, etc
@@ -195,8 +196,10 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -PD-(R)	  Implement server-side chat? Need to decide how to handle focus & modification of chatqueue
 -D- (R)	  Consider allowing for a delocalised camera
 		Resource System:
--PD-(R)	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
+-PD-[R]	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
+	(R)	  Create resource management system so resources are stored if not needed
 -PR-(R)	  Make thrusters require 2 wood
+	(R)	  Make it so you can see what resources you have as an overlay
 	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 	[R]   Make it so you spawn with a number of starting characters
 		World gen and map:
@@ -253,6 +256,21 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 		Task system notes/ideas:
 			Deck swabbing - cleans boat
 			Bail water - used to reduce flooding within the ship
+		Animation system specs:
+			Animations should be eventually be loaded in via a texture handler, where you can specify the size of the image and the number of frames.
+			Animations should then be stored within the code, potentially as an ordered collection of BufferedImage?
+			The animations should be drawn somehow, potentially from an Entity.draw() and Tile.draw() method, in which case the
+				method queries various variables and decides upon the texture to return. (consider how to implement native JFrame
+				animations?)
+			Animations required:
+				Characters:
+					- swimming
+					- walking
+					- paddling(?)
+					- building/constructing/working
+				Water:
+					- flowing
+					- particles for motors/paddles?
 			
 		Sources and stuff:
 			Check out https://game-development.zeef.com/david.arcila

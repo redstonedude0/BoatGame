@@ -9,10 +9,12 @@ public class EntityBarrel extends Entity implements Serializable{
 	private static final long serialVersionUID = 2L;
 	
 	private VectorDouble vel = new VectorDouble();
+	public EntityResource resource;
 	
 	public EntityBarrel() {
 		super();
 		entityTypeID = "EntityBarrel";
+		resource = EntityResource.randomBarrelResource();
 	}
 	
 	public void setVel(VectorDouble v) {

@@ -28,6 +28,14 @@ public class TileHandler {
 		TextureHandler.loadTexture("TileDamage_25", 64, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_50", 96, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_75", 128, 64, 32, 32);
+		TextureHandler.loadTexture("Resource_Wood", 0, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Scrap", 32, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Cloth", 64, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Fish", 96, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Coral", 128, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Bricks",160, 96, 32, 32);
+		TextureHandler.loadTexture("Resource_Gold", 192, 96, 32, 32);
+		
 	}
 	
 	public static String getTextureName(Tile t) {
