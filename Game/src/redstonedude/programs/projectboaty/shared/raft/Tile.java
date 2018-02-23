@@ -19,6 +19,7 @@ public class Tile implements Serializable {
 	private VectorDouble pos = new VectorDouble();
 	public double mass = 10;
 	public double hp = 100;
+	public ResourceStorage storage = new ResourceStorage();
 
 	public void damage(double dmg) {
 		hp -= dmg;

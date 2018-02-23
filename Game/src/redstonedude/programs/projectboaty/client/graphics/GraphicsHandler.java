@@ -43,8 +43,11 @@ import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
+import redstonedude.programs.projectboaty.shared.task.TaskReachLocationAndWork;
 import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
 import redstonedude.programs.projectboaty.shared.task.TaskRepair;
+import redstonedude.programs.projectboaty.shared.task.TaskWander;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
 
@@ -223,6 +226,12 @@ public class GraphicsHandler {
 					} catch (NoninvertibleTransformException e) {
 						e.printStackTrace();
 					}
+					//undo thruster rotation to draw non-rotated graphics
+					if (tile instanceof TileThruster) {
+						rotator = new AffineTransform();
+						rotator.translate(100 * x, 100 * y);
+						rotator.rotate(ud.raft.theta);
+					}
 					// draw damage as well
 					if (tile.hp < 75) {
 						int damage = 25;
@@ -232,17 +241,24 @@ public class GraphicsHandler {
 						if (tile.hp < 25) {
 							damage += 25;
 						}
-						if (tile instanceof TileThruster) {
-							rotator = new AffineTransform();
-							rotator.translate(100 * x, 100 * y);
-							rotator.rotate(ud.raft.theta);
-						}
 						g2d.transform(rotator);
 						g2d.drawImage(TextureHandler.getTexture("TileDamage_" + damage), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 						try {
 							g2d.transform(rotator.createInverse());
 						} catch (NoninvertibleTransformException e) {
 							e.printStackTrace();
+						}
+					}
+					//draw storage as well
+					if (tile.storage.maxNumberOfStacks == 1) {
+						if (tile.storage.resources.size() == 1) {
+							g2d.transform(rotator);
+							g2d.drawImage(TextureHandler.getTexture("Resource_" + tile.storage.resources.peek().resourceType.textureName), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+							try {
+								g2d.transform(rotator.createInverse());
+							} catch (NoninvertibleTransformException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -284,78 +300,37 @@ public class GraphicsHandler {
 			// draw tasks
 			ArrayList<Task> tasks = cud.raft.getAllTasks();
 			for (Task t : tasks) {
-				if (t instanceof TaskCollect) {
-					TaskCollect tc = (TaskCollect) t;
-					if (tc.target != null) {
-						VectorDouble pos = tc.target.getPos();
-						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
-					}
-				} else if (t instanceof TaskConstruct) {
-					TaskConstruct tc = (TaskConstruct) t;
-					double x = tc.resultantTile.getAbsoluteX(cud.raft);
-					double y = tc.resultantTile.getAbsoluteY(cud.raft);
-					double workDone = (tc.maximumWork - tc.workRemaining);
-					double proportionDone = workDone / ((double) tc.maximumWork);
-					double angleDone = proportionDone * 360;
-					// using graphics instead of colors
-					AffineTransform rotator = new AffineTransform();
-					rotator.translate(100 * x, 100 * y);
-					rotator.rotate(cud.raft.theta);
-					g2d.transform(rotator);
-					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
-					try {
-						g2d.transform(rotator.createInverse());
-					} catch (NoninvertibleTransformException e) {
-						e.printStackTrace();
-					}
-				} else if (t instanceof TaskRepair) {
-					TaskRepair tc = (TaskRepair) t;
-					VectorDouble pos = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos());
-					double x = pos.x;
-					double y = pos.y;
-					double workDone = (tc.maximumWork - tc.workRemaining);
-					double proportionDone = workDone / ((double) tc.maximumWork);
-					double angleDone = proportionDone * 360;
-					// using graphics instead of colors
-					AffineTransform rotator = new AffineTransform();
-					rotator.translate(100 * x, 100 * y);
-					rotator.rotate(cud.raft.theta);
-					g2d.transform(rotator);
-					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
-					try {
-						g2d.transform(rotator.createInverse());
-					} catch (NoninvertibleTransformException e) {
-						e.printStackTrace();
-					}
-				} else if (t instanceof TaskDeconstruct) {
-					TaskDeconstruct tc = (TaskDeconstruct) t;
-					double x = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos()).x;
-					double y = tc.target.getPos().getAbsolute(cud.raft.getUnitX(), cud.raft.getUnitY()).add(cud.raft.getPos()).y;
-					double workDone = (tc.maximumWork - tc.workRemaining);
-					double proportionDone = workDone / ((double) tc.maximumWork);
-					double angleDone = proportionDone * 360;
-					// using graphics instead of colors
-					AffineTransform rotator = new AffineTransform();
-					rotator.translate(100 * x, 100 * y);
-					rotator.rotate(cud.raft.theta);
-					g2d.transform(rotator);
-					g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
-					try {
-						g2d.transform(rotator.createInverse());
-					} catch (NoninvertibleTransformException e) {
-						e.printStackTrace();
-					}
-				} else if (t instanceof TaskRecruit) {
-					TaskRecruit tr = (TaskRecruit) t;
-					if (tr.target != null) {
-						VectorDouble pos = tr.target.getPos();
-						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), (int) (100 * pos.x), (int) (100 * pos.y), (int) (100 * pos.x + 100), (int) (100 * pos.y + 100), 0, 0, 32, 32, frame);
+				if (t instanceof TaskReachLocation && !(t instanceof TaskWander)) {
+					TaskReachLocation trl = (TaskReachLocation) t;
+					if (trl.target != null) {
+						VectorDouble pos = trl.target.getPos();
+						AffineTransform rotator = new AffineTransform();
+						if (!trl.target.isAbsolute) {
+							UserData ud = ClientPacketHandler.getUserData(trl.target.raftUUID);
+							if (ud == null) {
+								continue;
+							}
+							pos = pos.add(new VectorDouble(0.5,0.5)).getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos()).subtract(new VectorDouble(0.5,0.5));
+							rotator.translate(100 * pos.x, 100 * pos.y);
+							rotator.rotate(ud.raft.theta);
+						} else {
+							rotator.translate(100 * pos.x, 100 * (pos.y+1)); //correction because of height of tile?
+						}
+						g2d.transform(rotator);
+						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+						if (t instanceof TaskReachLocationAndWork) {
+							TaskReachLocationAndWork trlaw = (TaskReachLocationAndWork) t;
+							double workDone = (trlaw.maximumWork - trlaw.workRemaining);
+							double proportionDone = workDone / ((double) trlaw.maximumWork);
+							double angleDone = proportionDone * 360;
+							g2d.setColor(Color.LIGHT_GRAY);
+							g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
+						}
+						try {
+							g2d.transform(rotator.createInverse());
+						} catch (NoninvertibleTransformException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}

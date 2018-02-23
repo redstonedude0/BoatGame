@@ -12,6 +12,8 @@ import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
@@ -375,6 +377,8 @@ public class ServerPhysicsHandler {
 			raft.addTile(tile);
 			tile = new Tile();
 			tile.setPos(new VectorDouble(4, 1));
+			EntityResource er = new EntityResource(ResourceType.Gold);
+			tile.storage.resources.add(er);
 			raft.addTile(tile);
 			tile = new Tile();
 			tile.setPos(new VectorDouble(5, 1));
