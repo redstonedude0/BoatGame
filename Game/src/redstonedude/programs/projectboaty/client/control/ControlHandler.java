@@ -21,6 +21,8 @@ import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestSe
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.Tile.TileType;
+import redstonedude.programs.projectboaty.shared.raft.TileAnchorSmall;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
@@ -38,6 +40,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static boolean control_right_translate = false;
 	public static boolean control_forward = false;
 	public static boolean control_backward = false;
+	public static boolean control_brake = false;
 
 	public static boolean debug_menu = false;
 	public static boolean debug_lockpos = false;
@@ -47,11 +50,13 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	}
 
 	public static int clickmode_roation_index = 0;
-	
+
 	public static enum ClickMode {
-		Collection, BuildingWood, BuildingThruster, Deconstruct, Recruiting, DestroyingResource
+		Collection, Building, Deconstruct, Recruiting, DestroyingResource
 	}
+
 	public static ClickMode clickMode = ClickMode.Collection;
+	public static TileType buildingType;
 
 	public static Mode mode = Mode.MainMenu;
 
@@ -82,10 +87,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			break;
 		}
 	}
-
-	public void keyTyped(KeyEvent e) {
-	}
-
+	
 	public static void doDebugButton(int i) {
 		switch (i) {
 		case 1:// warp lock
@@ -116,6 +118,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			break;
 		case KeyEvent.VK_E:
 			control_right_translate = true;
+			break;
+		case KeyEvent.VK_SPACE:
+			control_brake = true;
 			break;
 		case KeyEvent.VK_F3:
 			debug_menu = !debug_menu;
@@ -160,6 +165,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			break;
 		case KeyEvent.VK_E:
 			control_right_translate = false;
+			break;
+		case KeyEvent.VK_SPACE:
+			control_brake = false;
 			break;
 		}
 	}
@@ -241,11 +249,14 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		// // Get camera position, invert as you need to slide g2d in opposite direction
 		// VectorDouble cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
 		// // rotate the canvas (rotation is always about original origin anyway?)
-		// translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the origin of the G2D? translate so CAM is back at middle
-		// //translate so CAM is in the middle (uses standard reference frame even though rotated? :/
+		// translate.rotate(-ClientPhysicsHandler.cameraTheta); // rotate about the
+		// origin of the G2D? translate so CAM is back at middle
+		// //translate so CAM is in the middle (uses standard reference frame even
+		// though rotated? :/
 		// cam = ClientPhysicsHandler.cameraPosition.multiply(-100);
 		// translate.translate(cam.x, cam.y);
-		// // get the unixX and unitY of the cameras reference frame (thetaCam != raftTheta)
+		// // get the unixX and unitY of the cameras reference frame (thetaCam !=
+		// raftTheta)
 		// double sin = Math.sin(ClientPhysicsHandler.cameraTheta);
 		// double cos = Math.cos(ClientPhysicsHandler.cameraTheta);
 		// VectorDouble unitX = new VectorDouble(cos, sin);
@@ -258,7 +269,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		double screenWidth = GraphicsHandler.frame.getWidth();
 		double gHeight = 1080;
 		double gWidth = 1920;
-		// Scale for cropping mechanics - the largest scalar needs to be used, so excess is cut off in the other direction
+		// Scale for cropping mechanics - the largest scalar needs to be used, so excess
+		// is cut off in the other direction
 		double scaleForWidth = screenWidth / gWidth;
 		double scaleForHeight = screenHeight / gHeight;
 		double scale = scaleForHeight > scaleForWidth ? scaleForHeight : scaleForWidth;
@@ -290,7 +302,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		clicked = clicked.subtract(vd);
 		clicked = clicked.divide(100);
 		// clicked = clicked.subtract(offset);// .divide(100);
-		// clicked = clicked.divide(100);// convert from screen cords to absolute coordinates
+		// clicked = clicked.divide(100);// convert from screen cords to absolute
+		// coordinates
 		return clicked;
 	}
 
@@ -347,23 +360,23 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			}
 		}
 	}
-	
+
 	public static synchronized void doRecruitingPress(VectorDouble clicked) {
 		entityLoop: for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityCharacter")) {
-				//EntityCharacter ec = (EntityCharacter) ent;
-				if (ent.loc.isAbsolute /*&& ec.ownerUUID.equals("")*/) {
+				// EntityCharacter ec = (EntityCharacter) ent;
+				if (ent.loc.isAbsolute /* && ec.ownerUUID.equals("") */) {
 					VectorDouble vd = ent.loc.getPos();
 					VectorDouble diff = clicked.subtract(vd);
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
 							UserData ud = ClientPacketHandler.getCurrentUserData();
 							if (ud != null && ud.raft != null) {
-//								tr.target = new Location();
-//								tr.target.setPos(ent.loc.getPos());
-//								tr.target.isAbsolute = true;
-//								tr.target = ent.loc;
+								// tr.target = new Location();
+								// tr.target.setPos(ent.loc.getPos());
+								// tr.target.isAbsolute = true;
+								// tr.target = ent.loc;
 								WrappedEntity targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
 								for (Task t2 : ud.raft.getAllTasks()) {
 									if (t2 instanceof TaskRecruit) {
@@ -397,7 +410,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 						VectorDouble targetPos = trl.getTarget().getPos();
 						if (!trl.getTarget().isAbsolute) {
 							UserData udTarget = ClientPacketHandler.getUserData(trl.getTarget().raftUUID);
-							targetPos = targetPos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
+							targetPos = targetPos.add(new VectorDouble(0.5, 0.5))
+									.getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY())
+									.add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
 						}
 						if (clicked.x > targetPos.x && clicked.x < targetPos.x + 1) {
 							if (clicked.y > targetPos.y && clicked.y < targetPos.y + 1) {
@@ -416,7 +431,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			if (!we.entity.loc.isAbsolute) {
 				UserData udTarget = ClientPacketHandler.getUserData(we.entity.loc.raftUUID);
 				if (udTarget != null && udTarget.raft != null) {
-					wePos = wePos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
+					wePos = wePos.add(new VectorDouble(0.5, 0.5))
+							.getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos())
+							.subtract(new VectorDouble(0.5, 0.5));
 				}
 			}
 			if (clicked.x > wePos.x && clicked.x < wePos.x + 1) {
@@ -460,7 +477,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		ud.raft.addTask(t);
 
 	}
-	
+
 	public static void doDeconstructPress(VectorDouble clicked) {
 		// convert to relative coordinates
 		UserData ud = ClientPacketHandler.getCurrentUserData();
@@ -485,12 +502,12 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			if (target.getPos().equals(til.getPos())) {
 				TaskDeconstruct t = new TaskDeconstruct(tile, ud);
 				ud.raft.addTask(t);
-				return;//actually a tile here so do it
+				return;// actually a tile here so do it
 			}
 		}
 
 	}
-	
+
 	public static void doDestroyingResourcePress(VectorDouble clicked) {
 		// convert to relative coordinates
 		UserData ud = ClientPacketHandler.getCurrentUserData();
@@ -515,7 +532,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			if (target.getPos().equals(til.getPos())) {
 				TaskDestroyResource t = new TaskDestroyResource(tile, ud);
 				ud.raft.addTask(t);
-				return;//actually a tile here so do it
+				return;// actually a tile here so do it
 			}
 		}
 
@@ -523,22 +540,26 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static VectorDouble getBlockPosFromScreenCoordinates(int screenx, int screeeny, UserData currentUserData) {
 		VectorDouble absolute = getAbsoluteVectorFromScreenCoordinates(mouseX, mouseY);
-		VectorDouble relative = absolute.subtract(currentUserData.raft.getPos()).getRelative(currentUserData.raft.getUnitX(), currentUserData.raft.getUnitY());
+		VectorDouble relative = absolute.subtract(currentUserData.raft.getPos())
+				.getRelative(currentUserData.raft.getUnitX(), currentUserData.raft.getUnitY());
 		VectorDouble blockPos = new VectorDouble(Math.floor(relative.x), Math.floor(relative.y));
 		return blockPos;
 	}
 
 	public static void updateConstructionTile() {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
-		if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.BuildingThruster || clickMode == ClickMode.Deconstruct || clickMode == ClickMode.DestroyingResource) {
+		if (clickMode == ClickMode.Building || clickMode == ClickMode.Deconstruct
+				|| clickMode == ClickMode.DestroyingResource) {
 			Tile t;
-			if (clickMode == ClickMode.BuildingWood) {
+			if (buildingType == TileType.Wood) {
 				t = new Tile();
-			} else if (clickMode == ClickMode.BuildingThruster){
+			} else if (buildingType == TileType.Thruster) {
 				t = new TileThruster();
 				TileThruster tr = (TileThruster) t;
 				tr.thrustAngle = (Math.PI * ((double) clickmode_roation_index)) / 2F;
-			} else {//deconstruct or destroy resource
+			} else if (buildingType == TileType.AnchorSmall) {
+				t = new TileAnchorSmall();
+			} else {// deconstruct or destroy resource
 				t = new Tile();
 				t.hp = 0;
 			}
@@ -592,6 +613,10 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
 	}
 
 }

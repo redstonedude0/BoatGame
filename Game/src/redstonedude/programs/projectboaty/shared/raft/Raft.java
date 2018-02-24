@@ -36,6 +36,14 @@ public class Raft implements Serializable {
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private transient Tile constructionTile; //used to show current mouse position, doesn't need to be serialized or even stored server-side
 	
+	public double getMass() {
+		double mass = 0;
+		for (Tile t: tiles) {
+			mass += t.mass;
+		}
+		return mass;
+	}
+	
 	public Collection<EntityResource> getTotalResources() {
 		ArrayList<EntityResource> resources = new ArrayList<EntityResource>();
 		for (ResourceType rt: ResourceType.values()) {

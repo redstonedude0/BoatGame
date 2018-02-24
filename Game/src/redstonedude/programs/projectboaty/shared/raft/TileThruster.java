@@ -11,7 +11,6 @@ public class TileThruster extends Tile {
 
 	public TileThruster() {
 		super();
-		mass = 50;
 	}
 
 	// vector pointing in direction of thrust

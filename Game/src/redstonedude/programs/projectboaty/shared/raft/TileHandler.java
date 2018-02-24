@@ -28,6 +28,7 @@ public class TileHandler {
 		TextureHandler.loadTexture("TileDamage_25", 64, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_50", 96, 64, 32, 32);
 		TextureHandler.loadTexture("TileDamage_75", 128, 64, 32, 32);
+		TextureHandler.loadTexture("TileAnchorSmall", 160, 64, 32, 32);
 		TextureHandler.loadTexture("Resource_Wood", 0, 96, 32, 32);
 		TextureHandler.loadTexture("Resource_Scrap", 32, 96, 32, 32);
 		TextureHandler.loadTexture("Resource_Cloth", 64, 96, 32, 32);
@@ -46,6 +47,8 @@ public class TileHandler {
 				return "TileThruster_" + index;
 			}
 			return "TileThruster_0";
+		} else if (t instanceof TileAnchorSmall) {
+			return "TileAnchorSmall";
 		} else {
 			return "TileWood";
 		}

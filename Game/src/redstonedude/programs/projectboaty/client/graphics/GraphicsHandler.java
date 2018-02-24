@@ -38,6 +38,7 @@ import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.Tile.TileType;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
@@ -635,33 +636,56 @@ public class GraphicsHandler {
 				popups.add(buildGUIBuildsPopups);
 				bottomBarContainer.add(buildGUIBuildsPopups);
 				
-				JButton buildGUIWood = new JButton("Build Wooden Floor");
-				buildGUIWood.setLocation(0, 0);
-				buildGUIWood.setLayout(new LayoutManagerStrictSizes());
-				buildGUIWood.setPreferredSize(new Dimension(150, 20));
-				buildGUIWood.setFocusable(false);
-				buildGUIBuildsPopups.add(buildGUIWood);
-				JButton buildGUIThruster = new JButton("Build Thruster");
-				buildGUIThruster.setLocation(0, 20);
-				buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
-				buildGUIThruster.setPreferredSize(new Dimension(150, 20));
-				buildGUIThruster.setFocusable(false);
-				buildGUIBuildsPopups.add(buildGUIThruster);
+				int yval = 0;
+				for (TileType tt: Tile.TileType.values()) {
+					JButton buildGUITile = new JButton("Build " + tt.textureName);
+					buildGUITile.setLocation(0, yval);
+					buildGUITile.setLayout(new LayoutManagerStrictSizes());
+					buildGUITile.setPreferredSize(new Dimension(150, 20));
+					buildGUITile.setFocusable(false);
+					buildGUIBuildsPopups.add(buildGUITile);
+					
+					buildGUITile.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							ControlHandler.clickMode = ClickMode.Building;
+							ControlHandler.buildingType = tt;
+							// make button depressed?
+						}
+					});
+					yval += 20;
+				}
 				
-				buildGUIWood.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						ControlHandler.clickMode = ClickMode.BuildingWood;
-						// make button depressed?
-					}
-				});
-				buildGUIThruster.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						ControlHandler.clickMode = ClickMode.BuildingThruster;
-						// make button depressed?
-					}
-				});
+				
+//				JButton buildGUIWood = new JButton("Build Wooden Floor");
+//				buildGUIWood.setLocation(0, 0);
+//				buildGUIWood.setLayout(new LayoutManagerStrictSizes());
+//				buildGUIWood.setPreferredSize(new Dimension(150, 20));
+//				buildGUIWood.setFocusable(false);
+//				buildGUIBuildsPopups.add(buildGUIWood);
+//				JButton buildGUIThruster = new JButton("Build Thruster");
+//				buildGUIThruster.setLocation(0, 20);
+//				buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
+//				buildGUIThruster.setPreferredSize(new Dimension(150, 20));
+//				buildGUIThruster.setFocusable(false);
+//				buildGUIBuildsPopups.add(buildGUIThruster);
+//				
+//				buildGUIWood.addActionListener(new ActionListener() {
+//					@Override
+//					public void actionPerformed(ActionEvent e) {
+//						ControlHandler.clickMode = ClickMode.Building;
+//						ControlHandler.buildingType = TileType.Wood;
+//						// make button depressed?
+//					}
+//				});
+//				buildGUIThruster.addActionListener(new ActionListener() {
+//					@Override
+//					public void actionPerformed(ActionEvent e) {
+//						ControlHandler.clickMode = ClickMode.Building;
+//						ControlHandler.buildingType = TileType.Thruster;
+//						// make button depressed?
+//					}
+//				});
 			}
 		}
 		final JPanel mapGUIPopin = new JPanel();

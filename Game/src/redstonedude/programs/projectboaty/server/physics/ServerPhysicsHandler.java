@@ -22,6 +22,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.raft.TileAnchorSmall;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
@@ -343,23 +344,43 @@ public class ServerPhysicsHandler {
 			break;
 		case 2:
 			tile = new Tile();
+			tile.setPos(new VectorDouble(0, 2));
+			raft.addTile(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(0, 3));
+			raft.addTile(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(1, 2));
+			raft.addTile(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(1, 3));
+			raft.addTile(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(2, 2));
+			raft.addTile(tile);
+			tile = new Tile();
+			tile.setPos(new VectorDouble(2, 3));
+			raft.addTile(tile);
+			tile = new Tile();
 			tile.setPos(new VectorDouble(1, 0));
-			raft.addTile(tile);
-			tile = new Tile();
-			tile.setPos(new VectorDouble(2, 0));
-			raft.addTile(tile);
-			tile = new Tile();
-			tile.setPos(new VectorDouble(0, 1));
 			raft.addTile(tile);
 			tile = new Tile();
 			tile.setPos(new VectorDouble(1, 1));
 			raft.addTile(tile);
+			TileAnchorSmall anchorSmall = new TileAnchorSmall();
+			anchorSmall.setPos(new VectorDouble(1,2));
+			raft.addTile(anchorSmall);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));
 			raft.addTile(thruster);
 			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(0, 1));
+			raft.addTile(thruster);
+			thruster = new TileThruster();
+			thruster.setPos(new VectorDouble(2, 0));
+			raft.addTile(thruster);
+			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(2, 1));
-			thruster.thrustAngle = Math.PI;
 			raft.addTile(thruster);
 			break;
 		case 3:
@@ -431,7 +452,7 @@ public class ServerPhysicsHandler {
 			characters = 6;
 			break;
 		case 2:
-			characters = 4;
+			characters = 8;
 			break;
 		case 3:
 			characters = 8;

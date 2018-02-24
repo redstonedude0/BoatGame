@@ -26,7 +26,8 @@ public class Tile implements Serializable {
 	public ResourceStorage storage = new ResourceStorage();
 	public static enum TileType {
 		Wood(10,100,Arrays.asList(new EntityResource(ResourceType.Wood,1),new EntityResource(ResourceType.Wood,1)),"Wood",Tile.class),
-		Thruster(50,500,Arrays.asList(new EntityResource(ResourceType.Scrap,1)),"Thruster",TileThruster.class);
+		Thruster(50,500,Arrays.asList(new EntityResource(ResourceType.Scrap,1)),"Thruster",TileThruster.class),
+		AnchorSmall(200,500,Arrays.asList(new EntityResource(ResourceType.Bricks,1)),"AnchorSmall",TileAnchorSmall.class);
 		
 		public Class<? extends Tile> clazz;
 		public final double mass;
@@ -47,6 +48,8 @@ public class Tile implements Serializable {
 		for (TileType tt: TileType.values()) {
 			if (tt.clazz.equals(this.getClass())) {
 				tileType = tt;
+				hp = tt.maxHP;
+				mass = tt.mass;
 				return;
 			}
 		}
