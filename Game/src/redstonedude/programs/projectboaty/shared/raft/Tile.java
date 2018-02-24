@@ -1,8 +1,12 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.physics.Location;
@@ -20,6 +24,24 @@ public class Tile implements Serializable {
 	public double mass = 10;
 	public double hp = 100;
 	public ResourceStorage storage = new ResourceStorage();
+	public static enum TileType {
+		Wood(10,100,Arrays.asList(new EntityResource(ResourceType.Wood,1)),"Wood",Tile.class),
+		Thruster(50,500,Arrays.asList(new EntityResource(ResourceType.Scrap,1)),"Thruster",TileThruster.class);
+		
+		public Class<? extends Tile> clazz;
+		public final double mass;
+		public final double maxHP;
+		public final Collection<EntityResource> requiredResources;
+		public final String textureName;
+		TileType(double mass, double maxHP, Collection<EntityResource> requiredResources, String textureName, Class<? extends Tile> clazz) {
+			this.mass = mass;
+			this.maxHP = maxHP;
+			this.requiredResources = requiredResources;
+			this.textureName = textureName;
+			this.clazz = clazz;
+		}
+	}
+	public TileType tileType;
 
 	public void damage(double dmg) {
 		hp -= dmg;

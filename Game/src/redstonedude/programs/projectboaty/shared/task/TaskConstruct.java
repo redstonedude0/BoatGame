@@ -14,6 +14,7 @@ import redstonedude.programs.projectboaty.shared.raft.Tile;
 public class TaskConstruct extends Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private TaskObtainMaterial tom;
 	private TaskReachLocation trl;
 	private TaskPerformWork tpw;
 
@@ -24,6 +25,7 @@ public class TaskConstruct extends Task implements Serializable {
 		this.resultantTile = resultantTile;
 		trl = new TaskReachLocation(resultantTile.getLocation(raftUD));
 		tpw = new TaskPerformWork(100);//2 seconds build time at best
+		//tom = new TaskObtainMaterial(raftUD.uuid, null);//don't request any material currently
 	}
 	
 	public Location getTarget() {

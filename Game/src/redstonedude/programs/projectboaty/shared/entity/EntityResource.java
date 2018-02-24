@@ -30,11 +30,15 @@ public class EntityResource extends Entity implements Serializable {
 	public int hp;
 
 	public EntityResource(ResourceType type) {
+		this(type,type.maxStackSize);
+	}
+	
+	public EntityResource(ResourceType type, int quantity) {
 		super();
-		entityTypeID = "EntityResource";
-		resourceType = type;
-		hp = type.maxHP;
-		quantity = type.maxStackSize;
+		this.entityTypeID = "EntityResource";
+		this.resourceType = type;
+		this.hp = type.maxHP;
+		this.quantity = quantity;
 	}
 
 	public void setVel(VectorDouble v) {

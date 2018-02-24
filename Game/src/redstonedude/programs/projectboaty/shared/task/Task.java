@@ -12,6 +12,7 @@ public abstract class Task implements Serializable {
 	public final String taskTypeID;
 	public boolean isCompleted = false;
 	public boolean isInProgress = false;
+	public boolean isOnHold = false;//set to true if to be put on hold, set to false on init
 
 	public Task(String taskTypeID) {
 		this.taskTypeID = taskTypeID;
@@ -22,6 +23,7 @@ public abstract class Task implements Serializable {
 	public void init(EntityCharacter assignedEntity) {
 		// do nothing initially
 		isInProgress = true;
+		isOnHold = false;
 	}
 
 	public Priority getPriority(EntityCharacter e) {
