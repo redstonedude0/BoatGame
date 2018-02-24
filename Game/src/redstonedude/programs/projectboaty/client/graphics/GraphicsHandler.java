@@ -283,7 +283,9 @@ public class GraphicsHandler {
 					rotator.translate(-50, 50);
 				}
 				g2d.transform(rotator);
-				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+				if (constructionTile.hp != 0) { //if not a non-build tile
+					g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(constructionTile)), 0, -100, 100, 0, 0, 0, 32, 32, frame);
+				}
 				g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
 				try {
 					g2d.transform(rotator.createInverse());
@@ -514,9 +516,9 @@ public class GraphicsHandler {
 			bottomBarButtonContainer.add(buildGUIButton);
 
 			JPanel buildGUIPopup = new JPanel();
-			buildGUIPopup.setLocation(0, 50);
+			buildGUIPopup.setLocation(0, 10);
 			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
-			buildGUIPopup.setPreferredSize(new Dimension(150, 160));// height of container-barheight
+			buildGUIPopup.setPreferredSize(new Dimension(150, 200));// height of container-barheight
 			buildGUIPopup.setBackground(menuGray);
 			buildGUIPopup.setVisible(false);
 			bottomBarContainer.add(buildGUIPopup);
@@ -545,6 +547,12 @@ public class GraphicsHandler {
 			buildGUIRecruit.setPreferredSize(new Dimension(150, 40));
 			buildGUIRecruit.setFocusable(false);
 			buildGUIPopup.add(buildGUIRecruit);
+			JButton buildGUIDestroy = new JButton("Destroy Resource");
+			buildGUIDestroy.setLocation(0, 160);
+			buildGUIDestroy.setLayout(new LayoutManagerStrictSizes());
+			buildGUIDestroy.setPreferredSize(new Dimension(150, 40));
+			buildGUIDestroy.setFocusable(false);
+			buildGUIPopup.add(buildGUIDestroy);
 			popups.add(buildGUIPopup);
 			
 			JPanel buildGUIBuildsPopups = new JPanel();
@@ -601,6 +609,14 @@ public class GraphicsHandler {
 				public void actionPerformed(ActionEvent e) {
 					closeBuildsPopups.run();
 					ControlHandler.clickMode = ClickMode.Recruiting;
+					// make button depressed?
+				}
+			});
+			buildGUIDestroy.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					closeBuildsPopups.run();
+					ControlHandler.clickMode = ClickMode.DestroyingResource;
 					// make button depressed?
 				}
 			});

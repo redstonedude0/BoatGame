@@ -211,6 +211,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 			request the states rather than set them
 -D-	[R]	  Consider the effects of infinitely holding a task and implementation of wandering.
 			Added ineligiblity to constructino task
+	[R]	  Add ability to destroy resources
 	(R)	  Consider making raft resources stored list and using events to modify it
 		World gen and map:
 -D-	(R)	  Trees, foliage, etc?

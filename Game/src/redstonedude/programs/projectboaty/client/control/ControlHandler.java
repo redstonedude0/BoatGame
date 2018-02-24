@@ -26,6 +26,7 @@ import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
+import redstonedude.programs.projectboaty.shared.task.TaskDestroyResource;
 import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
 import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
 
@@ -48,7 +49,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static int clickmode_roation_index = 0;
 	
 	public static enum ClickMode {
-		Collection, BuildingWood, BuildingThruster, Deconstruct, Recruiting
+		Collection, BuildingWood, BuildingThruster, Deconstruct, Recruiting, DestroyingResource
 	}
 	public static ClickMode clickMode = ClickMode.Collection;
 
@@ -301,6 +302,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				doDeconstructPress(clicked);
 			} else if (clickMode == ClickMode.Recruiting) {
 				doRecruitingPress(clicked);
+			} else if (clickMode == ClickMode.DestroyingResource) {
+				doDestroyingResourcePress(clicked);
 			} else {
 				doBuildingPress(clicked);
 			}
@@ -487,6 +490,36 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		}
 
 	}
+	
+	public static void doDestroyingResourcePress(VectorDouble clicked) {
+		// convert to relative coordinates
+		UserData ud = ClientPacketHandler.getCurrentUserData();
+		updateConstructionTile();
+		Tile tile = ud.raft.getConstructionTile();
+		if (tile == null) {
+			return;
+		}
+		Location target = new Location();
+		target.setPos(tile.getPos());
+		target.isAbsolute = false;
+		target.raftUUID = ud.uuid;
+		for (Task t2 : ud.raft.getAllTasks()) {
+			if (t2 instanceof TaskDestroyResource) {
+				TaskDestroyResource tdr = (TaskDestroyResource) t2;
+				if (tdr.getTarget().getPos().equals(target.getPos())) {
+					return;
+				}
+			}
+		}
+		for (Tile til : ud.raft.getTiles()) {
+			if (target.getPos().equals(til.getPos())) {
+				TaskDestroyResource t = new TaskDestroyResource(tile, ud);
+				ud.raft.addTask(t);
+				return;//actually a tile here so do it
+			}
+		}
+
+	}
 
 	public static VectorDouble getBlockPosFromScreenCoordinates(int screenx, int screeeny, UserData currentUserData) {
 		VectorDouble absolute = getAbsoluteVectorFromScreenCoordinates(mouseX, mouseY);
@@ -497,14 +530,17 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static void updateConstructionTile() {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
-		if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.BuildingThruster || clickMode == ClickMode.Deconstruct) {
+		if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.BuildingThruster || clickMode == ClickMode.Deconstruct || clickMode == ClickMode.DestroyingResource) {
 			Tile t;
-			if (clickMode == ClickMode.BuildingWood || clickMode == ClickMode.Deconstruct) {
+			if (clickMode == ClickMode.BuildingWood) {
 				t = new Tile();
-			} else {
+			} else if (clickMode == ClickMode.BuildingThruster){
 				t = new TileThruster();
 				TileThruster tr = (TileThruster) t;
 				tr.thrustAngle = (Math.PI * ((double) clickmode_roation_index)) / 2F;
+			} else {//deconstruct or destroy resource
+				t = new Tile();
+				t.hp = 0;
 			}
 			t.setPos(getBlockPosFromScreenCoordinates(mouseX, mouseY, ud));
 			ud.raft.setConstructionTile(t);
