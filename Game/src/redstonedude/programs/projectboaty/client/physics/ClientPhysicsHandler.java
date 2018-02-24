@@ -184,14 +184,14 @@ public class ClientPhysicsHandler {
 							//compeleted, should've already been removed when it was taken up though, dead code.
 						}
 						TaskHandler.assignTask(ud.raft,ec);
-						ec.currentTask.init();
+						ec.currentTask.init(ec);
 						ec.sendState();
 					}
 					if (tickCount%50 == 0) { //every 50 ticks (1 second)
 						ec.currentTask.slowUpdate();
 					}
 					try {
-						ec.currentTask.execute();
+						ec.currentTask.execute(ec);
 					} catch (Exception e1) { //error handling, if there's an error during execution effectively cancel this task.
 						e1.printStackTrace();
 						ec.currentTask.isCompleted = true;

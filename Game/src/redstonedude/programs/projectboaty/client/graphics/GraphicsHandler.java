@@ -40,13 +40,6 @@ import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.raft.TileThruster;
 import redstonedude.programs.projectboaty.shared.task.Task;
-import redstonedude.programs.projectboaty.shared.task.TaskCollect;
-import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
-import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
-import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
-import redstonedude.programs.projectboaty.shared.task.TaskReachLocationAndWork;
-import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
-import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.task.TaskWander;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
@@ -300,38 +293,8 @@ public class GraphicsHandler {
 			// draw tasks
 			ArrayList<Task> tasks = cud.raft.getAllTasks();
 			for (Task t : tasks) {
-				if (t instanceof TaskReachLocation && !(t instanceof TaskWander)) {
-					TaskReachLocation trl = (TaskReachLocation) t;
-					if (trl.target != null) {
-						VectorDouble pos = trl.target.getPos();
-						AffineTransform rotator = new AffineTransform();
-						if (!trl.target.isAbsolute) {
-							UserData ud = ClientPacketHandler.getUserData(trl.target.raftUUID);
-							if (ud == null) {
-								continue;
-							}
-							pos = pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos());
-							rotator.translate(100 * pos.x, 100 * pos.y);
-							rotator.rotate(ud.raft.theta);
-						} else {
-							rotator.translate(100 * pos.x, 100 * (pos.y+1)); //correction because of height of tile?
-						}
-						g2d.transform(rotator);
-						g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, frame);
-						if (t instanceof TaskReachLocationAndWork) {
-							TaskReachLocationAndWork trlaw = (TaskReachLocationAndWork) t;
-							double workDone = (trlaw.maximumWork - trlaw.workRemaining);
-							double proportionDone = workDone / ((double) trlaw.maximumWork);
-							double angleDone = proportionDone * 360;
-							g2d.setColor(Color.LIGHT_GRAY);
-							g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
-						}
-						try {
-							g2d.transform(rotator.createInverse());
-						} catch (NoninvertibleTransformException e) {
-							e.printStackTrace();
-						}
-					}
+				if (!(t instanceof TaskWander)) {
+					t.draw(g2d);
 				}
 			}
 		}
@@ -873,10 +836,10 @@ public class GraphicsHandler {
 						for (Task t : ud.raft.getAllTasksNotWander()) {
 							// do this Task
 							String ecstring = t.taskTypeID + " - ";
-							if (t.assignedEntity == null) {
-								ecstring += "Queued";
-							} else {
+							if (t.isInProgress) {
 								ecstring += "In progress";
+							} else {
+								ecstring += "Queued";
 							}
 							if (index - 1 <= maxComponentIndex) {
 								JLabel lab = (JLabel) taskGUIList.getComponent(index - 1);
@@ -915,11 +878,7 @@ public class GraphicsHandler {
 							for (Task t : ud.raft.getAllTasksNotWander()) {
 								// do this Task
 								String ecstring = t.taskTypeID + " - ";
-								if (t.assignedEntity == null) {
-									ecstring += "Queued";
-								} else {
-									ecstring += "In progress";
-								}
+								ecstring += "Loading";
 								JLabel lab = new JLabel("Task " + index + ": " + ecstring);
 								lab.setLocation(0, y - taskGUIList.getValue());
 								lab.setLayout(new LayoutManagerStrictSizes());

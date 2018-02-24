@@ -40,20 +40,32 @@ public class Tile implements Serializable {
 				for (Task t : raft.getAllTasks()) {
 					if (t instanceof TaskRepair) {
 						TaskRepair tr = (TaskRepair) t;
-						if (tr.target.getPos().equals(getPos())) {
+						if (tr.getTarget().getPos().equals(getPos())) {
 							// repairing us
 							return;
 						}
 					}
 				} // not being repaired
-				TaskRepair tr = new TaskRepair();
-				tr.target = new Location();
-				tr.target.setPos(this.getPos());
-				tr.target.isAbsolute = false;
-				tr.target.raftUUID = ud.uuid;
+				Location target = new Location();
+				target.setPos(this.getPos());
+				target.isAbsolute = false;
+				target.raftUUID = ud.uuid;
+				TaskRepair tr = new TaskRepair(target);
 				ud.raft.addTask(tr);
 			}
 		}
+	}
+	
+	public Location getLocation(String raftUUID) {
+		Location l = new Location();
+		l.isAbsolute = false;
+		l.raftUUID = raftUUID;
+		l.setPos(getPos());
+		return l;
+	}
+	
+	public Location getLocation(UserData ud) {
+		return getLocation(ud.uuid);
 	}
 
 	public double getAbsoluteX(Raft parent) {

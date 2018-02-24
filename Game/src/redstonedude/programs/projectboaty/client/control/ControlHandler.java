@@ -13,7 +13,6 @@ import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
-import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestNewCharacter;
@@ -324,19 +323,19 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 							// ent.setPos(new VectorDouble(0,0));
 							UserData ud = ClientPacketHandler.getCurrentUserData();
 							if (ud != null && ud.raft != null) {
-								TaskCollect t = new TaskCollect();
-								t.targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
+								WrappedEntity targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
 								for (Task t2 : ud.raft.getAllTasks()) {
 									if (t2 instanceof TaskCollect) {
 										TaskCollect tc = (TaskCollect) t2;
-										if (tc.targetEntity != null && tc.targetEntity.entity != null) {
-											if (tc.targetEntity.entity.uuid.equals(t.targetEntity.entity.uuid)) {
+										if (tc.getTarget() != null && tc.getTarget().entity != null) {
+											if (tc.getTarget().entity.uuid.equals(targetEntity.entity.uuid)) {
 												continue entityLoop; // this barrel is already being collected,
 												// try the next entity however
 											}
 										}
 									}
 								}
+								TaskCollect t = new TaskCollect(targetEntity);
 								ud.raft.addTask(t);
 							}
 						}
@@ -358,23 +357,23 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 						if (diff.y >= 0 && diff.y <= 1) {
 							UserData ud = ClientPacketHandler.getCurrentUserData();
 							if (ud != null && ud.raft != null) {
-								TaskRecruit tr = new TaskRecruit();
 //								tr.target = new Location();
 //								tr.target.setPos(ent.loc.getPos());
 //								tr.target.isAbsolute = true;
 //								tr.target = ent.loc;
-								tr.targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
+								WrappedEntity targetEntity = ClientPhysicsHandler.getEntityWrapper(ent.uuid);
 								for (Task t2 : ud.raft.getAllTasks()) {
 									if (t2 instanceof TaskRecruit) {
 										TaskRecruit tr2 = (TaskRecruit) t2;
-										if (tr2.targetEntity != null && tr2.targetEntity.entity != null) {
-											if (tr2.targetEntity.entity.uuid.equals(tr.targetEntity.entity.uuid)) {
+										if (tr2.getTarget() != null && tr2.getTarget().entity != null) {
+											if (tr2.getTarget().entity.uuid.equals(targetEntity.entity.uuid)) {
 												continue entityLoop; // this entity is already being recruited,
 												// try the next entity however
 											}
 										}
 									}
 								}
+								TaskRecruit tr = new TaskRecruit(targetEntity);
 								ud.raft.addTask(tr);
 							}
 						}
@@ -392,9 +391,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 				public void accept(Task t) {
 					if (t instanceof TaskReachLocation) {
 						TaskReachLocation trl = (TaskReachLocation) t;
-						VectorDouble targetPos = trl.target.getPos();
-						if (!trl.target.isAbsolute) {
-							UserData udTarget = ClientPacketHandler.getUserData(trl.target.raftUUID);
+						VectorDouble targetPos = trl.getTarget().getPos();
+						if (!trl.getTarget().isAbsolute) {
+							UserData udTarget = ClientPacketHandler.getUserData(trl.getTarget().raftUUID);
 							targetPos = targetPos.add(new VectorDouble(0.5, 0.5)).getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
 						}
 						if (clicked.x > targetPos.x && clicked.x < targetPos.x + 1) {
@@ -436,25 +435,25 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		if (tile == null) {
 			return;
 		}
-		TaskConstruct t = new TaskConstruct();
-		t.resultantTile = tile;
-		t.target = new Location();
-		t.target.setPos(tile.getPos());
-		t.target.isAbsolute = false;
-		t.target.raftUUID = ud.uuid;
+		Tile resultantTile = tile;
+		Location target = new Location();
+		target.setPos(tile.getPos());
+		target.isAbsolute = false;
+		target.raftUUID = ud.uuid;
 		for (Task t2 : ud.raft.getAllTasks()) {
 			if (t2 instanceof TaskConstruct) {
 				TaskConstruct tc = (TaskConstruct) t2;
-				if (tc.resultantTile.getPos().equals(t.resultantTile.getPos())) {
+				if (tc.getTarget().getPos().equals(target.getPos())) {
 					return;
 				}
 			}
 		}
 		for (Tile til : ud.raft.getTiles()) {
-			if (t.resultantTile.getPos().equals(til.getPos())) {
+			if (resultantTile.getPos().equals(til.getPos())) {
 				return;
 			}
 		}
+		TaskConstruct t = new TaskConstruct(resultantTile, ud);
 		ud.raft.addTask(t);
 
 	}
@@ -467,21 +466,21 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		if (tile == null) {
 			return;
 		}
-		TaskDeconstruct t = new TaskDeconstruct();
-		t.target = new Location();
-		t.target.setPos(tile.getPos());
-		t.target.isAbsolute = false;
-		t.target.raftUUID = ud.uuid;
+		Location target = new Location();
+		target.setPos(tile.getPos());
+		target.isAbsolute = false;
+		target.raftUUID = ud.uuid;
 		for (Task t2 : ud.raft.getAllTasks()) {
 			if (t2 instanceof TaskDeconstruct) {
 				TaskDeconstruct tc = (TaskDeconstruct) t2;
-				if (tc.target.getPos().equals(t.target.getPos())) {
+				if (tc.getTarget().getPos().equals(target.getPos())) {
 					return;
 				}
 			}
 		}
 		for (Tile til : ud.raft.getTiles()) {
-			if (t.target.getPos().equals(til.getPos())) {
+			if (target.getPos().equals(til.getPos())) {
+				TaskDeconstruct t = new TaskDeconstruct(tile, ud);
 				ud.raft.addTask(t);
 				return;//actually a tile here so do it
 			}

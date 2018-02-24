@@ -197,7 +197,12 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -D- (R)	  Consider allowing for a delocalised camera
 		Resource System:
 -PD-[R]	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
-	(R)	  Create resource management system so resources are stored if not needed
+-D-	(R)	  Create resource management system so resources are stored if not needed
+			Need to decide how to implement. How to make tasks modular and piecewise, perhaps have each task be
+				simple (reach location, gather material, etc), and/or be a supertask (reachlocation() gathermaterial()).
+				Perhaps rather than extending or implementing they extend task but include variables for the tasks
+				so TaskReachEntity has an instance of TaskReachLocation which it updates and modifies as needed, its execute
+				then simple points to TRLs execute.
 -PR-(R)	  Make thrusters require 2 wood
 	(R)	  Make it so you can see what resources you have as an overlay
 	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'

@@ -10,29 +10,41 @@ import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
-public class TaskWander extends TaskReachLocation implements Serializable {
+public class TaskWander extends Task implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	private TaskReachLocation trl;
 
-	public TaskWander(EntityCharacter ent) {
-		taskTypeID = "TaskWander";
-		assignedEntity = ent;
+	public TaskWander() {
+		super("TaskWander"); //no target - assigned in init
+	}
+
+	//@Override
+	//public void targetReached() {
+	//	isCompleted = true;
+	//}
+	
+	@Override
+	public void execute(EntityCharacter assignedEntity) {
+		trl.execute(assignedEntity);
+		if (trl.isCompleted) {
+			isCompleted = true;
+		}
 	}
 
 	@Override
-	public void targetReached() {
-		isCompleted = true;
-	}
-
-	@Override
-	public void init() {
+	public void init(EntityCharacter assignedEntity) {
+		super.init(assignedEntity);
+		trl = new TaskReachLocation(null);
 		// select new random tile to wander to
 		if (assignedEntity.loc.isAbsolute) {
 			// currently off boat
-			target = new Location();
+			Location target = new Location();
 			target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
 			target.isAbsolute = false;
 			target.raftUUID = assignedEntity.ownerUUID;
+			trl.setTarget(target);
 		} else {
 			// wander
 			// targetLoc = new VectorDouble(1, 1);
@@ -59,18 +71,20 @@ public class TaskWander extends TaskReachLocation implements Serializable {
 				validSquares.remove(vd);
 			}
 			if (validSquares.isEmpty()) {
-				target = new Location();
+				Location target = new Location();
 				target.setPos(new VectorDouble(0, 0));// nagivate to the origin of the ship
 				target.isAbsolute = false;
 				target.raftUUID = assignedEntity.ownerUUID;
+				trl.setTarget(target);
 				return;
 			}
 			int size = validSquares.size();
 			int index = TaskHandler.rand.nextInt(size);
-			target = new Location();
+			Location target = new Location();
 			target.setPos(validSquares.get(index));// nagivate to the origin of the ship
 			target.isAbsolute = false;
 			target.raftUUID = assignedEntity.ownerUUID;
+			trl.setTarget(target);
 		}
 	}
 

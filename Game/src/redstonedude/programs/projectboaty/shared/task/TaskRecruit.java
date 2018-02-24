@@ -1,38 +1,40 @@
 package redstonedude.programs.projectboaty.shared.task;
 
+import java.awt.Graphics2D;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.event.EventListener;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
-import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
-public class TaskRecruit extends TaskReachEntityAndWork implements Serializable, EventListener {
+public class TaskRecruit extends Task implements Serializable, EventListener {
 
 	private static final long serialVersionUID = 1L;
+	private TaskReachEntity tre;
+	private TaskPerformWork tpw;
 	
-	public TaskRecruit() {
-		super(50);// 1 second recruit time at best
-		taskTypeID = "TaskRecruit";
+	public TaskRecruit(WrappedEntity targetEntity) {
+		super("TaskRecruit");
+		tre = new TaskReachEntity(targetEntity);
+		tpw = new TaskPerformWork(50);
 	}
-
-	@Override
-	public void init() {
-		// no initialisation needed
+	
+	public WrappedEntity getTarget() {
+		return tre.getTarget();
 	}
 
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
-		return new Priority(PriorityType.NORMAL, getDistanceToTarget(ec));
+		return tre.getPriority(ec);
 	}
-
-	@Override
-	public void workComplete() {
+	
+	public void workComplete(EntityCharacter assignedEntity) {
 //		// great, for now just actually recruit the thing
-		if (targetEntity.entity != null && targetEntity.entity instanceof EntityCharacter) {
-			EntityCharacter ec = (EntityCharacter) targetEntity.entity;
+		if (tre.getTarget().entity != null && tre.getTarget().entity instanceof EntityCharacter) {
+			EntityCharacter ec = (EntityCharacter) tre.getTarget().entity;
 			if (ec.ownerUUID.equals("")) {
 				ec.loc.setPos(ec.loc.getPos().add(new VectorDouble(0,1)));
 				ec.ownerUUID = assignedEntity.ownerUUID;
@@ -41,6 +43,23 @@ public class TaskRecruit extends TaskReachEntityAndWork implements Serializable,
 			}
 		}
 		isCompleted = true; // let wander bring us back or take us around the boat
+	}
+	
+	@Override
+	public void execute(EntityCharacter assignedEntity) {
+		tre.execute(assignedEntity);
+		if (tre.isCompleted) {
+			tpw.execute(assignedEntity);
+			if (tpw.isCompleted) {
+				workComplete(assignedEntity);
+			}
+		}
+	}
+	
+	@Override
+	public void draw(Graphics2D g2d) {
+		tre.draw(g2d);
+		tpw.draw(g2d, tre.getTarget().entity.loc);
 	}
 
 }

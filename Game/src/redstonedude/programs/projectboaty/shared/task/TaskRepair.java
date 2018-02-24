@@ -1,8 +1,8 @@
 package redstonedude.programs.projectboaty.shared.task;
 
+import java.awt.Graphics2D;
 import java.io.Serializable;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
@@ -12,36 +12,39 @@ import redstonedude.programs.projectboaty.shared.event.EventListener;
 import redstonedude.programs.projectboaty.shared.event.EventTileBroken;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
-public class TaskRepair extends TaskReachLocationAndWork implements Serializable, EventListener {
+public class TaskRepair extends Task implements Serializable, EventListener {
 
 	private static final long serialVersionUID = 1L;
 
-	public TaskRepair() {
-		super(50);// 1 second build time at best
-		taskTypeID = "TaskConstruct";
+	private TaskReachLocation trl;
+	private TaskPerformWork tpw;
+	
+	public TaskRepair(Location target) {
+		super("TaskRepair");
+		trl = new TaskReachLocation(target);
+		tpw = new TaskPerformWork(50);
 	}
-
-	@Override
-	public void init() {
-		// no initialisation needed
+	
+	public Location getTarget() {
+		return trl.getTarget();
 	}
-
+	
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
 		if (ec.carrying != null && ec.carrying.resourceType == ResourceType.Wood) {
-			return new Priority(PriorityType.CRITICAL, getDistanceToTarget(ec));
+			return new Priority(PriorityType.CRITICAL, TaskHandler.getDistanceToTarget(ec, trl.getTarget()));
 		}
 		return Priority.getIneligible();
 	}
 
-	@Override
-	public void workComplete() {
+	public void workComplete(EntityCharacter assignedEntity) {
 		// great, for now just actually repair the thing
 		UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
-		Tile t = ud.raft.getTileAt((int) target.getPos().x, (int) target.getPos().y);
+		Tile t = ud.raft.getTileAt((int) trl.getTarget().getPos().x, (int) trl.getTarget().getPos().y);
 		if (t != null) {
 			t.hp = 100;// maximise HP
 			PacketRequestTileState prts = new PacketRequestTileState(t);
@@ -60,13 +63,30 @@ public class TaskRepair extends TaskReachLocationAndWork implements Serializable
 			public void accept(Task t) {
 				if (t instanceof TaskRepair) {
 					TaskRepair tr = (TaskRepair) t;
-					if (tr.target.getPos().equals(e.tile.getPos())) {
+					if (tr.trl.getTarget().getPos().equals(e.tile.getPos())) {
 						//its a repair task on this raft, it's going to be correct
 						tr.isCompleted = true; //'cancel' it
 					}
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void execute(EntityCharacter assignedEntity) {
+		trl.execute(assignedEntity);
+		if (trl.isCompleted) {
+			tpw.execute(assignedEntity);
+			if (tpw.isCompleted) {
+				workComplete(assignedEntity);
+			}
+		}
+	}
+	
+	@Override
+	public void draw(Graphics2D g2d) {
+		trl.draw(g2d);
+		tpw.draw(g2d, trl.getTarget());
 	}
 
 }
