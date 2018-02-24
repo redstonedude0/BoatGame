@@ -136,7 +136,7 @@ public class ClientPhysicsHandler {
 						t.slowPassiveUpdate();
 					}
 					if (t.isCompleted) {
-						currentUser.raft.removeTask(t);//either complete or cancelled, remove it
+						currentUser.raft.removeTask(t);//complete; remove it
 					}
 				}
 				// move camera accordingly, target raft by default
@@ -179,6 +179,13 @@ public class ClientPhysicsHandler {
 			if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
 				UserData ud = ClientPacketHandler.getUserData(ec.ownerUUID);
 				if (ud != null && ud.raft != null) {
+					if (ec.currentTask != null && ec.currentTask.isOnHold) {
+						//unassign, and assign new task instead
+						ud.raft.addTask(ec.currentTask);
+						TaskHandler.assignTask(ud.raft,ec);
+						ec.currentTask.init(ec);
+						ec.sendState();
+					}
 					if (ec.currentTask == null || ec.currentTask.isCompleted) {
 						if (ec.currentTask != null) {
 							//compeleted, should've already been removed when it was taken up though, dead code.

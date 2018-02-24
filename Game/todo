@@ -207,6 +207,8 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(R)	  Make it so you can see what resources you have as an overlay
 	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 	[R]   Make it so you spawn with a number of starting characters
+-D-	(R)	  Consider effects of syncing tiles, consider adding seperate methods to dictate state variables, or some handling to
+			request the states rather than set them
 		World gen and map:
 -D-	(R)	  Trees, foliage, etc?
 -D-	(R)	  Polygonal islands with perlin noise generation. How to implement?

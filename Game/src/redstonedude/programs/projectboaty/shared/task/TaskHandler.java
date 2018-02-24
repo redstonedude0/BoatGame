@@ -33,10 +33,19 @@ public class TaskHandler {
 			//there's an actual task we can do, do it.
 			raft.removeTask(lowestPriorityTask);
 			ec.currentTask = lowestPriorityTask;
-		} else {
-			TaskWander tw = new TaskWander();
-			ec.currentTask = tw;
+			return;
 		}
+		if (ec.carrying != null) {
+			//do a deposit
+			TaskDepositMaterial tdm = new TaskDepositMaterial(ec.ownerUUID);
+			tdm.setLocationTarget(ec);
+			if (tdm.getTarget() != null) { //depositing is fine, or atleast has 1 more tick of physics, so allow it.
+				ec.currentTask = tdm;
+				return;
+			}
+		}//else
+		TaskWander tw = new TaskWander();
+		ec.currentTask = tw;		
 	}
 	
 	public static void sendList(Raft raft) {
