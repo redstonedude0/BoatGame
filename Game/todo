@@ -203,12 +203,15 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 				Perhaps rather than extending or implementing they extend task but include variables for the tasks
 				so TaskReachEntity has an instance of TaskReachLocation which it updates and modifies as needed, its execute
 				then simple points to TRLs execute.
--PR-(R)	  Make thrusters require 2 wood
+-PR-[R]	  Make thrusters require 2 wood
 	(R)	  Make it so you can see what resources you have as an overlay
 	[R]	  Make it so you can recruit new characters on islands - should it be a task? Better name than 'characters'
 	[R]   Make it so you spawn with a number of starting characters
 -D-	(R)	  Consider effects of syncing tiles, consider adding seperate methods to dictate state variables, or some handling to
 			request the states rather than set them
+-D-	[R]	  Consider the effects of infinitely holding a task and implementation of wandering.
+			Added ineligiblity to constructino task
+	(R)	  Consider making raft resources stored list and using events to modify it
 		World gen and map:
 -D-	(R)	  Trees, foliage, etc?
 -D-	(R)	  Polygonal islands with perlin noise generation. How to implement?
@@ -218,6 +221,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
 	(R)	  Consider packet ordering to ensure that null entries don't occur with player movement packets etc? re-queue?
+	(R)	  Consider character levels (officers, captains, etc)
 
 	Further notes for this update (and future updates):
 		Resources:
@@ -230,9 +234,11 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 			Stone blocks - Can be collected from rocky outcrops, required to make anchors, very heavy
 			Steel, Silver, Gold - Can be mined from islands? Dropped by characters, some aboard AI ships, etc?
 			Consider adding animals - Sheep (Wool, Mutton), Cows (Milk, Beef)
-			*Consider medical system - body part resources?*
+			*Consider medical system - body part resources?* Surgeons/Physicians? Illness from islands (consider island towns and brothels)
 			Ammunition/Gunpowder/Cannonballs? Start with some, craft from scrap metal or find on islands?
 			More in-depth systems (type of food, type of coral, etc)?
+			Rum - 
+			Tobacco - 
 		Tiles:
 			Wooden Planks - weak, buoyant, light
 			Offboard Motor? - heavy, fairly durable, requires scrap?
@@ -263,6 +269,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 		Task system notes/ideas:
 			Deck swabbing - cleans boat
 			Bail water - used to reduce flooding within the ship
+			Dancing - 
 		Animation system specs:
 			Animations should be eventually be loaded in via a texture handler, where you can specify the size of the image and the number of frames.
 			Animations should then be stored within the code, potentially as an ordered collection of BufferedImage?

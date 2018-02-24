@@ -33,6 +33,7 @@ import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
@@ -476,6 +477,10 @@ public class GraphicsHandler {
 		bottomBarContainer.setPreferredSize(new Dimension(400, 230));
 		bottomBarContainer.setBackground(new Color(0, 0, 0, 0));
 		bottomBarContainer.setLayout(new LayoutManagerStrictSizes());
+		JPanel topBarContainer = new JPanel();
+		topBarContainer.setPreferredSize(new Dimension(400, 400));
+		topBarContainer.setBackground(new Color(0, 0, 0, 0));
+		topBarContainer.setLayout(new LayoutManagerStrictSizes());
 		JPanel bottomBarButtonContainer = new JPanel();
 		bottomBarButtonContainer.setPreferredSize(new Dimension(400, 20));
 		bottomBarButtonContainer.setLocation(0, 210);
@@ -483,7 +488,9 @@ public class GraphicsHandler {
 		bottomBarButtonContainer.setLayout(new LayoutManagerStrictSizes());
 		bottomBarContainer.add(bottomBarButtonContainer);
 		bottomBarContainer.setVisible(false); // hidden by default
+		topBarContainer.setVisible(false);
 		menuPanel.add(bottomBarContainer);
+		menuPanel.add(topBarContainer);
 
 		ArrayList<Component> popups = new ArrayList<Component>();
 
@@ -496,7 +503,7 @@ public class GraphicsHandler {
 			}
 		};
 
-		doBuildGUI: {
+		doBuildAssignGUI: {
 			JButton buildGUIButton = new JButton("Build or Assign");
 			buildGUIButton.setLocation(0, 0);
 			buildGUIButton.setLayout(new LayoutManagerStrictSizes());
@@ -593,6 +600,10 @@ public class GraphicsHandler {
 					// make button depressed?
 				}
 			});
+			
+			doBuildGUI: {
+				
+			}
 		}
 		final JPanel mapGUIPopin = new JPanel();
 		doMapGUI: {
@@ -856,7 +867,13 @@ public class GraphicsHandler {
 							y += 20;
 						}
 						while (index - 1 <= maxComponentIndex) {
-							taskGUIList.remove(index - 1);// remove this component
+							try {
+								taskGUIList.remove(index - 1);// remove this component
+							} catch (IndexOutOfBoundsException e) {
+								//index out of bounds, something weird happened but its happened before
+								e.printStackTrace();
+								//just go on anyway
+							}
 							index++;
 						}
 						taskGUIList.setMaximum(y - 80);
@@ -935,6 +952,7 @@ public class GraphicsHandler {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					bottomBarContainer.setVisible(true);
+					topBarContainer.setVisible(true);
 					// chatContainer.setVisible(true);
 					mainMenuContainer.setVisible(false);
 					ControlHandler.startPlaying();
@@ -988,6 +1006,34 @@ public class GraphicsHandler {
 				}
 			});
 		}
+		//Do resources GUI
+		final JPanel resourcesGUI = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void paint(Graphics g) {
+				int index = 0;
+				UserData ud = ClientPacketHandler.getCurrentUserData();
+				if (ud != null && ud.raft != null) {
+					g.setColor(Color.BLACK);
+					for (EntityResource er: ud.raft.getTotalResources()) {
+						if (er.quantity != 0) {
+							int x = 0;
+							int y = 15+index*20;
+							g.drawString(er.quantity + " " + er.resourceType.textureName, 20, 30+index*20);
+							g.drawImage(TextureHandler.getTexture("Resource_"+er.resourceType.textureName),x,y,20,20, frame);
+							index++;
+						}
+					}
+				}
+			}
+		};
+		doResourcesGUI: {
+			resourcesGUI.setLocation(0, 0);
+			resourcesGUI.setLayout(new LayoutManagerStrictSizes());
+			resourcesGUI.setPreferredSize(new Dimension(400, 400));
+			resourcesGUI.setVisible(true);
+			topBarContainer.add(resourcesGUI);
+		}
 
 		// Add layers to pane, Add menuPanel first so menuPanel is on top
 		jlp.add(menuPanel);
@@ -1013,6 +1059,8 @@ public class GraphicsHandler {
 				graphicsPanel.setSize(size);
 				menuPanel.setSize(size);
 				// set the location for components that hug the sides
+				//resourcesGUI.setLocation(0, 0);
+				topBarContainer.setLocation(0, 0);
 				bottomBarContainer.setLocation(0, size.height - bottomBarContainer.getHeight());
 				// chatContainer.setLocation(size.width-chatContainer.getWidth(), size.height - chatContainer.getHeight());
 				mainMenuContainer.setLocation((size.width - mainMenuContainer.getWidth()) / 2, (size.height - mainMenuContainer.getHeight()) / 2);

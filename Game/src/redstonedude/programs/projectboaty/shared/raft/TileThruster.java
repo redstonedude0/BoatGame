@@ -1,6 +1,5 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
-import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TileThruster extends Tile {
@@ -11,6 +10,7 @@ public class TileThruster extends Tile {
 	public double maxThrustStrength = 0.1;
 
 	public TileThruster() {
+		super();
 		mass = 50;
 	}
 

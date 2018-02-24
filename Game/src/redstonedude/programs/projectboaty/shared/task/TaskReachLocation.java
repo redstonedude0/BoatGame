@@ -65,14 +65,6 @@ public class TaskReachLocation extends Task implements Serializable {
 			}
 			g2d.transform(rotator);
 			g2d.drawImage(TextureHandler.getTexture("TileConstruction"), 0, -100, 100, 0, 0, 0, 32, 32, null);
-//			if (this instanceof TaskReachLocationAndWork) {
-//				TaskReachLocationAndWork trlaw = (TaskReachLocationAndWork) this;
-//				double workDone = (trlaw.maximumWork - trlaw.workRemaining);
-//				double proportionDone = workDone / ((double) trlaw.maximumWork);
-//				double angleDone = proportionDone * 360;
-//				g2d.setColor(Color.LIGHT_GRAY);
-//				g2d.fillArc(25, -75, 50, 50, 90, (int) -angleDone);
-//			}
 			try {
 				g2d.transform(rotator.createInverse());
 			} catch (NoninvertibleTransformException e) {

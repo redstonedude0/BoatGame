@@ -2,17 +2,13 @@ package redstonedude.programs.projectboaty.shared.task;
 
 import java.awt.Graphics2D;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
-import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
-import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.EntityResource;
 import redstonedude.programs.projectboaty.shared.net.UserData;
-import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestDelEntity;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.raft.ResourceStorage;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 
@@ -28,6 +24,15 @@ public class TaskObtainMaterial extends Task implements Serializable {
 		super("TaskObtainMaterial");
 		this.raftUUID = raftUUID;
 		this.resource = resource;
+		trl = new TaskReachLocation(null);//no location currently
+	}
+	
+	public EntityResource getResource() {
+		return resource;
+	}
+	
+	public Location getTarget() {
+		return trl.getTarget();
 	}
 
 	private void targetReached(EntityCharacter assignedEntity) {
@@ -38,6 +43,9 @@ public class TaskObtainMaterial extends Task implements Serializable {
 			ResourceStorage rs = t.storage;
 			if (rs != null && rs.maxNumberOfStacks == 1) {
 				assignedEntity.carrying = t.storage.resources.poll();
+				PacketRequestTileState prts = new PacketRequestTileState(t);
+				ClientPacketHandler.sendPacket(prts); // update the server on this
+				assignedEntity.sendState();//update server on this
 				isCompleted = true;//completed material obtain
 				return;
 			}

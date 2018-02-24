@@ -25,7 +25,7 @@ public class Tile implements Serializable {
 	public double hp = 100;
 	public ResourceStorage storage = new ResourceStorage();
 	public static enum TileType {
-		Wood(10,100,Arrays.asList(new EntityResource(ResourceType.Wood,1)),"Wood",Tile.class),
+		Wood(10,100,Arrays.asList(new EntityResource(ResourceType.Wood,1),new EntityResource(ResourceType.Wood,1)),"Wood",Tile.class),
 		Thruster(50,500,Arrays.asList(new EntityResource(ResourceType.Scrap,1)),"Thruster",TileThruster.class);
 		
 		public Class<? extends Tile> clazz;
@@ -42,6 +42,16 @@ public class Tile implements Serializable {
 		}
 	}
 	public TileType tileType;
+	
+	public Tile() {
+		for (TileType tt: TileType.values()) {
+			if (tt.clazz.equals(this.getClass())) {
+				tileType = tt;
+				return;
+			}
+		}
+		System.out.println("Tile initiated with null tile type. This will not go well...");
+	}
 
 	public void damage(double dmg) {
 		hp -= dmg;

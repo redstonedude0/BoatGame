@@ -2,6 +2,7 @@ package redstonedude.programs.projectboaty.shared.raft;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -9,6 +10,8 @@ import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource;
+import redstonedude.programs.projectboaty.shared.entity.EntityResource.ResourceType;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.event.EventTileBroken;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
@@ -32,6 +35,46 @@ public class Raft implements Serializable {
 	private ArrayList<Tile> tiles = new ArrayList<Tile>();
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private transient Tile constructionTile; //used to show current mouse position, doesn't need to be serialized or even stored server-side
+	
+	public Collection<EntityResource> getTotalResources() {
+		ArrayList<EntityResource> resources = new ArrayList<EntityResource>();
+		for (ResourceType rt: ResourceType.values()) {
+			EntityResource er= new EntityResource(rt,0);
+			resources.add(er);
+		}
+		//tiles
+		for (Tile t: getTiles()) {
+			if (t != null && t.storage != null) {
+				ResourceStorage rs = t.storage;
+				storage: for (EntityResource er: rs.resources) {
+					for (EntityResource resource: resources) {
+						if (er.resourceType == resource.resourceType) {
+							resource.quantity += er.quantity;
+							continue storage;//get next item in storage
+						}
+					}
+				}
+			}
+		}
+		entities: for (WrappedEntity e: ClientPhysicsHandler.getWrappedEntities()) {
+			if (e != null && e.entity != null) {
+				if (e.entity instanceof EntityCharacter) {
+					EntityCharacter ec = (EntityCharacter) e.entity;
+					if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
+						if (ec.carrying != null) {
+							for (EntityResource resource: resources) {
+								if (ec.carrying.resourceType == resource.resourceType) {
+									resource.quantity += ec.carrying.quantity;
+									continue entities;//get next entity
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return resources;
+	}
 	
 	public synchronized Tile getConstructionTile() {
 		return constructionTile;
