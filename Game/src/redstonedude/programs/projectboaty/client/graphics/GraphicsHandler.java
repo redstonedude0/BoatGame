@@ -255,6 +255,11 @@ public class GraphicsHandler {
 							}
 						}
 					}
+					
+//					VectorDouble absoluteForce = tile.getAbsoluteMotion(ud.raft);
+//					absoluteForce = absoluteForce.multiply(5000);
+//					g2d.setColor(Color.RED);
+//					g2d.drawLine((int) (100*tile.getAbsoluteX(ud.raft)),(int) (100*tile.getAbsoluteY(ud.raft)),(int) (100*tile.getAbsoluteX(ud.raft)+absoluteForce.x),(int) (100*tile.getAbsoluteY(ud.raft)+absoluteForce.y));
 				}
 				g2d.setColor(Color.WHITE);
 				g2d.drawLine((int) (100 * ud.raft.getPos().x), (int) (100 * ud.raft.getPos().y), (int) (100 * ud.raft.getPos().x + 100 * ud.raft.getUnitX().x), (int) (100 * ud.raft.getPos().y + 100 * ud.raft.getUnitX().y));

@@ -180,7 +180,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 		Task system changes:
 -P-	(R)   Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
 -PR-(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
--P- (R)	  Investigate cancelling tasks
+-P- (R)	  Investigate cancelling tasks (no longer happens as all tasks are Task - consider adding a checkTarget method)
 -D-	(R)	  Consider priority handling for non-collective destruction? Consider resource dropping
 -PR-(R)	  Implement paddelling, take it into account for control and physics calculations. Paddelling will apply a force proportional to the difference in speed from 1ms^-1, it will never accelerate above 1ms^-1 Perhaps set as unreachable if speed difference is too great?
 -PD-(R)	  If a task would require dismounting a boat moving at more then 1ms^-1 then set it as unreachable Consider implications of mid-journey speed-ups. Need to add failure to move into characters moveToward method.
@@ -197,7 +197,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -D- (R)	  Consider allowing for a delocalised camera
 		Resource System:
 -PD-[R]	  Decide how to implement resource requirement system + other resources, consider TileHandler and enums
--D-	(R)	  Create resource management system so resources are stored if not needed
+-D-	[R]	  Create resource management system so resources are stored if not needed
 			Need to decide how to implement. How to make tasks modular and piecewise, perhaps have each task be
 				simple (reach location, gather material, etc), and/or be a supertask (reachlocation() gathermaterial()).
 				Perhaps rather than extending or implementing they extend task but include variables for the tasks
@@ -223,6 +223,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
 	(R)	  Consider packet ordering to ensure that null entries don't occur with player movement packets etc? re-queue?
 	(R)	  Consider character levels (officers, captains, etc)
+	[R]	  Fixed drag system - could not set magnitude < 0 in VectorDouble.
 
 	Further notes for this update (and future updates):
 		Resources:
