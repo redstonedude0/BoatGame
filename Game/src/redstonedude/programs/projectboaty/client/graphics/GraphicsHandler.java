@@ -514,44 +514,40 @@ public class GraphicsHandler {
 			bottomBarButtonContainer.add(buildGUIButton);
 
 			JPanel buildGUIPopup = new JPanel();
-			buildGUIPopup.setLocation(0, 0);
+			buildGUIPopup.setLocation(0, 50);
 			buildGUIPopup.setLayout(new LayoutManagerStrictSizes());
-			buildGUIPopup.setPreferredSize(new Dimension(150, 220));// height of container-barheight
+			buildGUIPopup.setPreferredSize(new Dimension(150, 160));// height of container-barheight
 			buildGUIPopup.setBackground(menuGray);
 			buildGUIPopup.setVisible(false);
 			bottomBarContainer.add(buildGUIPopup);
 
-			JButton buildGUIWood = new JButton("Build Wooden Floor");
-			buildGUIWood.setLocation(0, 0);
-			buildGUIWood.setLayout(new LayoutManagerStrictSizes());
-			buildGUIWood.setPreferredSize(new Dimension(150, 40));
-			buildGUIWood.setFocusable(false);
-			buildGUIPopup.add(buildGUIWood);
-			JButton buildGUIThruster = new JButton("Build Thruster");
-			buildGUIThruster.setLocation(0, 40);
-			buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
-			buildGUIThruster.setPreferredSize(new Dimension(150, 40));
-			buildGUIThruster.setFocusable(false);
-			buildGUIPopup.add(buildGUIThruster);
+			JButton buildGUIBuild = new JButton("Build");
+			buildGUIBuild.setLocation(0, 0);
+			buildGUIBuild.setLayout(new LayoutManagerStrictSizes());
+			buildGUIBuild.setPreferredSize(new Dimension(150, 40));
+			buildGUIBuild.setFocusable(false);
+			buildGUIPopup.add(buildGUIBuild);
 			JButton buildGUIBarrel = new JButton("Collect Barrels");
-			buildGUIBarrel.setLocation(0, 80);
+			buildGUIBarrel.setLocation(0, 40);
 			buildGUIBarrel.setLayout(new LayoutManagerStrictSizes());
 			buildGUIBarrel.setPreferredSize(new Dimension(150, 40));
 			buildGUIBarrel.setFocusable(false);
 			buildGUIPopup.add(buildGUIBarrel);
 			JButton buildGUIDeconstruct = new JButton("Deconstruct");
-			buildGUIDeconstruct.setLocation(0, 120);
+			buildGUIDeconstruct.setLocation(0, 80);
 			buildGUIDeconstruct.setLayout(new LayoutManagerStrictSizes());
 			buildGUIDeconstruct.setPreferredSize(new Dimension(150, 40));
 			buildGUIDeconstruct.setFocusable(false);
 			buildGUIPopup.add(buildGUIDeconstruct);
 			JButton buildGUIRecruit = new JButton("Recruit");
-			buildGUIRecruit.setLocation(0, 160);
+			buildGUIRecruit.setLocation(0, 120);
 			buildGUIRecruit.setLayout(new LayoutManagerStrictSizes());
 			buildGUIRecruit.setPreferredSize(new Dimension(150, 40));
 			buildGUIRecruit.setFocusable(false);
 			buildGUIPopup.add(buildGUIRecruit);
 			popups.add(buildGUIPopup);
+			
+			JPanel buildGUIBuildsPopups = new JPanel();
 
 			buildGUIButton.addActionListener(new ActionListener() {
 				@Override
@@ -565,23 +561,29 @@ public class GraphicsHandler {
 					// make button depressed?
 				}
 			});
-			buildGUIWood.addActionListener(new ActionListener() {
+			
+			ArrayList<Component> buildsPopups = new ArrayList<Component>();
+			buildsPopups.add(buildGUIBuildsPopups);
+
+			final Runnable closeBuildsPopups = new Runnable() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickMode = ClickMode.BuildingWood;
-					// make button depressed?
+				public void run() {
+					for (Component c : buildsPopups) {
+						c.setVisible(false);
+					}
 				}
-			});
-			buildGUIThruster.addActionListener(new ActionListener() {
+			};
+			
+			buildGUIBuild.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ControlHandler.clickMode = ClickMode.BuildingThruster;
-					// make button depressed?
+					buildGUIBuildsPopups.setVisible(!buildGUIBuildsPopups.isVisible());
 				}
 			});
 			buildGUIBarrel.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					closeBuildsPopups.run();
 					ControlHandler.clickMode = ClickMode.Collection;
 					// make button depressed?
 				}
@@ -589,6 +591,7 @@ public class GraphicsHandler {
 			buildGUIDeconstruct.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					closeBuildsPopups.run();
 					ControlHandler.clickMode = ClickMode.Deconstruct;
 					// make button depressed?
 				}
@@ -596,13 +599,48 @@ public class GraphicsHandler {
 			buildGUIRecruit.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					closeBuildsPopups.run();
 					ControlHandler.clickMode = ClickMode.Recruiting;
 					// make button depressed?
 				}
 			});
 			
 			doBuildGUI: {
+				buildGUIBuildsPopups.setLocation(150, 50);
+				buildGUIBuildsPopups.setLayout(new LayoutManagerStrictSizes());
+				buildGUIBuildsPopups.setPreferredSize(new Dimension(150, 160));
+				buildGUIBuildsPopups.setBackground(menuGray);
+				buildGUIBuildsPopups.setVisible(false);
+				popups.add(buildGUIBuildsPopups);
+				bottomBarContainer.add(buildGUIBuildsPopups);
 				
+				JButton buildGUIWood = new JButton("Build Wooden Floor");
+				buildGUIWood.setLocation(0, 0);
+				buildGUIWood.setLayout(new LayoutManagerStrictSizes());
+				buildGUIWood.setPreferredSize(new Dimension(150, 20));
+				buildGUIWood.setFocusable(false);
+				buildGUIBuildsPopups.add(buildGUIWood);
+				JButton buildGUIThruster = new JButton("Build Thruster");
+				buildGUIThruster.setLocation(0, 20);
+				buildGUIThruster.setLayout(new LayoutManagerStrictSizes());
+				buildGUIThruster.setPreferredSize(new Dimension(150, 20));
+				buildGUIThruster.setFocusable(false);
+				buildGUIBuildsPopups.add(buildGUIThruster);
+				
+				buildGUIWood.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						ControlHandler.clickMode = ClickMode.BuildingWood;
+						// make button depressed?
+					}
+				});
+				buildGUIThruster.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						ControlHandler.clickMode = ClickMode.BuildingThruster;
+						// make button depressed?
+					}
+				});
 			}
 		}
 		final JPanel mapGUIPopin = new JPanel();
