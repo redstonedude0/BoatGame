@@ -181,7 +181,11 @@ public class TaskConstruct extends Task implements Serializable {
 		} catch (NoninvertibleTransformException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return trl.shouldCancel(absoluteClickedPos);
 	}
 
 }

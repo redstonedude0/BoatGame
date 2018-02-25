@@ -96,7 +96,7 @@ public class Client implements Runnable {
 					frames++;
 					if (System.currentTimeMillis() >= nextTime) {
 						nextTime += 1000;
-						System.out.println(frames + " fps");
+						//System.out.println(frames + " fps");
 						frames = 0;
 					}
 					long currTime = System.currentTimeMillis();

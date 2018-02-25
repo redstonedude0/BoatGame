@@ -12,6 +12,7 @@ import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.physics.Location;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 import redstonedude.programs.projectboaty.shared.task.Priority.PriorityType;
 
@@ -69,4 +70,9 @@ public class TaskDestroyResource extends Task implements Serializable {
 		tpw.draw(g2d, trl.getTarget());
 	}
 
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return trl.shouldCancel(absoluteClickedPos);
+	}
+	
 }

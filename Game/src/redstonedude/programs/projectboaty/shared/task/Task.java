@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public abstract class Task implements Serializable {
 
@@ -44,6 +45,10 @@ public abstract class Task implements Serializable {
 
 	public void draw(Graphics2D g2d) {
 		// do nothing
+	}
+	
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return false;
 	}
 
 }

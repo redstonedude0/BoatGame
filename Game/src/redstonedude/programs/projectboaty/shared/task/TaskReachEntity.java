@@ -6,6 +6,7 @@ import java.io.Serializable;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.physics.Location;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskReachEntity extends Task implements Serializable {
 
@@ -58,6 +59,11 @@ public class TaskReachEntity extends Task implements Serializable {
 	@Override
 	public Priority getPriority(EntityCharacter ec) {
 		return trl.getPriority(ec);
+	}
+	
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return trl.shouldCancel(absoluteClickedPos);
 	}
 	
 }

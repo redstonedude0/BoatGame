@@ -64,5 +64,10 @@ public class TaskRecruit extends Task implements Serializable, EventListener {
 		tre.draw(g2d);
 		tpw.draw(g2d, tre.getTarget().entity.getLoc());
 	}
+	
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return tre.shouldCancel(absoluteClickedPos);
+	}
 
 }

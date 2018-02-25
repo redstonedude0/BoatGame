@@ -13,6 +13,7 @@ import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
 import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestNewCharacter;
@@ -29,7 +30,6 @@ import redstonedude.programs.projectboaty.shared.task.TaskCollect;
 import redstonedude.programs.projectboaty.shared.task.TaskConstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDeconstruct;
 import redstonedude.programs.projectboaty.shared.task.TaskDestroyResource;
-import redstonedude.programs.projectboaty.shared.task.TaskReachLocation;
 import redstonedude.programs.projectboaty.shared.task.TaskRecruit;
 
 public class ControlHandler implements KeyListener, MouseListener, MouseMotionListener {
@@ -402,26 +402,24 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 	public static synchronized void doCancellingPress(VectorDouble clicked) {
 		UserData ud = ClientPacketHandler.getCurrentUserData();
 		if (ud != null && ud.raft != null) {
-			ud.raft.getAllTasksNotWander().forEach(new Consumer<Task>() {
+			ud.raft.getTasks().forEach(new Consumer<Task>() {
 				@Override
 				public void accept(Task t) {
-					if (t instanceof TaskReachLocation) {
-						TaskReachLocation trl = (TaskReachLocation) t;
-						VectorDouble targetPos = trl.getTarget().getPos();
-						if (!trl.getTarget().isAbsolute) {
-							UserData udTarget = ClientPacketHandler.getUserData(trl.getTarget().raftUUID);
-							targetPos = targetPos.add(new VectorDouble(0.5, 0.5))
-									.getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY())
-									.add(udTarget.raft.getPos()).subtract(new VectorDouble(0.5, 0.5));
-						}
-						if (clicked.x > targetPos.x && clicked.x < targetPos.x + 1) {
-							if (clicked.y > targetPos.y && clicked.y < targetPos.y + 1) {
-								ud.raft.removeTask(t);
-							}
-						}
+					if (t.shouldCancel(clicked)) {
+						ud.raft.removeTask(t);
 					}
 				}
 			});
+			for (WrappedEntity we: ClientPhysicsHandler.getWrappedEntities()) {
+				if (we != null && we.entity != null && we.entity instanceof EntityCharacter) {
+					EntityCharacter ec = (EntityCharacter) we.entity;
+					if (ec.ownerUUID.equals(ClientPacketHandler.currentUserUUID)) {
+						if (ec.currentTask != null && ec.currentTask.shouldCancel(clicked)) {
+							ec.currentTask = null;//delete task
+						}
+					}
+				}
+			}
 		}
 	}
 

@@ -303,8 +303,6 @@ public class ClientPhysicsHandler {
 							if (passedLine == null) {
 								System.out.println("null passed line. Oh dear. " + boundaryLines.size());
 								continue;
-							} else {
-								System.out.println("bounce");
 							}
 							//get components of velocity parallel and perpendicular to surface
 							VectorDouble surface = new VectorDouble(passedLine.getX2()-passedLine.getX1(),passedLine.getY2()-passedLine.getY1());

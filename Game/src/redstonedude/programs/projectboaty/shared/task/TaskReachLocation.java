@@ -74,4 +74,24 @@ public class TaskReachLocation extends Task implements Serializable {
 		}
 	}
 	
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		if (target != null) {
+			VectorDouble pos = target.getPos();
+			if (!target.isAbsolute) {
+				UserData ud = ClientPacketHandler.getUserData(target.raftUUID);
+				if (ud == null) {
+					return false;
+				};
+				absoluteClickedPos = absoluteClickedPos.subtract(ud.raft.getPos()).getRelative(ud.raft.getUnitX(), ud.raft.getUnitY());
+			}
+			if (absoluteClickedPos.x > pos.x && absoluteClickedPos.x < pos.x + 1) {
+				if (absoluteClickedPos.y > pos.y && absoluteClickedPos.y < pos.y + 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 }

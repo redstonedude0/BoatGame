@@ -9,6 +9,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityResource;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestTileState;
 import redstonedude.programs.projectboaty.shared.physics.Location;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.ResourceStorage;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
 

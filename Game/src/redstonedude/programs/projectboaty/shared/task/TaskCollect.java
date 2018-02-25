@@ -10,6 +10,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.EntityResource;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestDelEntity;
+import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskCollect extends Task implements Serializable {
 
@@ -66,6 +67,11 @@ public class TaskCollect extends Task implements Serializable {
 	@Override
 	public void draw(Graphics2D g2d) {
 		tre.draw(g2d);
+	}
+	
+	@Override
+	public boolean shouldCancel(VectorDouble absoluteClickedPos) {
+		return tre.shouldCancel(absoluteClickedPos);
 	}
 
 }
