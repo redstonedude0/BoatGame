@@ -221,8 +221,15 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -D-	(R)	  Polygonal islands with perlin noise generation. How to implement?
 	[R]	  Make the map show other players and update live
 		Physics system:
-	(R)	  Update barrel collisions
+	[R]	  Update barrel collisions. Barrels now bounce slightly better
+	(R)	  Look into barrel-boat collisions further, consider how to implement non-insertion
+	(R)	  Do barrel-barrel collisions
+	(R)	  Improve barrel-island collisions? Perhaps consider wave currents near shorelines?		
 	(R)   Consider boat-on-boat collisions
+	(R)	  Look into syncing C-PUPS with S-PUPS better. Consider effect of significantly desynced C- and S-PUPS.
+			(for the most part a slow C-PUP disadvantages the client only, no significant issues with physics other than going
+				slower)
+	(R)	  Look into alternative methods for reactive forces (boat-boat collisions, anchors, barrel collisions, etc)
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
