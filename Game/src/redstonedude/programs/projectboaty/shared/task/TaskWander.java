@@ -98,22 +98,7 @@ public class TaskWander extends Task implements Serializable, EventListener {
 			UserData ud = ClientPacketHandler.getUserData(assignedEntity.ownerUUID);
 			if (ud != null && ud.raft != null) {
 				// generate boundary lines, this is a list of all walls that can be walked towards
-				Collection<Line2D> boundaryLines = new ArrayList<Line2D>();
-				for (Tile t: ud.raft.getTiles())  {
-					VectorDouble tPos = t.getPos();
-					if (ud.raft.getTileAt((int) tPos.x+1,(int) tPos.y) == null) {
-						boundaryLines.add(new Line2D.Double(tPos.x+1, tPos.y, tPos.x+1, tPos.y+1));
-					}
-					if (ud.raft.getTileAt((int) tPos.x-1,(int) tPos.y) == null) {
-						boundaryLines.add(new Line2D.Double(tPos.x, tPos.y, tPos.x, tPos.y+1));
-					}
-					if (ud.raft.getTileAt((int) tPos.x,(int) tPos.y+1) == null) {
-						boundaryLines.add(new Line2D.Double(tPos.x, tPos.y+1, tPos.x+1, tPos.y+1));
-					}
-					if (ud.raft.getTileAt((int) tPos.x,(int) tPos.y-1) == null) {
-						boundaryLines.add(new Line2D.Double(tPos.x, tPos.y, tPos.x+1, tPos.y));
-					}
-				}
+				Collection<Line2D> boundaryLines = ud.raft.getBoundaryLines();
 				Random rand = new Random();
 				double angle = rand.nextDouble()*Math.PI*2;//random angle
 				double maxLength = 10;//start with maximum length

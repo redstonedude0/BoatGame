@@ -220,6 +220,9 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 -D-	(R)	  Trees, foliage, etc?
 -D-	(R)	  Polygonal islands with perlin noise generation. How to implement?
 	[R]	  Make the map show other players and update live
+		Physics system:
+	(R)	  Update barrel collisions
+	(R)   Consider boat-on-boat collisions
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?

@@ -97,7 +97,9 @@ public class ServerPhysicsHandler {
 	public static void physicsUpdate() {
 		// before we do anything handle all packets from this last tick
 		ServerPacketHandler.handlePackets();
-		DebugHandler.clear();
+//		long time1 = System.nanoTime();
+		
+		//DebugHandler.clear();
 		c++;
 		// do barrel despawning
 		ArrayList<Entity> toDespawn = new ArrayList<Entity>();
@@ -133,14 +135,9 @@ public class ServerPhysicsHandler {
 					VectorDouble vel = eb.getVel();
 					TerrainType tt = WorldHandler.getTerrainType(pos.x + 0.5, pos.y + 0.5);
 					// it will have some intial velocity, apply drag
-					VectorDouble drag = vel.multiply(-tt.frictionCoefficient);
-					// F=ma, a=F/m
-					vel = vel.add(drag.divide(10/* mass */));
-					// System.out.println("here: " + vel.x);
-					if (tt == TerrainType.Water) {
-						vel = vel.add(WorldHandler.getWind().divide(10/* mass */));
-					}
+
 					// also see if barrel is inside a raft, if so it needs to be ejected immediately.
+					boolean collided = false;
 					checkAllUsers: for (ServerUserData sud : ServerPacketHandler.userData) {
 						if (sud != null && sud.raft != null) {
 							// calculate relative position of the barrel
@@ -153,7 +150,19 @@ public class ServerPhysicsHandler {
 									if (relPos.y > tPos.y && relPos.y < tPos.y + 1) {
 										// inside this tile, add the relevant velocity and then return
 										VectorDouble velo = t.getAbsoluteMotion(sud.raft);
-										vel = velo.multiply(2);// ensure it goes away
+										// vel = velo.multiply(2);// ensure it goes away
+										// set velocity to negative of relative velociy
+										VectorDouble tileVel = t.getAbsoluteMotion(sud.raft);
+										VectorDouble barrelVel = new VectorDouble(vel);
+										VectorDouble relativeVel = barrelVel.subtract(tileVel);
+										VectorDouble newVel = relativeVel.multiply(-1);// go away
+										newVel = newVel.add(tileVel);// add to make absolute vel
+										// System.out.println(sud.raft.getPos().x + ":" + sud.raft.getPos().y);
+										//System.out.println("1." + tileVel.x + ":" + tileVel.y + ":" + barrelVel.x + ":" + barrelVel.y);
+										//System.out.println("2." + vel.x + ":" + newVel.x + ":" + vel.y + ":" + newVel.y);
+										//System.out.println("3." + t.getAbsoluteX(sud.raft) + ":" + t.getAbsoluteY(sud.raft));
+										//System.out.println("4." + pos.x + ":" + pos.y);
+										//vel = newVel;
 
 										// also apply damage to this tile
 										/**
@@ -165,13 +174,22 @@ public class ServerPhysicsHandler {
 										PacketTileState pts = new PacketTileState(t);
 										pts.uuid = sud.uuid;
 										ServerPacketHandler.broadcastPacket(pts);
+										collided = true;
 										break checkAllUsers;
 									}
 								}
 							}
 						}
 					}
-
+					if (!collided) {
+						VectorDouble drag = vel.multiply(-tt.frictionCoefficient);
+						// F=ma, a=F/m
+						vel = vel.add(drag.divide(10/* mass */));
+						// System.out.println("here: " + vel.x);
+						if (tt == TerrainType.Water) {
+							vel = vel.add(WorldHandler.getWind().divide(10/* mass */));
+						} // maximum vel is approx. 0.05
+					}
 					// add the velocity to position and send packet
 					eb.setVel(vel);
 					Location loc = eb.getLoc();
@@ -191,7 +209,9 @@ public class ServerPhysicsHandler {
 				}
 			}
 		}
+//		long time2 = System.nanoTime();
 		removeAllEntities(toDespawn);
+//		long time3 = System.nanoTime();
 		for (Entity e : toDespawn) {
 			PacketDelEntity pde = new PacketDelEntity();
 			pde.uuid = e.uuid;
@@ -200,7 +220,17 @@ public class ServerPhysicsHandler {
 		for (ServerUserData sud : ServerPacketHandler.userData) {
 			physicsUpdate(sud); // todo comod safety
 		}
+//		long time4 = System.nanoTime();
+//		System.out.println("1O: " + (time2-time1));
+//		time1Total += (time2-time1);
+//		time1Count++;
+//		System.out.println("1T: " + (time1Total/time1Count));
+		//System.out.println("2: " + (time3-time2));
+		//System.out.println("3: " + (time4-time3));
 	}
+	
+	//public static long time1Total = 0;
+	//public static long time1Count = 0;
 
 	public static void physicsUpdate(ServerUserData sud) {
 		// nothing needed for now! XD
@@ -260,7 +290,7 @@ public class ServerPhysicsHandler {
 					}
 				}
 				if (WorldHandler.getTerrainType(x, y) != TerrainType.Land) {
-					return;//not land, don't spawn
+					return;// not land, don't spawn
 				}
 				// spawn
 				spawnCharacter(x, y);
@@ -293,7 +323,7 @@ public class ServerPhysicsHandler {
 		addEntity(eb);
 		ServerPacketHandler.broadcastPacket(new PacketNewEntity(eb));
 	}
-	
+
 	public static void spawnCharacter(int x, int y) {
 		EntityCharacter ec = new EntityCharacter();
 		Location loc = new Location();
@@ -376,7 +406,7 @@ public class ServerPhysicsHandler {
 			tile.setPos(new VectorDouble(1, 1));
 			raft.addTile(tile);
 			TileAnchorSmall anchorSmall = new TileAnchorSmall();
-			anchorSmall.setPos(new VectorDouble(1,2));
+			anchorSmall.setPos(new VectorDouble(1, 2));
 			raft.addTile(anchorSmall);
 			thruster = new TileThruster();
 			thruster.setPos(new VectorDouble(0, 0));

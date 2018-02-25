@@ -137,6 +137,7 @@ public class Tile implements Serializable {
 		absRot.y = rotationalVelocity.x * parent.getUnitX().y + rotationalVelocity.y * parent.getUnitY().y;
 		VectorDouble vr = new VectorDouble(linearVelocity).add(absRot);
 
+		//System.out.println("relative speed: " + Math.sqrt(vr.getSquaredLength()));
 		return vr;
 	}
 

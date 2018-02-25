@@ -340,12 +340,11 @@ public class GraphicsHandler {
 		}
 
 		// DEBUG
-		// for (DebugVector dv : DebugHandler.debugVectors) {
-		// g2d.setColor(dv.color);
-		// g2d.drawLine((int) (100 * dv.pos.x), (int) (100 * dv.pos.y), (int) (100 *
-		// dv.pos.x + 100 * dv.vector.x), (int) (100 * dv.pos.y + 100 * dv.vector.y));
-
-		// }
+//		for (DebugVector dv : DebugHandler.debugVectors) {
+//		  g2d.setColor(dv.color);
+//		  g2d.drawLine((int) (100 * dv.pos.x), (int) (100 * dv.pos.y), (int) (100 *
+//		  dv.pos.x + 100 * dv.vector.x), (int) (100 * dv.pos.y + 100 * dv.vector.y));
+//		}
 		//
 		g2d.setColor(Color.RED);
 		g2d.drawOval((int) (100 * ClientPhysicsHandler.cameraPosition.x - 10), (int) (100 * ClientPhysicsHandler.cameraPosition.y - 10), 20, 20);

@@ -16,7 +16,7 @@ import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.task.TaskRepair;
 import redstonedude.programs.projectboaty.shared.task.TaskWander;
 
-public class Client implements Runnable, ImageObserver {
+public class Client implements Runnable {
 
 	public static Thread thread;
 	public static Client c;
@@ -72,6 +72,10 @@ public class Client implements Runnable, ImageObserver {
 			// }
 			// }
 			update();
+//			while (true) {
+//				ClientPhysicsHandler.physicsUpdate();
+//				Thread.sleep(20);
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,7 +96,7 @@ public class Client implements Runnable, ImageObserver {
 					frames++;
 					if (System.currentTimeMillis() >= nextTime) {
 						nextTime += 1000;
-						//System.out.println(frames + " fps");
+						System.out.println(frames + " fps");
 						frames = 0;
 					}
 					long currTime = System.currentTimeMillis();
@@ -113,11 +117,5 @@ public class Client implements Runnable, ImageObserver {
 		thread = new Thread(this);
 		thread.start();
 	}
-
-	@Override
-	public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-		ClientPhysicsHandler.physicsUpdate();
-		GraphicsHandler.graphicsUpdate();
-		return true;
-	}
+	
 }

@@ -41,6 +41,13 @@ public class VectorDouble implements Serializable {
 		ans.y *= d;
 		return ans;
 	}
+	
+	public VectorDouble dot(VectorDouble d) {
+		VectorDouble ans = new VectorDouble();
+		ans.x = this.x*d.x;
+		ans.y = this.y*d.y;
+		return ans;
+	}
 
 	public VectorDouble divide(double d) {
 		VectorDouble ans = new VectorDouble(this);

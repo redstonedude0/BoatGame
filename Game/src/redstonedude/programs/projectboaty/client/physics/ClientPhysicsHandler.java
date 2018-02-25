@@ -1,18 +1,32 @@
 package redstonedude.programs.projectboaty.client.physics;
 
+import java.awt.Color;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Consumer;
+
+import com.sun.org.apache.bcel.internal.generic.L2D;
 
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.control.ControlHandler.Mode;
+import redstonedude.programs.projectboaty.client.graphics.DebugHandler;
+import redstonedude.programs.projectboaty.client.graphics.DebugVector;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.shared.entity.Entity;
+import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.net.UserData;
+import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
+import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveCharacter;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestMoveRaft;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestRaftTiles;
+import redstonedude.programs.projectboaty.shared.physics.Location;
+import redstonedude.programs.projectboaty.shared.physics.PhysicsHandler;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
@@ -214,6 +228,103 @@ public class ClientPhysicsHandler {
 			
 			//do not try to use other players characters
 			break;
+		case "EntityBarrel":
+			EntityBarrel eb = (EntityBarrel) e;
+			UserData ud = ClientPacketHandler.getCurrentUserData();
+			if (ud != null && ud.raft != null) {
+				// calculate relative position of the barrel
+				VectorDouble pos = eb.getLoc().getPos();
+				VectorDouble vel = eb.getVel();
+				VectorDouble relPos = pos.add(new VectorDouble(0.5, 0.5)).subtract(ud.raft.getPos()).getRelative(ud.raft.getUnitX(), ud.raft.getUnitY());
+				ArrayList<Tile> ts = ud.raft.getTiles();
+				for (Tile t : ts) {
+					VectorDouble tPos = t.getPos();
+					// -0.5 and +1 cos both coordinates are in the bottom left. Just go with it.
+					if (relPos.x > tPos.x && relPos.x < tPos.x + 1) {
+						if (relPos.y > tPos.y && relPos.y < tPos.y + 1) {
+							// inside this tile, add the relevant velocity and then return
+							Collection<Line2D> boundaryLines = ud.raft.getBoundaryLines();
+							VectorDouble tileVel = t.getAbsoluteMotion(ud.raft);
+							VectorDouble barrelVel = new VectorDouble(vel);
+							VectorDouble velocityDifference = barrelVel.subtract(tileVel);
+							
+							//VectorDouble start = pos;
+							//Point2D angularLineOrigin = new Point2D.Double(start.x,start.y);
+							//double angle = Math.atan2(relativeVel.y, relativeVel.x);
+							//double length = 1;//vel wont be more than 1
+							//boundary lines are all relative - make velocity and position absolute
+							VectorDouble relativeVel = velocityDifference.getRelative(ud.raft.getUnitX(), ud.raft.getUnitY());
+							Line2D passedLine = null;
+							for (Line2D l2d: boundaryLines) {
+								Point2D start = l2d.getP1();
+								Point2D end = l2d.getP2();
+								
+//								DebugVector dv = new DebugVector();
+//								dv.color = Color.RED;
+//								dv.pos = new VectorDouble(start.getX(),start.getY());
+//								dv.vector = new VectorDouble(end.getX(),end.getY()).subtract(new VectorDouble(start.getX(),start.getY()));
+//								dv.pos = dv.pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos());
+//								dv.vector = dv.vector.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY());
+//								DebugHandler.debugVectors.add(dv);
+								
+//								DebugVector  dv = new DebugVector();
+//								dv.color = Color.RED;
+//								dv.pos = new VectorDouble(relPos);
+//								dv.vector = new VectorDouble(relativeVel);
+//								dv.pos = dv.pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY()).add(ud.raft.getPos());
+//								dv.vector = dv.vector.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY());
+//								DebugHandler.debugVectors.add(dv);
+								
+								double scalar = PhysicsHandler.crossVectors(relativeVel.x, relativeVel.y, end.getX()-start.getX(),end.getY()-start.getY());
+						        //the lines are parallel
+						        if (scalar == 0) {
+						        	continue;
+						        }
+						        //Get the values of u and t
+						        //v is how much the velocity line needs to be scaled to collide with l2d
+						        //u is how much the line l2d needs to be scaled to collide with the line of velocity
+						        double v = PhysicsHandler.crossVectors(start.getX() - relPos.x, start.getY() - relPos.y, end.getX()-start.getX(), end.getY()-start.getY()) / scalar;
+						        double u = PhysicsHandler.crossVectors(start.getX() - relPos.x, start.getY() - relPos.y, relativeVel.x, relativeVel.y) / scalar;
+
+						        //If line l2d would normally pass through the common endpoint
+						        if (0 <= u && u <= 1) {
+						        	//line of velocity points to or away from this side
+						        	if (v <= 0) {
+						        		//velocity is pointing away from this side
+						        		//use this side
+						        		passedLine = l2d;
+						        		break;
+						        	}//the line is the opposite side of the raft...
+						            continue;
+						        } else {
+						            continue;//the line of velocity misses
+						        }
+							}
+							if (passedLine == null) {
+								System.out.println("null passed line. Oh dear. " + boundaryLines.size());
+								continue;
+							} else {
+								System.out.println("bounce");
+							}
+							//get components of velocity parallel and perpendicular to surface
+							VectorDouble surface = new VectorDouble(passedLine.getX2()-passedLine.getX1(),passedLine.getY2()-passedLine.getY1());
+							VectorDouble parallelVel = relativeVel.dot(surface).divide(Math.sqrt(surface.getSquaredLength()));
+							VectorDouble perpendicularVel = relativeVel.subtract(parallelVel);
+							//perpendicular vel is flipped
+							VectorDouble newVel = perpendicularVel.multiply(-1);// go away
+							newVel = newVel.add(parallelVel);
+							newVel = newVel.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY());
+							newVel = newVel.add(tileVel);// add to make absolute vel
+							eb.setVel(newVel);
+							Location loc = eb.getLoc();
+							loc.setPos(loc.getPos().add(eb.getVel()));
+							eb.setLoc(loc);
+							PacketRequestEntityState pres = new PacketRequestEntityState(e);
+							ClientPacketHandler.sendPacket(pres);
+						}
+					}
+				}
+			}
 		}
 	}
 

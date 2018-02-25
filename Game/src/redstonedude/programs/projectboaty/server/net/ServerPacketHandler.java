@@ -237,7 +237,6 @@ public class ServerPacketHandler {
 			}
 			break;
 		case "PacketRequestEntityState":
-			System.out.println("PRES");
 			PacketRequestEntityState pres = (PacketRequestEntityState) packet;
 			ServerPhysicsHandler.setEntity(pres.entity);
 			PacketEntityState pes = new PacketEntityState(pres.entity);

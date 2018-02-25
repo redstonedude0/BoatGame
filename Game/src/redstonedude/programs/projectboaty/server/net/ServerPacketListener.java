@@ -1,5 +1,7 @@
 package redstonedude.programs.projectboaty.server.net;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,7 +20,7 @@ public class ServerPacketListener implements Runnable {
 	private Socket sock;
 
 	public void start(int portNumber) {
-		try (Socket clientSocket = ServerPacketHandler.serverSocket.accept(); ObjectOutputStream out2 = new ObjectOutputStream(clientSocket.getOutputStream()); ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());) {
+		try (Socket clientSocket = ServerPacketHandler.serverSocket.accept(); ObjectOutputStream out2 = new ObjectOutputStream(new BufferedOutputStream(clientSocket.getOutputStream())); ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));) {
 			// Start a new listener to handle the next client
 			ServerPacketHandler.startNewListener();// - MOVED TO playerJoin in ServerPacketHandler
 			IP = clientSocket.getInetAddress();
@@ -50,14 +52,18 @@ public class ServerPacketListener implements Runnable {
 	public synchronized void send(Packet data) {
 		if (oos != null) {
 			try {
+				//oos.reset();
 				oos.writeObject(data);
-				oos.flush();
+				oos.reset();//reset to fix sharing, automatically flushes?
+				oos.flush();//flush anyway?
 				// If at any point data is going slow its cos of this reset.
 				// The stream caches objects so if we change a variable it wont send properly
 				// so we need to reset the stream for this. The alternative is to manually serialize
 				// or clone objects before sending them and reset less often to clear the cache
 				// consider writeUnshared()
-				oos.reset();
+				
+				//if (System.nanoTime()%5000 == 0) {
+				//}
 			} catch (IOException e) {
 				if (ServerPacketHandler.listeners.contains(this)) {//if not disconnected
 					Logger.log("Disconnection: " + e.getMessage());

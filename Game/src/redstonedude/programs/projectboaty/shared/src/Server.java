@@ -2,6 +2,8 @@ package redstonedude.programs.projectboaty.shared.src;
 
 import java.io.IOException;
 
+import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.server.data.ServerDataHandler;
 import redstonedude.programs.projectboaty.server.net.ServerPacketHandler;
 import redstonedude.programs.projectboaty.server.physics.ServerPhysicsHandler;
@@ -22,12 +24,29 @@ public class Server implements Runnable {
 		ServerPacketHandler.init();
 		start();
 	}
+	
+	public static long nextTime = System.currentTimeMillis();
+	public static int frames = 0;
+	public static long lastTime = System.currentTimeMillis();
 
 	public void run() {
 		try {
 			while (true) {
+				lastTime = System.currentTimeMillis();
 				ServerPhysicsHandler.physicsUpdate();
-				Thread.sleep(20);// 50 pups
+				frames++;
+				if (System.currentTimeMillis() >= nextTime) {
+					nextTime += 1000;
+	//				System.out.println(frames + " pups");
+					frames = 0;
+				}
+				long currTime = System.currentTimeMillis();
+				long elapsedTime = currTime - lastTime;
+				if (elapsedTime >= 20) {
+					elapsedTime = 20;// don't allow negative sleep times but aim for 50 FPS
+				}
+				Thread.sleep(20 - elapsedTime);
+//				Thread.sleep(20);// 50 pups
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

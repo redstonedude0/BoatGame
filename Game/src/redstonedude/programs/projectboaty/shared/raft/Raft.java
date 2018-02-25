@@ -1,5 +1,6 @@
 package redstonedude.programs.projectboaty.shared.raft;
 
+import java.awt.geom.Line2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,26 @@ public class Raft implements Serializable {
 			mass += t.mass;
 		}
 		return mass;
+	}
+	
+	public Collection<Line2D> getBoundaryLines() {
+		Collection<Line2D> boundaryLines = new ArrayList<Line2D>();
+		for (Tile t: getTiles())  {
+			VectorDouble tPos = t.getPos();
+			if (getTileAt((int) tPos.x+1,(int) tPos.y) == null) {
+				boundaryLines.add(new Line2D.Double(tPos.x+1, tPos.y, tPos.x+1, tPos.y+1));
+			}
+			if (getTileAt((int) tPos.x-1,(int) tPos.y) == null) {
+				boundaryLines.add(new Line2D.Double(tPos.x, tPos.y, tPos.x, tPos.y+1));
+			}
+			if (getTileAt((int) tPos.x,(int) tPos.y+1) == null) {
+				boundaryLines.add(new Line2D.Double(tPos.x, tPos.y+1, tPos.x+1, tPos.y+1));
+			}
+			if (getTileAt((int) tPos.x,(int) tPos.y-1) == null) {
+				boundaryLines.add(new Line2D.Double(tPos.x, tPos.y, tPos.x+1, tPos.y));
+			}
+		}
+		return boundaryLines;
 	}
 	
 	public Collection<EntityResource> getTotalResources() {
