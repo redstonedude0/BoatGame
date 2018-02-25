@@ -14,7 +14,7 @@ public class ServerWorldHandler extends WorldHandler {
 		}
 		if (getWind() == null) {
 			double theta = rand.nextDouble()*Math.PI*2;//generate random angle
-			VectorDouble win = new VectorDouble(0,1).rotate(theta).setMagnitude(0.01);
+			VectorDouble win = new VectorDouble(0,1).rotate(theta).setMagnitude(0.005);
 			setWind(win);
 		}
 	}
