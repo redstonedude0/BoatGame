@@ -14,6 +14,7 @@ import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.event.EventRegistry;
 import redstonedude.programs.projectboaty.shared.raft.TileHandler;
 import redstonedude.programs.projectboaty.shared.task.TaskRepair;
+import redstonedude.programs.projectboaty.shared.task.TaskWander;
 
 public class Client implements Runnable, ImageObserver {
 
@@ -49,6 +50,7 @@ public class Client implements Runnable, ImageObserver {
 	
 	public static void registerEvents() {
 		EventRegistry.addListener(TaskRepair.class);
+		EventRegistry.addListener(TaskWander.class);
 	}
 
 	public void run() {

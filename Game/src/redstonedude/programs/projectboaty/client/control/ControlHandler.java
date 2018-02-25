@@ -331,8 +331,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		entityLoop: for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
-				if (ent.loc.isAbsolute) {
-					VectorDouble vd = ent.loc.getPos();
+				if (ent.isAbsolute()) {
+					VectorDouble vd = ent.getLoc().getPos();
 					VectorDouble diff = clicked.subtract(vd);
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
@@ -366,8 +366,8 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityCharacter")) {
 				// EntityCharacter ec = (EntityCharacter) ent;
-				if (ent.loc.isAbsolute /* && ec.ownerUUID.equals("") */) {
-					VectorDouble vd = ent.loc.getPos();
+				if (ent.isAbsolute() /* && ec.ownerUUID.equals("") */) {
+					VectorDouble vd = ent.getLoc().getPos();
 					VectorDouble diff = clicked.subtract(vd);
 					if (diff.x >= 0 && diff.x <= 1) {
 						if (diff.y >= 0 && diff.y <= 1) {
@@ -427,9 +427,9 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 
 	public static synchronized void doCameraPress(VectorDouble clicked) {
 		for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
-			VectorDouble wePos = we.entity.loc.getPos();
-			if (!we.entity.loc.isAbsolute) {
-				UserData udTarget = ClientPacketHandler.getUserData(we.entity.loc.raftUUID);
+			VectorDouble wePos = we.entity.getLoc().getPos();
+			if (!we.entity.isAbsolute()) {
+				UserData udTarget = ClientPacketHandler.getUserData(we.entity.getLoc().raftUUID);
 				if (udTarget != null && udTarget.raft != null) {
 					wePos = wePos.add(new VectorDouble(0.5, 0.5))
 							.getAbsolute(udTarget.raft.getUnitX(), udTarget.raft.getUnitY()).add(udTarget.raft.getPos())
@@ -551,7 +551,7 @@ public class ControlHandler implements KeyListener, MouseListener, MouseMotionLi
 		if (clickMode == ClickMode.Building || clickMode == ClickMode.Deconstruct
 				|| clickMode == ClickMode.DestroyingResource) {
 			Tile t;
-			if (buildingType == TileType.Wood) {
+			if (buildingType == TileType.WoodFloor) {
 				t = new Tile();
 			} else if (buildingType == TileType.Thruster) {
 				t = new TileThruster();

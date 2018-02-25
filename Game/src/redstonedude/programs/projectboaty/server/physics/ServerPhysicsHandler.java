@@ -1,7 +1,6 @@
 package redstonedude.programs.projectboaty.server.physics;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -19,6 +18,7 @@ import redstonedude.programs.projectboaty.shared.net.clientbound.PacketDelEntity
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketEntityState;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketNewEntity;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Raft;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
@@ -109,7 +109,7 @@ public class ServerPhysicsHandler {
 					double shortestSquareDistance = -1;
 					for (ServerUserData sud : ServerPacketHandler.userData) {
 						if (sud.raft != null) {
-							double squareDistance = sud.raft.getPos().subtract(e.loc.getPos()).getSquaredLength();
+							double squareDistance = sud.raft.getPos().subtract(e.getLoc().getPos()).getSquaredLength();
 							if (squareDistance < shortestSquareDistance || shortestSquareDistance == -1) {
 								shortestSquareDistance = squareDistance;
 							}
@@ -129,7 +129,7 @@ public class ServerPhysicsHandler {
 				} else {
 					// not despawning, do physics
 					EntityBarrel eb = (EntityBarrel) e;
-					VectorDouble pos = eb.loc.getPos();
+					VectorDouble pos = eb.getLoc().getPos();
 					VectorDouble vel = eb.getVel();
 					TerrainType tt = WorldHandler.getTerrainType(pos.x + 0.5, pos.y + 0.5);
 					// it will have some intial velocity, apply drag
@@ -174,7 +174,9 @@ public class ServerPhysicsHandler {
 
 					// add the velocity to position and send packet
 					eb.setVel(vel);
-					eb.loc.setPos(pos.add(vel));
+					Location loc = eb.getLoc();
+					loc.setPos(pos.add(vel));
+					eb.setLoc(loc);
 					PacketEntityState pes = new PacketEntityState(eb);
 					ServerPacketHandler.broadcastPacket(pes);
 				}
@@ -218,7 +220,7 @@ public class ServerPhysicsHandler {
 			double characterCount = 0;
 			for (WrappedEntity we : getWrappedEntities()) {
 				Entity e = we.entity;
-				VectorDouble epos = e.loc.getPos();
+				VectorDouble epos = e.getLoc().getPos();
 				if (epos.x > xFar1 && epos.x < xFar2) {
 					if (epos.y > yFar1 && epos.y < yFar2) {
 						if (e instanceof EntityBarrel) {
@@ -269,15 +271,17 @@ public class ServerPhysicsHandler {
 
 	public static void spawnBarrel(int x, int y) {
 		EntityBarrel eb = new EntityBarrel();
-		eb.loc.setPos(new VectorDouble(x, y));
+		Location loc = new Location();
+		loc.setPos(new VectorDouble(x, y));
 		eb.uuid = UUID.randomUUID().toString();
-		eb.loc.isAbsolute = true;
+		loc.isAbsolute = true;
+		eb.setLoc(loc);
 		for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
 			Entity ent = we.entity;
 			if (ent.entityTypeID.equals("EntityBarrel")) {
-				if (ent.loc.isAbsolute) {
-					VectorDouble entPos = ent.loc.getPos();
-					VectorDouble ebPos = eb.loc.getPos();
+				if (ent.isAbsolute()) {
+					VectorDouble entPos = ent.getLoc().getPos();
+					VectorDouble ebPos = eb.getLoc().getPos();
 					if (ebPos.x > entPos.x && ebPos.x < entPos.x + 1) {
 						if (ebPos.y > entPos.y && ebPos.y < entPos.y + 1) {
 							return;// already a barrel here
@@ -292,11 +296,13 @@ public class ServerPhysicsHandler {
 	
 	public static void spawnCharacter(int x, int y) {
 		EntityCharacter ec = new EntityCharacter();
-		ec.loc.setPos(new VectorDouble(x, y));
+		Location loc = new Location();
+		loc.setPos(new VectorDouble(x, y));
 		ec.uuid = UUID.randomUUID().toString();
-		ec.loc.isAbsolute = true;
+		loc.isAbsolute = true;
 		ec.ownerUUID = "";
-		ec.loc.raftUUID = "";
+		loc.raftUUID = "";
+		ec.setLoc(loc);
 		addEntity(ec);
 		ServerPacketHandler.broadcastPacket(new PacketNewEntity(ec));
 	}
@@ -305,11 +311,13 @@ public class ServerPhysicsHandler {
 		ServerUserData sud = ServerPacketHandler.getUserData(clientuuid);
 		if (sud != null && sud.raft != null) {
 			EntityCharacter ec = new EntityCharacter();
-			ec.loc.setPos(new VectorDouble(0, 0));
+			Location loc = new Location();
+			loc.setPos(new VectorDouble(0, 0));
 			ec.uuid = UUID.randomUUID().toString();
 			ec.ownerUUID = clientuuid;
-			ec.loc.raftUUID = clientuuid;
-			ec.loc.isAbsolute = false;
+			loc.raftUUID = clientuuid;
+			loc.isAbsolute = false;
+			ec.setLoc(loc);
 			addEntity(ec);
 			ServerPacketHandler.broadcastPacket(new PacketNewEntity(ec));
 		}

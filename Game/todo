@@ -177,8 +177,11 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(R)	  Add helper methods to Location to calculate distances, get movespeed type, etc
 -P-	(R)	  Consider adding .send() to packets?
 	(R)	  Reorganise packet structure so shared, server, and client, resources are seperate where required.
+	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
 		Task system changes:
--P-	(R)   Consider cancelling wander task on tile destruction - consider adding predicate shouldRemove handler?
+-P-	[R]   Consider cancelling wander task on tile destruction - added event for mountdismount
+	[R]	  Consider making wander task polygonal
+	[R]	  Make event for character dismount/mount
 -PR-(R)	  Add paddelling task, must be placed adjacent to empty spot, can be rotated
 -P- (R)	  Investigate cancelling tasks (no longer happens as all tasks are Task - consider adding a checkTarget method)
 -D-	(R)	  Consider priority handling for non-collective destruction? Consider resource dropping
@@ -219,7 +222,6 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	[R]	  Make the map show other players and update live
 		Misc:
 -P-	[R]	  Investigate coordinates in Character menu - not using COM pos?
-	(R)	  Make entities a ConcurrentLinkedQueue, remove getters and setters as they are no longer needed
 	(R)	  Consider List syncing on player join - how to avoid duplicate entries?
 	(R)	  Consider packet ordering to ensure that null entries don't occur with player movement packets etc? re-queue?
 	(R)	  Consider character levels (officers, captains, etc)

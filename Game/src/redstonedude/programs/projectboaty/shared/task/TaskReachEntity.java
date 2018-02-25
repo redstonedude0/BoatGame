@@ -17,7 +17,7 @@ public class TaskReachEntity extends Task implements Serializable {
 	public TaskReachEntity(WrappedEntity targetEntity) {
 		super("TaskReachEntity");
 		this.targetEntity = targetEntity;
-		trl = new TaskReachLocation(targetEntity.entity.loc);
+		trl = new TaskReachLocation(targetEntity.entity.getLoc());
 	}
 	
 	public WrappedEntity getTarget() {
@@ -26,7 +26,7 @@ public class TaskReachEntity extends Task implements Serializable {
 	
 	public void updateLocation() {
 		if (targetEntity != null && targetEntity.entity != null) {
-			trl.setTarget(new Location(targetEntity.entity.loc));
+			trl.setTarget(new Location(targetEntity.entity.getLoc()));
 		} else {
 			isCompleted = true; //target must have been despawned or destroyed, oh well, what a shame :(
 		}

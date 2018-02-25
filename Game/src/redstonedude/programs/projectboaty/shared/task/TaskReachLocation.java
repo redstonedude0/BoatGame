@@ -18,6 +18,7 @@ public class TaskReachLocation extends Task implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Location target;
+	public double speedModifier = 1;
 	
 	public TaskReachLocation(Location target) {
 		super("TaskReachLocation");
@@ -36,7 +37,7 @@ public class TaskReachLocation extends Task implements Serializable {
 	public void execute(EntityCharacter assignedEntity) {
 		isCompleted = false;
 		if (assignedEntity != null && target != null) {
-			if (assignedEntity.moveToward(target)) {
+			if (assignedEntity.moveToward(target, speedModifier)) {
 				isCompleted = true;
 			}
 		}

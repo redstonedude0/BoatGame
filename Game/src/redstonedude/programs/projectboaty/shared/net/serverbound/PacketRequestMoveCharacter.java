@@ -3,15 +3,13 @@ package redstonedude.programs.projectboaty.shared.net.serverbound;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.net.Packet;
-import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 
 public class PacketRequestMoveCharacter extends Packet implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public VectorDouble pos = new VectorDouble();
-	public boolean absolutePos;
-	public String raftPosID;
+	public Location loc;
 	public String uuid = "";
 	
 	public PacketRequestMoveCharacter() {

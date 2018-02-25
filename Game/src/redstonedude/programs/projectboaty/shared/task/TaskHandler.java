@@ -59,13 +59,13 @@ public class TaskHandler {
 			return 0;
 		}
 		VectorDouble absoluteTargetCOM = target.getPos().add(new VectorDouble(0.5,0.5));
-		VectorDouble absoluteCOM = ec.loc.getPos().add(new VectorDouble(0.5,0.5));
+		VectorDouble absoluteCOM = ec.getLoc().getPos().add(new VectorDouble(0.5,0.5));
 		if (!target.isAbsolute) {
 			UserData targetUD = ClientPacketHandler.getUserData(target.raftUUID);
 			absoluteTargetCOM = absoluteTargetCOM.getAbsolute(targetUD.raft.getUnitX(),targetUD.raft.getUnitY()).add(targetUD.raft.getPos());
 		}
-		if (!ec.loc.isAbsolute) {
-			UserData ecUD = ClientPacketHandler.getUserData(ec.loc.raftUUID);
+		if (!ec.isAbsolute()) {
+			UserData ecUD = ClientPacketHandler.getUserData(ec.getLoc().raftUUID);
 			absoluteCOM = absoluteCOM.getAbsolute(ecUD.raft.getUnitX(),ecUD.raft.getUnitY()).add(ecUD.raft.getPos());
 		}
 		VectorDouble change = absoluteTargetCOM.subtract(absoluteCOM);

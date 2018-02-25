@@ -172,16 +172,12 @@ public class ServerPacketHandler {
 			for (WrappedEntity we : ServerPhysicsHandler.getWrappedEntities()) {
 				Entity e = we.entity;
 				if (e.uuid.equals(prmc.uuid)) {
-					e.loc.setPos(prmc.pos);
-					e.loc.isAbsolute = prmc.absolutePos;
-					e.loc.raftUUID = prmc.raftPosID;
+					e.setLoc(prmc.loc);
 				}
 			}
 			PacketMoveCharacter pmc = new PacketMoveCharacter();
 			pmc.uuid = prmc.uuid;
-			pmc.pos = prmc.pos;
-			pmc.absolutePos = prmc.absolutePos;
-			pmc.raftPosID = prmc.raftPosID;
+			pmc.loc = prmc.loc;
 			broadcastPacketExcept(connection, pmc);
 			break;
 		case "PacketRequestRaftTiles":

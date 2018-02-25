@@ -8,6 +8,7 @@ import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
 import redstonedude.programs.projectboaty.shared.event.EventListener;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
+import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 
 public class TaskRecruit extends Task implements Serializable, EventListener {
@@ -36,7 +37,9 @@ public class TaskRecruit extends Task implements Serializable, EventListener {
 		if (tre.getTarget().entity != null && tre.getTarget().entity instanceof EntityCharacter) {
 			EntityCharacter ec = (EntityCharacter) tre.getTarget().entity;
 			if (ec.ownerUUID.equals("")) {
-				ec.loc.setPos(ec.loc.getPos().add(new VectorDouble(0,1)));
+				Location loc = ec.getLoc();
+				loc.setPos(loc.getPos().add(new VectorDouble(0,1)));
+				ec.setLoc(loc);
 				ec.ownerUUID = assignedEntity.ownerUUID;
 				PacketRequestEntityState pres = new PacketRequestEntityState(ec);
 				ClientPacketHandler.sendPacket(pres);
@@ -59,7 +62,7 @@ public class TaskRecruit extends Task implements Serializable, EventListener {
 	@Override
 	public void draw(Graphics2D g2d) {
 		tre.draw(g2d);
-		tpw.draw(g2d, tre.getTarget().entity.loc);
+		tpw.draw(g2d, tre.getTarget().entity.getLoc());
 	}
 
 }

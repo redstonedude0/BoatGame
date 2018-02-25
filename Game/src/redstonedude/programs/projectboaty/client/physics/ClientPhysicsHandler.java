@@ -145,13 +145,13 @@ public class ClientPhysicsHandler {
 					cameraTarget = null;//nullify cameraTarget if the entity is null
 				}
 				if (cameraTarget != null) {//target entity
-					if (!cameraTarget.entity.loc.isAbsolute) {
-						UserData targetRaft = ClientPacketHandler.getUserData(cameraTarget.entity.loc.raftUUID);
+					if (!cameraTarget.entity.isAbsolute()) {
+						UserData targetRaft = ClientPacketHandler.getUserData(cameraTarget.entity.getLoc().raftUUID);
 						if (targetRaft != null && targetRaft.raft != null) {
-							targetPos = cameraTarget.entity.loc.getPos().add(new VectorDouble(0.5, 0.5)).getAbsolute(targetRaft.raft.getUnitX(), targetRaft.raft.getUnitY()).add(targetRaft.raft.getPos());
+							targetPos = cameraTarget.entity.getLoc().getPos().add(new VectorDouble(0.5, 0.5)).getAbsolute(targetRaft.raft.getUnitX(), targetRaft.raft.getUnitY()).add(targetRaft.raft.getPos());
 						}
 					} else {//get absolute position COM
-						targetPos = cameraTarget.entity.loc.getPos().add(new VectorDouble(0.5, 0.5));
+						targetPos = cameraTarget.entity.getLoc().getPos().add(new VectorDouble(0.5, 0.5));
 					}
 				}				
 				VectorDouble posDiff = targetPos.subtract(ClientPhysicsHandler.cameraPosition);
@@ -208,9 +208,7 @@ public class ClientPhysicsHandler {
 				}
 				PacketRequestMoveCharacter prmc = new PacketRequestMoveCharacter();
 				prmc.uuid = ec.uuid;
-				prmc.pos = ec.loc.getPos();
-				prmc.absolutePos = ec.loc.isAbsolute;
-				prmc.raftPosID = ec.loc.raftUUID;
+				prmc.loc = ec.getLoc();
 				ClientPacketHandler.sendPacket(prmc);
 			} // else System.out.println("other player");
 			

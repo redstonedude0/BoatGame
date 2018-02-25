@@ -311,14 +311,14 @@ public class GraphicsHandler {
 		for (WrappedEntity we : ClientPhysicsHandler.getWrappedEntities()) {
 			Entity e = we.entity;
 			// System.out.println("entity");
-			VectorDouble pos = e.loc.getPos();
-			if (e.loc.isAbsolute) {
+			VectorDouble pos = e.getLoc().getPos();
+			if (e.isAbsolute()) {
 				g2d.drawImage(TextureHandler.getTexture(TileHandler.getTextureName(e.entityTypeID, e)), (int) (pos.x * 100), (int) (pos.y * 100), (int) (pos.x * 100 + 100), (int) (pos.y * 100 + 100), 0, 0, 32, 32, frame);
 				if (e instanceof EntityBarrel) {
 					g2d.drawImage(TextureHandler.getTexture("Resource_" + ((EntityBarrel)e).resource.resourceType.textureName), (int) (pos.x * 100), (int) (pos.y * 100), (int) (pos.x * 100 + 100), (int) (pos.y * 100 + 100), 0, 0, 32, 32, frame);
 				}
 			} else {
-				UserData ud = ClientPacketHandler.getUserData(e.loc.raftUUID);
+				UserData ud = ClientPacketHandler.getUserData(e.getLoc().raftUUID);
 				if (ud != null && ud.raft != null) {
 					pos = pos.getAbsolute(ud.raft.getUnitX(), ud.raft.getUnitY());
 					pos = pos.add(ud.raft.getPos());
@@ -801,11 +801,11 @@ public class GraphicsHandler {
 									} else {
 										ecstring += "Busy-";
 									}
-									if (ec.loc.isAbsolute) {
-										int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos().add(new VectorDouble(0.5, 0.5))).getSquaredLength());
+									if (ec.isAbsolute()) {
+										int distance = (int) Math.sqrt(ec.getLoc().getPos().subtract(ud.raft.getPos().add(new VectorDouble(0.5, 0.5))).getSquaredLength());
 										ecstring += distance + "m from raft";
 									} else {
-										VectorDouble pos = ec.loc.getPos();
+										VectorDouble pos = ec.getLoc().getPos();
 										ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 									}
 									if (index - 1 <= maxComponentIndex) {
@@ -856,11 +856,11 @@ public class GraphicsHandler {
 										} else {
 											ecstring += "Busy-";
 										}
-										if (ec.loc.isAbsolute) {
-											int distance = (int) Math.sqrt(ec.loc.getPos().subtract(ud.raft.getPos()).getSquaredLength());
+										if (ec.isAbsolute()) {
+											int distance = (int) Math.sqrt(ec.getLoc().getPos().subtract(ud.raft.getPos()).getSquaredLength());
 											ecstring += distance + "m from raft";
 										} else {
-											VectorDouble pos = ec.loc.getPos();
+											VectorDouble pos = ec.getLoc().getPos();
 											ecstring += "Aboard raft(" + ((int) Math.floor(pos.x)) + "," + ((int) Math.floor(pos.y)) + ")";
 										}
 										JLabel lab = new JLabel("Character " + index + ": " + ecstring);
