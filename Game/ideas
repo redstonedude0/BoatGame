@@ -1,0 +1,113 @@
+Ideas
+	
+	Features:
+		On-land towns and villages
+			Containing shops, taverns, etc
+			
+			Consider generating islands rather than terrain
+		Pirate AI (in neutral waters)
+			They are just AI ships that can be interacted with. They are usually hostile and can be destroyed for resources, added to fleet, etc
+			Hostility demands gold, prisoners, or a fight
+		Fleets
+			Up to 3 ships (inc. own) can travel with you, rest must be docked/anchored or assigned to a task
+			Other ships may be assigned to timed tasks (i.e. to collect resources)
+			Fleet must be kept happy? (tie into character system perhaps? Mutinies? - If a character mutinies then he just runs off - if an entire
+				ship mutinies then you will have to fight it)
+			Captain required for each ship (if captain mutinies, you lose ship)
+		Character Levelling/Profession
+			Potentially tech tree?
+			Training task?
+			Senior characters must train subordinate
+				If there is no senior for a profession, then someone from a town must be sought
+				If is very hard/impossible to train a captain, therefore making it more viable to buy them from a town?
+					This would make sure that it isn't too easy to have tonnes of ships immediately, but will see what works
+			Loyalty system for characters allowing them to go into certain professions
+				Could affect how the character acts depending on how loyal they are, e.g. if you have a surgeon that is not very loyal then
+					they are prone to doing "experiments" on your crew and may not be very good at their job in general
+			
+			I think this needs to be kept simple, but at the same time have enough depth for it to be a) worthwhile, and b) fun and interesting
+			This balance will be crucial to making it not overbearing but still a good feature.
+		Character Interactions
+			Rape
+			Torture
+			Prisoners
+			Cannibalism
+			Make someone walk the plank (system to remove crew members)
+			Black Spot (Placing a hit on someone)
+		HUD
+			All text in game written in pirate speak
+				YES, ALL OF IT
+					BY DEFAULT
+						PENALISATION OF THOSE WHO DISABLE IT
+							(OR JUST A FUNNY MESSAGE TO TAKE THE PISS)
+		Animals
+			Sharks
+			Dolphins
+			Cthulhu (only 1 per map, (submarine required, deep sea,?) when you get close you get an achievement but your crew go mad and die 
+				and Cthulhu destroys your ship. If you have any women aboard, tentacle hentai ensues.)
+			
+		
+	Resources:
+		Wood - obtained in barrels on the ocean, obtained from trees on islands
+		Scrap Metal - obtained in barrels on the ocean, can be found on beaches
+		Cloth - obtained in barrels on the ocean, can be obtained from cotton plants on islands?
+		(Characters) - recruited from islands? Can just be grabbed? (should be task) Need to be bribed with food? Can be taken prisoner?
+		Food? - Can go fishing? Can grab fruit from islands? Required to nourish and keep characters (they die or revolt without food?)
+		Coral - Can be collected from reefs, used as weaponry and armour?
+		Stone blocks - Can be collected from rocky outcrops, required to make anchors, very heavy
+		Steel, Silver, Gold - Can be mined from islands? Dropped by characters, some aboard AI ships, etc?
+		Consider adding animals - Sheep (Wool, Mutton), Cows (Milk, Beef)
+		*Consider medical system - body part resources?* Surgeons/Physicians? Illness from islands (consider island towns and brothels)
+		Ammunition/Gunpowder/Cannonballs? Start with some, craft from scrap metal or find on islands?
+		More in-depth systems (type of food, type of coral, etc)?
+		Rum, Tobacco - Used to keep characters happy
+	Tiles:
+		Wooden Planks - weak, buoyant, light
+		Offboard Motor? - heavy, fairly durable, requires scrap?
+		Sail (multitile construction) - very large, fairly heavy, massive thrust. Can be climbed to provide lookout informaiton?
+		Rudder (multitile construction) - fairly heavy, large torque from speed
+		Anchor (multitile construction?) - very heavy, extreme thrust(drag)
+		Metal hull (dynamic parttile? how to polygon?) - fairly heavy, extremely durable
+		Spiked hull (dynamic parttile?) - fairly heavy, requires more metal, fairly durable, higher drag, deals more damage and grabs barrels?
+		Bitts (mooring bollards) - heavy, can be used to tie mooring lines.
+		Planks (multitile construction) - can be used for dry boarding (has no collisions~)
+		Cannon (multitile construction) - very heavy, can be used to fire cannonballs.
+		Mounted crossbow? - light, fairly fast fire rate, low damage
+		Mini Trebuchet - fires barrels of oil and flaming arrows.....
+		Stairs (multilevel construction) - used to transfer between layers
+		Oar - allows for faster thrust than paddeling, has a task fulfillment. (single and double?)
+		Bed/Bunk/Hammock - can be given for characters to sleep, helps keep them happy, consider day/night cycle?
+		Table - used by characters to socialise
+		Walls (dynamic parttile?) - used in layers to provide full protection
+		Doors - used to seperate walls
+		Windows - allows shooting though, boarding through is difficult.
+		Low wall - used to act as some cover above deck.
+		Boat wheel - required to steer the boat(?)
+		Sail rudder combo for very small boats?
+		Drums - 
+		Grapples - used to tether a boat to an enemy boat during a boarding operation
+		Prison bars+doors? - used to create cages for prisoners
+		Figurehead? - possibly design-your-own, send as Image.
+		Ram - extremely durable, heavy, and may only be crafted in a certain shape (pointed). Used to shunt other boats.
+	Task system notes/ideas:
+		Deck swabbing - cleans boat
+		Bail water - used to reduce flooding within the ship
+		Dancing - 
+	Animation system specs:
+		Animations should be eventually be loaded in via a texture handler, where you can specify the size of the image and the number of frames.
+		Animations should then be stored within the code, potentially as an ordered collection of BufferedImage?
+		The animations should be drawn somehow, potentially from an Entity.draw() and Tile.draw() method, in which case the
+			method queries various variables and decides upon the texture to return. (consider how to implement native JFrame
+			animations?)
+		Animations required:
+			Characters:
+				- swimming
+				- walking
+				- paddling(?)
+				- building/constructing/working
+			Water:
+				- flowing
+				- particles for motors/paddles?
+		
+	Sources and stuff:
+		Check out https://game-development.zeef.com/david.arcila
