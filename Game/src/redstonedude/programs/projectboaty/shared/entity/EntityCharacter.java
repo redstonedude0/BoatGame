@@ -36,7 +36,7 @@ public class EntityCharacter extends Entity implements Serializable {
 	}
 	
 	public void registerSounds() {
-		System.out.println("new listener");
+		//System.out.println("new listener");
 		SoundHandlerCharacter shc = new SoundHandlerCharacter(ClientPhysicsHandler.getEntityWrapper(uuid));
 		SoundHandler.registerHandler(shc);
 		shc.playSound();

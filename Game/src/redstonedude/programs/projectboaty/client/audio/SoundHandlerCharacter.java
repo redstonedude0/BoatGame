@@ -23,7 +23,7 @@ public class SoundHandlerCharacter extends SoundHandler implements EventListener
 	
 	@Override
 	public void soundEnd() {
-		System.out.println("sound end");
+		//System.out.println("sound end");
 		playSound();
 	}
 	
