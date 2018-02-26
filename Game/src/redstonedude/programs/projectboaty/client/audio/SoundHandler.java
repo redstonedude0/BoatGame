@@ -66,7 +66,7 @@ public abstract class SoundHandler {
 			//play(filename);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		} //todo consider closing clip?
 	}
 	
 	public void stopSound() {
