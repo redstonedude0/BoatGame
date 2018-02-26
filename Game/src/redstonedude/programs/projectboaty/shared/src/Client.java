@@ -32,6 +32,7 @@ public class Client implements Runnable {
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
+//		SoundHandler.init();
 		ControlHandler ch = new ControlHandler();
 		GraphicsHandler.frame.addKeyListener(ch);
 		GraphicsHandler.frame.addMouseListener(ch);
