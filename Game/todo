@@ -236,6 +236,7 @@ Alpha 1.0 (The Sounds Update): [In Progress]
 	(R)	  Consider packet ordering to ensure that null entries don't occur with player movement packets etc? re-queue?
 	(R)	  Consider character levels (officers, captains, etc)
 	[R]	  Fixed drag system - could not set magnitude < 0 in VectorDouble.
+	(R)	  4 PUPS!!! - queue packets?
 
 	Further notes for this update (and future updates):
 		Resources:

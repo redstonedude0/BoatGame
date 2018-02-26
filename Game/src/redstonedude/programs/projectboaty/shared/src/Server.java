@@ -37,7 +37,7 @@ public class Server implements Runnable {
 				frames++;
 				if (System.currentTimeMillis() >= nextTime) {
 					nextTime += 1000;
-	//				System.out.println(frames + " pups");
+					System.out.println(frames + " pups");
 					frames = 0;
 				}
 				long currTime = System.currentTimeMillis();
