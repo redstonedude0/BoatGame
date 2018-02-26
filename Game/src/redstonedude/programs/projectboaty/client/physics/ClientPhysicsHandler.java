@@ -19,6 +19,7 @@ import redstonedude.programs.projectboaty.shared.entity.Entity;
 import redstonedude.programs.projectboaty.shared.entity.EntityBarrel;
 import redstonedude.programs.projectboaty.shared.entity.EntityCharacter;
 import redstonedude.programs.projectboaty.shared.entity.WrappedEntity;
+import redstonedude.programs.projectboaty.shared.event.EventCharacterDespawn;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.clientbound.PacketTileState;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestEntityState;
@@ -96,6 +97,9 @@ public class ClientPhysicsHandler {
 		}
 		if (del != null) {
 			entities.remove(del);
+//			if (del.entity instanceof EntityCharacter) {
+//				EventCharacterDespawn ecd = new EventCharacterDespawn(del.entity);
+//			}
 			del.entity = null;//nullify the entity so it isn't used anywhere else???
 			//System.out.println("Removed we");
 			return true;

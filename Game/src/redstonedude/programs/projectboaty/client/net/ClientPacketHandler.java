@@ -130,6 +130,9 @@ public class ClientPacketHandler {
 		case "PacketNewEntity":
 			PacketNewEntity pne = (PacketNewEntity) packet;
 			ClientPhysicsHandler.addEntity(pne.entity);
+			if (pne.entity instanceof EntityCharacter) {
+				((EntityCharacter)pne.entity).registerSounds();
+			}
 			break;
 		case "PacketMoveCharacter":
 			PacketMoveCharacter pmc = (PacketMoveCharacter) packet;

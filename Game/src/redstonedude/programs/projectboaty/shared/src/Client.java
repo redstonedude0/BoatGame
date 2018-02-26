@@ -6,6 +6,8 @@ import java.awt.image.ImageObserver;
 import javax.swing.SwingUtilities;
 
 import redstonedude.programs.projectboaty.client.audio.MusicHandler;
+import redstonedude.programs.projectboaty.client.audio.SoundHandler;
+import redstonedude.programs.projectboaty.client.audio.SoundHandlerCharacter;
 import redstonedude.programs.projectboaty.client.control.ControlHandler;
 import redstonedude.programs.projectboaty.client.graphics.GraphicsHandler;
 import redstonedude.programs.projectboaty.client.graphics.TextureHandler;
@@ -26,7 +28,7 @@ public class Client implements Runnable {
 	}
 
 	public Client() {
-		ClientPacketHandler.hostName = "25.95.178.83";
+		ClientPacketHandler.hostName = "localhost";
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
@@ -46,11 +48,13 @@ public class Client implements Runnable {
 		 * 
 		 * @Override public void onEncryptedAppTicket(SteamResult arg0) { } }); System.out.println("su: " + su.getSteamID()); } catch (SteamException e) { // Error extracting or loading native libraries e.printStackTrace(); }//steam JNI code
 		 */
+		//SoundHandler.play("plank");
 	}
 	
 	public static void registerEvents() {
 		EventRegistry.addListener(TaskRepair.class);
 		EventRegistry.addListener(TaskWander.class);
+		EventRegistry.addListener(SoundHandlerCharacter.class);
 	}
 
 	public void run() {

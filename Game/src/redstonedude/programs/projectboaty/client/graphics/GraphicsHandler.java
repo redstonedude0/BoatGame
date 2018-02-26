@@ -168,8 +168,8 @@ public class GraphicsHandler {
 	}
 
 	public static void graphicsUpdateConnecting() {
-		g2d.drawString("Connecting to server...", 50, 50);
-		g2d.drawString("Please wait", 50, 100);
+		g2d.drawString("Weighing anchor...", 50, 50);
+		g2d.drawString("Batten down the hatches!", 50, 100);
 	}
 
 	public static void graphicsUpdatePlaying() {

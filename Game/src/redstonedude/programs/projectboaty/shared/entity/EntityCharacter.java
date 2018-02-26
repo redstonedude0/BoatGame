@@ -2,13 +2,17 @@ package redstonedude.programs.projectboaty.shared.entity;
 
 import java.io.Serializable;
 
+import redstonedude.programs.projectboaty.client.audio.SoundHandler;
+import redstonedude.programs.projectboaty.client.audio.SoundHandlerCharacter;
 import redstonedude.programs.projectboaty.client.net.ClientPacketHandler;
+import redstonedude.programs.projectboaty.client.physics.ClientPhysicsHandler;
 import redstonedude.programs.projectboaty.shared.event.EventCharacterMountDismount;
 import redstonedude.programs.projectboaty.shared.net.UserData;
 import redstonedude.programs.projectboaty.shared.net.serverbound.PacketRequestCharacterState;
 import redstonedude.programs.projectboaty.shared.physics.Location;
 import redstonedude.programs.projectboaty.shared.physics.VectorDouble;
 import redstonedude.programs.projectboaty.shared.raft.Tile;
+import redstonedude.programs.projectboaty.shared.src.Main;
 import redstonedude.programs.projectboaty.shared.task.Task;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler;
 import redstonedude.programs.projectboaty.shared.world.WorldHandler.TerrainType;
@@ -26,6 +30,16 @@ public class EntityCharacter extends Entity implements Serializable {
 	public EntityCharacter() {
 		super();
 		entityTypeID = "EntityCharacter";
+		if (!Main.isServer) {
+			registerSounds();
+		}
+	}
+	
+	public void registerSounds() {
+		System.out.println("new listener");
+		SoundHandlerCharacter shc = new SoundHandlerCharacter(ClientPhysicsHandler.getEntityWrapper(uuid));
+		SoundHandler.registerHandler(shc);
+		shc.playSound();
 	}
 
 	public void sendState() {
