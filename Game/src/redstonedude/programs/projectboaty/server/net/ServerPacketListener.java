@@ -102,7 +102,6 @@ public class ServerPacketListener implements Runnable {
 					//System.out.println("memeb");
 					try {
 						//packetsToSend.wait();
-						//System.out.println("meme1");
 						for (Packet p : packetsToSend) {
 							//System.out.println("meme2");
 							packetsToSend.remove(p);

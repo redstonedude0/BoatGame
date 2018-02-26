@@ -28,7 +28,7 @@ public class Client implements Runnable {
 	}
 
 	public Client() {
-		ClientPacketHandler.hostName = "localhost";//25.95.178.83
+		ClientPacketHandler.hostName = "25.95.178.83";//25.95.178.83
 		TextureHandler.init();
 		TileHandler.init();
 		GraphicsHandler.init();
