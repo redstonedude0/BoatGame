@@ -1,5 +1,8 @@
 package redstonedude.programs.projectboaty.shared.net.clientbound;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.net.Packet;
@@ -16,6 +19,16 @@ public class PacketNewRaft  extends Packet implements Serializable {
 		super("PacketNewRaft");
 		uuid = u;
 		raft = r;
+	}
+	
+	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+		setFieldViaReflection("uuid", aInputStream.readUTF(),PacketNewRaft.class);
+		setFieldViaReflection("raft", aInputStream.readObject(),PacketNewRaft.class);
+	}
+
+	private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+		aOutputStream.writeUTF(uuid);
+		aOutputStream.writeObject(raft);
 	}
 
 }

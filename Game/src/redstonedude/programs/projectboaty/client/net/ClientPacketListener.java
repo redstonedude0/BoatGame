@@ -22,15 +22,16 @@ public class ClientPacketListener implements Runnable {
 			oos = out2;
 			sock = socket;
 			Object inputObject;
-			long lastTime = System.currentTimeMillis();
+			//long lastTime = System.currentTimeMillis();
 			while ((inputObject = in.readObject()) != null) {
-				System.out.println("time between pckts: " + (System.currentTimeMillis()-lastTime));
+				//System.out.println("time between pckts: " + (System.currentTimeMillis()-lastTime));
 				//ClientPacketHandler.handlePacket(this, (Packet) inputObject);
 				ClientPacketHandler.queuedPackets.add((Packet)inputObject);
-				lastTime = System.currentTimeMillis();
+				//lastTime = System.currentTimeMillis();
 			}
 			System.out.println("This should never run");
 		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 			// IOException - client closed connected. This is expected.
 		} catch (Exception e) { //This should never actually occur, since packet handling isn't done in this thread.
 			System.out.println("Listener general exception");

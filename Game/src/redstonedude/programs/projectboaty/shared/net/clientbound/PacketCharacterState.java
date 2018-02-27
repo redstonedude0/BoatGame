@@ -1,5 +1,8 @@
 package redstonedude.programs.projectboaty.shared.net.clientbound;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.entity.EntityResource;
@@ -18,4 +21,16 @@ public class PacketCharacterState extends Packet implements Serializable {
 		super("PacketCharacterState");
 	}
 
+	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+		setFieldViaReflection("characterUUID", aInputStream.readUTF(),PacketCharacterState.class);
+		setFieldViaReflection("currentTask", aInputStream.readObject(),PacketCharacterState.class);
+		setFieldViaReflection("carrying", aInputStream.readObject(),PacketCharacterState.class);
+	}
+
+	private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+		aOutputStream.writeUTF(characterUUID);
+		aOutputStream.writeObject(currentTask);
+		aOutputStream.writeObject(carrying);
+	}
+	
 }

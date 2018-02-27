@@ -1,5 +1,8 @@
 package redstonedude.programs.projectboaty.shared.net.clientbound;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import redstonedude.programs.projectboaty.shared.net.Packet;
@@ -17,4 +20,14 @@ public class PacketTileState extends Packet implements Serializable {
 		tile = t;
 	}
 
+	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+		setFieldViaReflection("uuid", aInputStream.readUTF(),PacketTileState.class);
+		setFieldViaReflection("tile", aInputStream.readObject(),PacketTileState.class);
+	}
+
+	private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+		aOutputStream.writeUTF(uuid);
+		aOutputStream.writeObject(tile);
+	}
+	
 }
