@@ -350,6 +350,7 @@ public class ServerPacketHandler {
 			if (listeners.size() == 1) {// is now empty (barring the open listener) and wasn't before - the last user
 										// has disconnected
 				Logger.log("shutdown caused by disconnection of :" + spl.IP.getHostAddress());
+				ServerPacketListener.executorService.shutdown();
 				Server.shutdown();
 			}
 		}

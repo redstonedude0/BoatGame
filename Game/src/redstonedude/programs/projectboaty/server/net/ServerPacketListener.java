@@ -31,7 +31,6 @@ public class ServerPacketListener implements Runnable {
 			ServerPacketHandler.startNewListener();// - MOVED TO playerJoin in ServerPacketHandler
 			IP = clientSocket.getInetAddress();
 			oos = out2;
-			
 			sock = clientSocket;
 			Object inputObject = null;
 			ServerPacketHandler.playerJoin(this);
@@ -99,6 +98,7 @@ public class ServerPacketListener implements Runnable {
 				long n2 = System.nanoTime();
 				//Almost all lag comes from running this function, but this is quicker than calling write directly, quicker
 				//than a new thread, and quicker than submit()
+				System.out.println("executing");
 				executorService.execute(new Runnable() {
 					@Override
 					public synchronized void run() {
@@ -106,7 +106,7 @@ public class ServerPacketListener implements Runnable {
 							synchronized(oos) {
 								//System.out.println(dat.packetID);
 								oos.writeObject(dat);
-								
+								oos.reset();
 							}
 							//packetsToSend.remove(data);
 					//		oos.reset();
